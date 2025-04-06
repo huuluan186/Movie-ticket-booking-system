@@ -49,11 +49,11 @@ const Header = () => {
                         className="text-black px-4 py-2 rounded-md hover:text-orange-700 flex items-center justify-center gap-1"
                         onClick={toggleDropdown}
                     >
-                        <span>Phim</span>
+                        <span className='font-medium'>Phim</span>
                         <span><RiArrowDropDownLine/></span>
                     </button>
                     {isDropdownOpen && (
-                        <div className="absolute left-0 mt-2 w-48 shadow-md rounded-md">
+                        <div className="absolute left-0 mt-2 w-48 shadow-md rounded-md bg-primary z-50">
                             <ul className="flex flex-col">
                                 <li
                                     className="px-4 py-2 hover:text-orange-700 cursor-pointer"

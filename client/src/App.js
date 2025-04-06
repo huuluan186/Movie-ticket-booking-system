@@ -1,15 +1,19 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes,Route } from "react-router-dom";
 import { path } from "./utils/constant";
-import { Home } from "./containers/Public";
+// import './assets/styles/main.scss'
+import { Home, Login } from "./containers/Public";
+
 function App() {
-    return (
-      <div className="bg-orange-400">
+  return (
+    <div className="h-screen w-screen bg-primary">
         <Routes>
-            <Route path={path.HOME} element={<Home/>}>
+            <Route path={path.HOME} element={<Home />}>
+                {/* Login là route con của Home */}
+                <Route path={path.LOGIN} element={<Login />} />
             </Route>
         </Routes>
-      </div>
-    );
-  }
-  
+    </div>
+  );
+}
+
 export default App;
