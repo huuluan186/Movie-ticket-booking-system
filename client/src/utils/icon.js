@@ -1,10 +1,12 @@
 import { RiArrowDropDownLine } from "react-icons/ri";
-import { IoPersonCircle } from "react-icons/io5";
+import { IoPersonCircle, IoCheckmarkCircle } from "react-icons/io5";
+
 
 
 const icons = {
     RiArrowDropDownLine,
-    IoPersonCircle
+    IoPersonCircle, 
+    IoCheckmarkCircle
 }
 
 export default icons;
