@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     showtime_id: DataTypes.INTEGER,
     order_id: DataTypes.INTEGER,
     seat_id: DataTypes.INTEGER,
-    purchase_time: DataTypes.DATETIME,
+    purchase_time: DataTypes.DATE,
     ticket_status: DataTypes.ENUM(['Booked', 'Used', 'Canceled']),
   }, {
     sequelize,

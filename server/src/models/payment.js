@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     order_id: DataTypes.INTEGER,
     payment_method: DataTypes.ENUM(['Credit Card', 'Debit Card','PayPal', 'Cash']),
     transaction_id: DataTypes.STRING,
-    payment_time: DataTypes.DATETIME,
+    payment_time: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Payment',
