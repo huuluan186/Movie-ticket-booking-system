@@ -17,7 +17,7 @@ const Button = ({ text, textColor, outline, bgColor,IcAfter, onClick, fullWidth,
           type="button" 
           className={`py-2 px-4 ${textColor} ${bgColor} ${fullWidth && 'w-full'} ${outline}  ${hover? hover : 'hover:text-orange-500 '} rounded-md hover:${textColor} flex font-medium items-center justify-center gap-1 onClick={handleButtonClick} `} onClick={onClick}
         >
-           <span>{text} </span>
+           <span>{text}</span>
            <span>{IcAfter && <IcAfter/>}</span>
         </button>
         {dropdownItems && isDropdownOpen && (
