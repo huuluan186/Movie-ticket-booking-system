@@ -25,14 +25,25 @@ const Login = () => {
         username:''
     })
 
-    const handleSubmit = async ()=>{
-        try {
-            console.log(payload);
-            await dispatch(actions.register(payload));
-        } catch (error) {
-            console.error("Đăng ký thất bại:", error);
+    const handleSubmit = async () => {
+        let finalPayload = {};
+    
+        if (isRegister) {
+            finalPayload = payload; // Gửi hết thông tin khi đăng ký
+
+        } else {
+            // Kiểm tra người dùng nhập email hay phone để gửi đúng key
+            const isEmail = payload.email.includes('@');
+    
+            finalPayload = {
+                password: payload.password,
+                ...(isEmail ? { email: payload.email } : { phone: payload.email })
+            };
         }
-    }
+        console.log(payload);
+        await dispatch(isRegister ? actions.register(payload) : actions.login(finalPayload));
+    };
+    
 
     return(
         <div className="w-full flex items-center justify-center">
