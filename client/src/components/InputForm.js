@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const InputForm = ({ label,type,value,setValue,keyPayload}) => {
+const InputForm = ({ label,type,value,setValue,keyPayload, invalidFields = [], setInvalidFields}) => {
 
     const [isFocused, setIsFocused] = useState(false);
     const [showText, setShowText] = useState(true);
@@ -14,6 +14,9 @@ const InputForm = ({ label,type,value,setValue,keyPayload}) => {
             setTimeout(() => setShowText(true), 200); // Hiện lại sau khi label trượt xong
         }
     };
+
+    const errorMessage = invalidFields?.find(item => item.name === keyPayload)?.message;
+
     return (
         <div className="relative w-full rounded-md">
             {/* Label nằm trên input */}
@@ -25,15 +28,21 @@ const InputForm = ({ label,type,value,setValue,keyPayload}) => {
             </label>
             <input
                 type={type || 'text'}
-                //placeholder={currentPlaceholder}
-                //className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-orange-500"
                 value={value}
-                onChange={(e)=>setValue(prev => ({...prev,[keyPayload]:e.target.value}))}                onFocus={() => setIsFocused(true)}
+                onChange={(e)=>setValue(prev => ({...prev,[keyPayload]:e.target.value}))}                
+                onFocus={() => {
+                    setIsFocused(true);
+                    setInvalidFields && setInvalidFields(prev => prev.filter(item => item.name !== keyPayload));
+                }
+                }
                 onBlur={handleBlur}
                 placeholder=""
                 className={`w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-orange-500 transition-colors duration-200
                     ${!showText ? "text-transparent" : "text-black"}`}
             />
+             {errorMessage && (
+                <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+            )}
         </div>
     );
 };

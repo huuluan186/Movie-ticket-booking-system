@@ -13,7 +13,7 @@ const Home = () => {
             </header>
 
             {/* Main content */}
-            <main className={`flex-grow ${isLoginPage ? "bg-login h-screen flex justify-center items-center" : "bg-primary container mx-auto py-6"}`}>
+            <main className={`flex-grow ${isLoginPage ? "bg-login min-h-screen flex justify-center items-center" : "bg-primary container mx-auto py-6"}`}>
                 <Outlet />
             </main>
 

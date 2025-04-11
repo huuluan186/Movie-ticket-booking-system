@@ -4,6 +4,7 @@ import {Button,InputForm} from '../../components'
 import icons from "../../utils/icon";
 import * as actions from '../../store/actions'
 import { useDispatch } from "react-redux";
+import { validateFields } from "../../utils/validation"; 
 
 const {IoPersonCircle,IoCheckmarkCircle} = icons
 
@@ -11,25 +12,33 @@ const Login = () => {
 
     const dispatch = useDispatch()
     const location = useLocation()
+    const [payload,setPayLoad] = useState({
+        phone:'',
+        password:'',
+        email:'',
+        username:'',
+        confirmPassword:''
+    })
+
     const [isRegister,setIsRegister]= useState(location.state?.flag) //?: state có giá trị mới trỏ đến flag
+    const [invalidFields, setInvalidFields] = useState([]); // lưu lỗi
 
     useEffect(() => {
         // Cập nhật giá trị của isRegister bằng flag từ location.state (nếu có)
         setIsRegister(location.state?.flag);
     }, [location.state?.flag]); // Chạy lại khi location.state?.flag thay đổi
 
-    const [payload,setPayLoad] = useState({
-        phone:'',
-        password:'',
-        email:'',
-        username:''
-    })
-
     const handleSubmit = async () => {
+        // validate dữ liệu
+        const errors = validateFields(payload, isRegister);
+        setInvalidFields(errors);
+        if (errors.length > 0) return;
+
+        const { confirmPassword, ...data } = payload;
         let finalPayload = {};
     
         if (isRegister) {
-            finalPayload = payload; // Gửi hết thông tin khi đăng ký
+            finalPayload = data; // Gửi hết thông tin khi đăng ký
 
         } else {
             // Kiểm tra người dùng nhập email hay phone để gửi đúng key
@@ -40,13 +49,13 @@ const Login = () => {
                 ...(isEmail ? { email: payload.email } : { phone: payload.email })
             };
         }
-        console.log(payload);
+        console.log(data);
         await dispatch(isRegister ? actions.register(payload) : actions.login(finalPayload));
     };
     
 
     return(
-        <div className="w-full flex items-center justify-center">
+        <div className="w-full flex items-center justify-center my-3">
             <div className="w-full bg-white max-w-500 p-[30px] pb-[70px] rounded-md shadow-md ">
                <div className="flex flex-col items-center mb-4"> 
                     <div>
@@ -59,14 +68,19 @@ const Login = () => {
                 <div className="w-full flex flex-col gap-6">
                 {isRegister ? (
                     <>
-                    <InputForm label="Tên tài khoản" value={payload.username} setValue={setPayLoad} keyPayload={'username'} />
-                    <InputForm label="Số điện thoại" value={payload.phone} setValue={setPayLoad} keyPayload={'phone'}/>
-                    <InputForm label="Email" type='email' value={payload.email} setValue={setPayLoad} keyPayload={'email'} />
+                    <InputForm label="Tên tài khoản" value={payload.username} setValue={setPayLoad} keyPayload={'username'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
+                    <InputForm label="Số điện thoại" value={payload.phone} setValue={setPayLoad} keyPayload={'phone'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
+                    <InputForm label="Email" type='email' value={payload.email} setValue={setPayLoad} keyPayload={'email'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
+                    <InputForm label="Mật khẩu" type='password' value={payload.password} setValue={setPayLoad} keyPayload={'password'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
+                    <InputForm label="Nhập lại mật khẩu" type='password' value={payload.confirmPassword} setValue={setPayLoad} keyPayload={'confirmPassword'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
                     </>
                 ) : (
-                    <InputForm label="Số điện thoại hoặc Email" value={payload.email} setValue={setPayLoad} keyPayload={'email'}/>
+                    <>
+                        <InputForm label="Số điện thoại hoặc Email" value={payload.email} setValue={setPayLoad} keyPayload={'email'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
+                        <InputForm label="Mật khẩu" type='password' value={payload.password} setValue={setPayLoad} keyPayload={'password'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
+                    </>
                 )}
-                    <InputForm label="Mật khẩu" type='password' value={payload.password} setValue={setPayLoad} keyPayload={'password'}/>
+                    
                     <Button 
                         text={isRegister ? 'ĐĂNG KÝ' : 'ĐĂNG NHẬP'} 
                         textColor='text-white' 
