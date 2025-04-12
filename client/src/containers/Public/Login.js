@@ -1,9 +1,9 @@
 import React, {useState,useEffect}  from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate} from "react-router-dom";
 import {Button,InputForm} from '../../components'
 import icons from "../../utils/icon";
 import * as actions from '../../store/actions'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector} from "react-redux";
 import { validateFields } from "../../utils/validation"; 
 
 const {IoPersonCircle,IoCheckmarkCircle} = icons
@@ -12,6 +12,8 @@ const Login = () => {
 
     const dispatch = useDispatch()
     const location = useLocation()
+    const navigate = useNavigate()
+    const {isLoggedIn} =useSelector(state=>state.auth) // .auth do define trong rootReducer 
     const [payload,setPayLoad] = useState({
         phone:'',
         password:'',
@@ -27,6 +29,11 @@ const Login = () => {
         // Cập nhật giá trị của isRegister bằng flag từ location.state (nếu có)
         setIsRegister(location.state?.flag);
     }, [location.state?.flag]); // Chạy lại khi location.state?.flag thay đổi
+
+    //Mỗi khi isLoggedIn thay đổi thì chạy lại useEffect này: chuyển đến trang chủ nếu đã đăng nhập
+    useEffect(()=>{
+        isLoggedIn && navigate('/')
+    },[isLoggedIn])
 
     const handleSubmit = async () => {
         // validate dữ liệu
