@@ -21,9 +21,20 @@ const Login = () => {
         username:'',
         confirmPassword:''
     })
-
     const [isRegister,setIsRegister]= useState(location.state?.flag) //?: state có giá trị mới trỏ đến flag
     const [invalidFields, setInvalidFields] = useState([]); // lưu lỗi
+
+    //reset lại giá trị của payload và invalidFields khi isRegister thay đổi
+    useEffect(() => {
+        setPayLoad({
+            phone: '',
+            password: '',
+            email: '',
+            username: '',
+            confirmPassword: ''
+        });
+        setInvalidFields([]); // Reset lỗi nữa cho sạch
+    }, [isRegister]);
 
     useEffect(() => {
         // Cập nhật giá trị của isRegister bằng flag từ location.state (nếu có)
