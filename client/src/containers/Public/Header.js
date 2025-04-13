@@ -1,6 +1,6 @@
 import React, {useCallback,useState,useEffect,useRef} from 'react'
 import logo from '../../assets/logo-dark-transparent.png'
-import {Button} from "../../components";
+import {Button, DropdownMenu} from "../../components";
 import { path } from "../../utils/constant";
 import {Link,useNavigate} from 'react-router-dom';
 import icons from '../../utils/icon'
@@ -21,6 +21,35 @@ const Header = () => {
             }}
         )
     })
+
+    const userMenuItems = [
+        {
+          label: 'Thông tin tài khoản',
+          icon: <IoInformationCircleOutline />,
+          onClick: () => navigate('/info-user'),
+        },
+        {
+          label: 'Lịch sử giao dịch',
+          icon: <AiOutlineHistory />,
+          onClick: () => navigate('/history-transaction'),
+        },
+        {
+          label: 'Đăng xuất',
+          icon: <IoLogOutOutline />,
+          onClick: () =>  dispatch(actions.logout()),
+        },
+    ];
+
+    const movieMenuItems = [
+        {
+          label: 'Phim đang chiếu',
+          onClick: () => navigate('/now-showing'),
+        },
+        {
+          label: 'Phim sắp chiếu',
+          onClick: () => navigate('/coming-soon'),
+        }
+    ];
 
     const [isMovieDropdownOpen, setMovieDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -44,24 +73,29 @@ const Header = () => {
     };
 
     // Đóng dropdown khi click ra ngoài
+   // Đóng dropdown khi click ra ngoài
     useEffect(() => {
         const handleClickOutside = (event) => {
-            // Kiểm tra nếu click không nằm trong bất kỳ dropdown nào
-            const clickedOutsideAll = dropdownRefs.every(ref =>
-                ref.current && !ref.current.contains(event.target)
-            );
+        // Lấy ra những ref đang mounted (không null)
+        const mountedRefs = dropdownRefs.filter(ref => ref.current);
+        
+        // Sau đó, kiểm tra click có nằm ngoài tất cả những phần tử còn tồn tại không
+        const clickedOutsideAll = mountedRefs.every(ref =>
+            !ref.current.contains(event.target)
+        );
     
-            if (clickedOutsideAll) {
-                setMovieDropdownOpen(false);
-                setUserDropdownOpen(false);
-            }
+        if (clickedOutsideAll) {
+            setMovieDropdownOpen(false);
+            setUserDropdownOpen(false);
+        }
         };
     
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+  
 
     return (
         <div className='container'>
@@ -82,22 +116,10 @@ const Header = () => {
                         <span><RiArrowDropDownLine/></span>
                     </button>
                     {isMovieDropdownOpen && (
-                        <div className="absolute left-0 mt-2 w-48 shadow-md rounded-md bg-primary z-50">
-                            <ul className="flex flex-col">
-                                <li
-                                    className="px-4 py-2 hover:text-orange-700 cursor-pointer"
-                                    onClick={() => navigate('/now-showing')}
-                                >
-                                    Phim đang chiếu
-                                </li>
-                                <li
-                                    className="px-4 py-2 hover:text-orange-700 cursor-pointer"
-                                    onClick={() => navigate('/coming-soon')}
-                                >
-                                    Phim sắp chiếu
-                                </li>
-                            </ul>
-                        </div>
+                        <DropdownMenu
+                            items={movieMenuItems}
+                            onClose={() => setMovieDropdownOpen(false)}
+                        />
                     )}
                 </div>
                 <div className='flex items-center justify-center gap-4 '>
@@ -114,37 +136,10 @@ const Header = () => {
                             text={currentUser || 'Bạn chưa đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle}
                             />
                             {isUserDropdownOpen && (
-                            <div className="absolute left-0 mt-2 w-48 shadow-md rounded-md bg-primary z-50 ">
-                                <ul className="flex flex-col" onClick={()=>setUserDropdownOpen(false)}>
-                                    <li
-                                        className="px-4 py-2 hover:text-orange-700 cursor-pointer"
-                                        onClick={() => navigate('/info-user')}
-                                    >
-                                        <span className='flex items-center gap-2 whitespace-nowrap'>
-                                            <IoInformationCircleOutline/>
-                                            Thông tin tài khoản
-                                        </span>
-                                    </li>
-                                    <li
-                                        className="px-4 py-2 hover:text-orange-700 cursor-pointer"
-                                        onClick={() => navigate('/history-transaction')}
-                                    >
-                                        <span className='flex items-center gap-2 whitespace-nowrap'>
-                                            <  AiOutlineHistory/>
-                                            Lịch sử giao dịch
-                                        </span>
-                                    </li>
-                                    <li
-                                        className="px-4 py-2 hover:text-orange-700 cursor-pointer"
-                                        onClick={()=> dispatch(actions.logout())}
-                                    >
-                                        <span className='flex items-center gap-2 whitespace-nowrap'>
-                                            <   IoLogOutOutline/>
-                                            Đăng xuất
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
+                                <DropdownMenu
+                                    items={userMenuItems}
+                                    onClose={() => setUserDropdownOpen(false)}
+                                />
                             )}
                         </div>
                     </>
