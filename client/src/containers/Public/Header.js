@@ -7,10 +7,10 @@ import icons from '../../utils/icon'
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from '../../store/actions'
 
-const {RiArrowDropDownLine, IoPersonCircle} = icons
+const {RiArrowDropDownLine, IoPersonCircle, IoInformationCircleOutline,AiOutlineHistory,IoLogOutOutline} = icons
 
 const Header = () => {
-    const {isLoggedIn}=useSelector(state=>state.auth)
+    const {isLoggedIn,currentUser}=useSelector(state=>state.auth)
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -42,12 +42,6 @@ const Header = () => {
             return !prev;
         });
     };
-
-    // reset ở lần mount đầu tiên
-    useEffect(() => {
-        setUserDropdownOpen(false);
-        setMovieDropdownOpen(false);
-    }, []);
 
     // Đóng dropdown khi click ra ngoài
     useEffect(() => {
@@ -117,28 +111,37 @@ const Header = () => {
                     <>
                         <div className="relative" ref={userDropdownRef}>
                             <Button
-                            text={'User'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle}
+                            text={currentUser || 'Bạn chưa đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle}
                             />
                             {isUserDropdownOpen && (
-                            <div className="absolute left-0 mt-2 w-48 shadow-md rounded-md bg-primary z-50">
-                                <ul className="flex flex-col">
+                            <div className="absolute left-0 mt-2 w-48 shadow-md rounded-md bg-primary z-50 ">
+                                <ul className="flex flex-col" onClick={()=>setUserDropdownOpen(false)}>
                                     <li
                                         className="px-4 py-2 hover:text-orange-700 cursor-pointer"
                                         onClick={() => navigate('/info-user')}
                                     >
-                                        Thông tin cá nhân
+                                        <span className='flex items-center gap-2 whitespace-nowrap'>
+                                            <IoInformationCircleOutline/>
+                                            Thông tin tài khoản
+                                        </span>
                                     </li>
                                     <li
                                         className="px-4 py-2 hover:text-orange-700 cursor-pointer"
                                         onClick={() => navigate('/history-transaction')}
                                     >
-                                        Lịch sử giao dịch
+                                        <span className='flex items-center gap-2 whitespace-nowrap'>
+                                            <  AiOutlineHistory/>
+                                            Lịch sử giao dịch
+                                        </span>
                                     </li>
                                     <li
                                         className="px-4 py-2 hover:text-orange-700 cursor-pointer"
                                         onClick={()=> dispatch(actions.logout())}
                                     >
-                                        Đăng xuất
+                                        <span className='flex items-center gap-2 whitespace-nowrap'>
+                                            <   IoLogOutOutline/>
+                                            Đăng xuất
+                                        </span>
                                     </li>
                                 </ul>
                             </div>

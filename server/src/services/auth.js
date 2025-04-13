@@ -80,12 +80,12 @@ export const loginService = ({ phone, email, password }) => new Promise(async (r
         if (!isCorrectPassword) return resolve({ err: 2, msg: 'Mật khẩu không đúng!', token: null });
 
         const token = jwt.sign(
-            { user_id: response.user_id, phone: response.phone, email: response.email },
+            { user_id: response.user_id, phone: response.phone, email: response.email},
             process.env.SECRET_KEY,
             { expiresIn: '2d' }
         );
 
-        resolve({ err: 0, msg: 'Đăng nhập thành công!', token });
+        resolve({ err: 0, msg: 'Đăng nhập thành công!', token ,username: response.username});
 
     } catch (error) {
         reject(error);

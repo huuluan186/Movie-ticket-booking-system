@@ -6,6 +6,7 @@ const initState = {
     token:null,
     msg:'',
     update:false,
+    currentUser:null
 }
 
 const authReducer = (state=initState,action)=>{
@@ -24,6 +25,7 @@ const authReducer = (state=initState,action)=>{
                 isLoggedIn: true,  // Chỉ đăng nhập thành công mới là true
                 token: action.data,
                 msg: "",
+                currentUser: action.user
             };
 
         case actionTypes.REGISTER_FAIL:
