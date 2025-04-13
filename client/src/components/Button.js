@@ -1,6 +1,6 @@
 import React, {memo, useState} from "react";
 
-const Button = ({ text, textColor, outline, bgColor,IcAfter, onClick, fullWidth, dropdownItems,hover}) => {
+const Button = ({ text, textColor, outline, bgColor,IcAfter, IcBefore, onClick, fullWidth, dropdownItems,hover}) => {
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const handleButtonClick = () => {
@@ -15,10 +15,11 @@ const Button = ({ text, textColor, outline, bgColor,IcAfter, onClick, fullWidth,
    <div class='relative'>
         <button 
           type="button" 
-          className={`py-2 px-4 ${textColor} ${bgColor} ${fullWidth && 'w-full'} ${outline}  ${hover? hover : 'hover:text-orange-500 '} rounded-md hover:${textColor} flex font-medium items-center justify-center gap-1 onClick={handleButtonClick} `} onClick={onClick}
+          className={`py-2 px-4 ${textColor} ${bgColor} ${fullWidth && 'w-full'} ${outline}  ${hover? hover : 'hover:text-orange-500 '} rounded-md hover:${textColor} flex font-medium items-center justify-center gap-2 onClick={handleButtonClick} `} onClick={onClick}
         >
-           <span>{text} </span>
-           <span>{IcAfter && <IcAfter/>}</span>
+            <span className="text-2xl">{IcBefore && <IcBefore/>}</span>
+            <span>{text}</span>
+            <span>{IcAfter && <IcAfter/>}</span>
         </button>
         {dropdownItems && isDropdownOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md">
