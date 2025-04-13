@@ -14,7 +14,6 @@ const Header = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-
     const goLogin = useCallback((flag)=>{
         navigate(path.LOGIN,
             {state:{
@@ -43,6 +42,13 @@ const Header = () => {
             return !prev;
         });
     };
+
+    // reset ở lần mount đầu tiên
+    useEffect(() => {
+        setUserDropdownOpen(false);
+        setMovieDropdownOpen(false);
+    }, []);
+
     // Đóng dropdown khi click ra ngoài
     useEffect(() => {
         const handleClickOutside = (event) => {

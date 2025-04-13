@@ -5,6 +5,7 @@ import icons from "../../utils/icon";
 import * as actions from '../../store/actions'
 import { useDispatch, useSelector} from "react-redux";
 import { validateFields } from "../../utils/validation"; 
+import { toast } from "react-toastify";
 
 const {IoPersonCircle,IoCheckmarkCircle} = icons
 
@@ -13,7 +14,7 @@ const Login = () => {
     const dispatch = useDispatch()
     const location = useLocation()
     const navigate = useNavigate()
-    const {isLoggedIn} =useSelector(state=>state.auth) // .auth do define trong rootReducer 
+    const {isLoggedIn,isRegistered,msg,update} =useSelector(state=>state.auth) // .auth do define trong rootReducer 
     const [payload,setPayLoad] = useState({
         phone:'',
         password:'',
@@ -41,10 +42,28 @@ const Login = () => {
         setIsRegister(location.state?.flag);
     }, [location.state?.flag]); // Chạy lại khi location.state?.flag thay đổi
 
-    //Mỗi khi isLoggedIn thay đổi thì chạy lại useEffect này: chuyển đến trang chủ nếu đã đăng nhập
+    useEffect(() => {
+        if (isLoggedIn) {
+            toast.success("Đăng nhập thành công!");
+            setTimeout(() => {
+                navigate('/'); // Chuyển đến trang chủ khi đăng nhập thành công
+            }, 800);
+        }
+    }, [isLoggedIn,isRegister]); // Kiểm tra thay đổi của cả isLoggedIn và isRegister
+    
+    useEffect(() => {
+        if(isRegistered) {
+            toast.success("Đăng ký thành công!");
+            setTimeout(() => {
+                setIsRegister(false) 
+            }, 800);
+        }
+    }, [isRegistered]); // Kiểm tra thay đổi của isRegistered
+    
+    //Lấy thông báo từ redux
     useEffect(()=>{
-        isLoggedIn && navigate('/')
-    },[isLoggedIn])
+        msg && toast.error(msg)
+     },[msg,update])
 
     const handleSubmit = async () => {
         // validate dữ liệu
@@ -70,7 +89,6 @@ const Login = () => {
         console.log(data);
         await dispatch(isRegister ? actions.register(payload) : actions.login(finalPayload));
     };
-    
 
     return(
         <div className="w-full flex items-center justify-center my-3">
