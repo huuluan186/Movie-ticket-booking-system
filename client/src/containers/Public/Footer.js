@@ -52,7 +52,7 @@ const Footer = () => {
 
             {/* Cột Điều khoản sử dụng */}
           <div className="flex flex-col items-center lg:items-start">
-            <h2 className="text-2xl font-bold text-orange-500 mb-6"><span className='text-white pe-2'>|</span> Điều khoản sử dụng</h2>
+            <h2 className="text-2xl font-bold text-orange-500 mb-6"><span className='text-white pe-2'>|</span> Điều Khoản Sử Dụng</h2>
             <div className="space-y-3 text-gray-300 ">
                 <a href="#" className="hover:text-orange-500 transition-colors block gap-3">
                   Điều khoản chung
@@ -72,7 +72,7 @@ const Footer = () => {
 
           {/* Cột Danh mục */}
           <div className="flex flex-col items-center lg:items-start">
-            <h2 className="text-2xl font-bold text-orange-500 mb-6"><span className='text-white pe-3'>|</span>Danh mục</h2>
+            <h2 className="text-2xl font-bold text-orange-500 mb-6"><span className='text-white pe-3'>|</span>Danh Mục</h2>
             <div className="space-y-3 text-gray-300 ">
                 <a href="#" className="hover:text-orange-500 transition-colors block gap-3">
                   Phim đang chiếu

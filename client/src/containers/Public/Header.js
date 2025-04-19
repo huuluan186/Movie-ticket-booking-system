@@ -1,6 +1,6 @@
-import React, {useCallback,useState,useEffect,useRef} from 'react'
+import React, {useCallback,useState,useRef} from 'react'
 import logo from '../../assets/logo-dark-transparent.png'
-import {Button, DropdownMenu} from "../../components";
+import {Button, DropdownMenu, SearchBox} from "../../components";
 import { path } from "../../utils/constant";
 import {Link,useNavigate} from 'react-router-dom';
 import icons from '../../utils/icon'
@@ -108,6 +108,9 @@ const Header = () => {
                         />
                     )}
                 </div>
+
+                <SearchBox/>    
+
                 <div className='flex items-center justify-center gap-4 '>
                     {!isLoggedIn 
                     ?
