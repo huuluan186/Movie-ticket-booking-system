@@ -6,6 +6,7 @@ import {Link,useNavigate} from 'react-router-dom';
 import icons from '../../utils/icon'
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from '../../store/actions'
+import { useClickMouseOutside } from '../../hooks';
 
 const {RiArrowDropDownLine, IoPersonCircle, IoInformationCircleOutline,AiOutlineHistory,IoLogOutOutline} = icons
 
@@ -58,6 +59,14 @@ const Header = () => {
     // Tạo một mảng chứa các ref của dropdown
     const dropdownRefs = [movieDropdownRef, userDropdownRef];
 
+     // Dùng custom hook để đóng cả 2 dropdown nếu click ra ngoài
+     useClickMouseOutside([movieDropdownRef, userDropdownRef], () => {
+        setMovieDropdownOpen(false);
+        setUserDropdownOpen(false);
+    });
+    
+    
+
     const toggleMovieDropdown = () => {
         setMovieDropdownOpen(prev => {
             if (!prev) setUserDropdownOpen(false); // Đóng user dropdown nếu đang mở
@@ -72,30 +81,7 @@ const Header = () => {
         });
     };
 
-    // Đóng dropdown khi click ra ngoài
-   // Đóng dropdown khi click ra ngoài
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-        // Lấy ra những ref đang mounted (không null)
-        const mountedRefs = dropdownRefs.filter(ref => ref.current);
-        
-        // Sau đó, kiểm tra click có nằm ngoài tất cả những phần tử còn tồn tại không
-        const clickedOutsideAll = mountedRefs.every(ref =>
-            !ref.current.contains(event.target)
-        );
-    
-        if (clickedOutsideAll) {
-            setMovieDropdownOpen(false);
-            setUserDropdownOpen(false);
-        }
-        };
-    
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-  
+   
 
     return (
         <div className='container'>
