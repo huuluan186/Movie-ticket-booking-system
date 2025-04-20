@@ -8,7 +8,7 @@ import {
     FaGithub, 
     FaFacebook,
   } from 'react-icons/fa';
-
+  import { FiSearch } from 'react-icons/fi';
 
 const icons = {
     RiArrowDropDownLine,
@@ -22,6 +22,7 @@ const icons = {
     FaMapMarkerAlt,
     FaGithub, 
     FaFacebook,
+    FiSearch
 }
 
 export default icons;
