@@ -4,7 +4,7 @@ const Button = ({ text, textColor, outline, bgColor,IcAfter, IcBefore, onClick, 
 
     
   return (
-   <div class='relative'>
+   <div className='relative'>
         <button 
           type="button" 
           className={`py-2 px-4 ${textColor} ${bgColor} ${fullWidth && 'w-full'} ${outline}  ${hover? hover : 'hover:text-orange-500 '} rounded-md hover:${textColor} flex font-medium items-center justify-center gap-2 `} onClick={onClick}
