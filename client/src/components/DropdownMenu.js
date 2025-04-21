@@ -2,7 +2,7 @@ import React from 'react';
 
 const DropdownMenu = ({ items, onClose }) => {
   return (
-    <div className="absolute left-0 -translate-x-12 mt-2 w-48 shadow-md rounded-md bg-white z-50">
+    <div className="absolute left-0 -translate-x-8 mt-2 w-48 shadow-md rounded-md bg-white z-50">
       <ul className="flex flex-col border border-gray-500 shadow-sm rounded-md" onClick={onClose}>
         {items.map((item, index) => (
           <li

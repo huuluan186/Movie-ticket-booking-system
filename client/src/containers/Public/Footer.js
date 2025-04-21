@@ -1,34 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../../assets/logo-dark-transparent-removebg.png';
-import icons from '../../utils/icon';
-
-const { FaPhone, FaEnvelope, FaMapMarkerAlt, FaGithub, FaFacebook } = icons;
-
+import teamMembers from '../../utils/teamMembers'; 
+import footerData from '../../utils/footerDatas';
+import { FooterColumn } from '../../components/index';
 const Footer = () => {
-  const teamMembers = [
-    {
-      name: 'Phạm Hữu Luân',    
-      links: {
-        github: '#',
-        facebook: '#'
-      }
-    },
-    {
-      name: 'Nguyễn Hữu Anh',
-      links: {
-        github: '#',
-        facebook: '#'
-      }
-    },
-    {
-      name: 'Lâm Thanh Đỉnh',
-      links: {
-        github: '#',
-        facebook: '#'
-      }
-    }
-  ];
-
+    
   return (
     <footer className="bg-neutral-900 text-gray-100">
       {/* Main Footer Content */}
@@ -38,11 +15,13 @@ const Footer = () => {
           {/* Cột Logo */}
           <div className="flex flex-col items-center lg:items-start">
             <div className="flex items-center gap-3 mb-6">
-                <img
-                    src={logo} 
-                    alt="Logo"
-                    className="w-full h-[80px] object-contain"
-                />               
+               <Link to={'/'}>
+                    <img
+                        src={logo} 
+                        alt="Logo"
+                        className="w-full h-[80px] object-contain"
+                    />    
+               </Link>           
                 <div>
                     <h1 className="text-4xl font-bold text-orange-500">CinePlus</h1>
                     <p className="text-gray-300 mt-2">Cinema Experience</p>
@@ -50,61 +29,10 @@ const Footer = () => {
             </div>
           </div>
 
-            {/* Cột Điều khoản sử dụng */}
-          <div className="flex flex-col items-center lg:items-start">
-            <h2 className="text-2xl font-bold text-orange-500 mb-6"><span className='text-white pe-2'>|</span> Điều Khoản Sử Dụng</h2>
-            <div className="space-y-3 text-gray-300 ">
-                <a href="#" className="hover:text-orange-500 transition-colors block gap-3">
-                  Điều khoản chung
-                </a>
-                <a href="#" className="hover:text-orange-500 transition-colors block">
-                  Điều khoản sử dụng
-                </a>
-                <a href="#" className="hover:text-orange-500 transition-colors block">
-                  Chính sách thanh toán
-                </a>
-                <a href="#" className="hover:text-orange-500 transition-colors block">
-                  Câu hỏi thường gặp
-                </a>
-
-            </div>
-          </div>
-
-          {/* Cột Danh mục */}
-          <div className="flex flex-col items-center lg:items-start">
-            <h2 className="text-2xl font-bold text-orange-500 mb-6"><span className='text-white pe-3'>|</span>Danh Mục</h2>
-            <div className="space-y-3 text-gray-300 ">
-                <a href="#" className="hover:text-orange-500 transition-colors block gap-3">
-                  Phim đang chiếu
-                </a>
-                <a href="#" className="hover:text-orange-500 transition-colors block">
-                  Phim sắp chiếu
-                </a>
-            </div>
-          </div>
-
-          {/* Cột Liên hệ */}
-          <div className="flex flex-col items-center lg:items-start">
-            <h2 className="text-2xl font-bold text-orange-500 mb-6"><span className='text-white pe-3'>|</span>Liên Hệ</h2>
-            <div className="space-y-4 text-gray-300">
-              <div className="flex items-center gap-3">
-                <FaMapMarkerAlt className="text-orange-500 text-xl" />
-                <p>126 Nguyễn Thiện Thành, Phường 5, Tp. Trà Vinh</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <FaPhone className="text-orange-500 text-xl" />
-                <a href="tel:+84123456789" className="hover:text-orange-500 transition-colors">
-                  0123 456 789
-                </a>
-              </div>
-              <div className="flex items-center gap-3">
-                <FaEnvelope className="text-orange-500 text-xl" />
-                <a href="mailto:contact@moviecap.com" className="hover:text-orange-500 transition-colors">
-                  contact@cineplus.com
-                </a>
-              </div>
-            </div>
-          </div>
+          {footerData.map((col, idx) => (
+            <FooterColumn key={idx} title={col.title} items={col.items} />
+          ))}
+         
         </div>
 
         {/* Về Chúng Tôi - Compact Version */}
@@ -119,17 +47,16 @@ const Footer = () => {
                 <h3 className="text-lg font-medium mb-1">{member.name}</h3>
                 <p className="text-md text-gray-400 mb-2">{member.role}</p>
                 <div className="flex justify-center gap-5">
-                  {Object.entries(member.links).map(([platform, url]) => (
+                  {Object.entries(member.links).map(([index, url]) => (
                     <a
-                      key={platform}
+                      key={index}
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gray-300 hover:text-orange-500 transition-colors"
-                      aria-label={`${platform} ${member.name}`}
+                      aria-label={`${index} ${member.name}`}
                     >
-                      {platform === 'github' && <FaGithub className="w-7 h-7" />}
-                      {platform === 'facebook' && <FaFacebook className="w-7 h-7" />}
+                       {member.linkIcons?.[index]}
                     </a>
                   ))}
                 </div>

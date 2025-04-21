@@ -1,14 +1,14 @@
-import React, {useCallback,useState,useRef,useEffect} from 'react'
+import React, {useCallback,useState,useRef} from 'react'
 import logo from '../../assets/logo-dark-transparent.png'
 import {Button, DropdownMenu, SearchBox} from "../../components";
 import { path } from "../../utils/constant";
 import {Link,useNavigate} from 'react-router-dom';
 import icons from '../../utils/icon'
 import { useSelector, useDispatch } from "react-redux";
-import * as actions from '../../store/actions'
 import { useClickMouseOutside } from '../../hooks';
+import { movieMenuItems, userMenuItems } from '../../utils/menuItems';
 
-const {RiArrowDropDownLine, IoPersonCircle, IoInformationCircleOutline,AiOutlineHistory,IoLogOutOutline} = icons
+const {RiArrowDropDownLine, IoPersonCircle} = icons
 
 const Header = () => {
     const {isLoggedIn}=useSelector(state=>state.auth)
@@ -16,6 +16,9 @@ const Header = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const getUserMenuItems = userMenuItems(navigate, dispatch);
+    const getMovieMenuItems = movieMenuItems(navigate);
 
     const goLogin = useCallback((flag)=>{
         navigate(path.LOGIN,
@@ -25,42 +28,11 @@ const Header = () => {
         )
     })
 
-    const userMenuItems = [
-        {
-          label: 'Thông tin tài khoản',
-          icon: <IoInformationCircleOutline />,
-          onClick: () => navigate('/info-user'),
-        },
-        {
-          label: 'Lịch sử giao dịch',
-          icon: <AiOutlineHistory />,
-          onClick: () => navigate('/history-transaction'),
-        },
-        {
-          label: 'Đăng xuất',
-          icon: <IoLogOutOutline />,
-          onClick: () =>  dispatch(actions.logout()),
-        },
-    ];
-
-    const movieMenuItems = [
-        {
-          label: 'Phim đang chiếu',
-          onClick: () => navigate('/now-showing'),
-        },
-        {
-          label: 'Phim sắp chiếu',
-          onClick: () => navigate('/coming-soon'),
-        }
-    ];
-
     const [isMovieDropdownOpen, setMovieDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setUserDropdownOpen] = useState(false);
     const movieDropdownRef = useRef(null);
     const userDropdownRef = useRef(null);
-    // Tạo một mảng chứa các ref của dropdown
-    const dropdownRefs = [movieDropdownRef, userDropdownRef];
-
+  
      // Dùng custom hook để đóng cả 2 dropdown nếu click ra ngoài
      useClickMouseOutside([movieDropdownRef, userDropdownRef], () => {
         setMovieDropdownOpen(false);
@@ -83,11 +55,6 @@ const Header = () => {
         });
     };
 
-    // useEffect(() => {
-    //     if (isLoggedIn) {
-    //         dispatch(actions.getCurrent()); // Dispatch action getCurrent
-    //     }
-    // }, [isLoggedIn, dispatch]);
 
     return (
         <div className='container'>
@@ -109,7 +76,7 @@ const Header = () => {
                     </button>
                     {isMovieDropdownOpen && (
                         <DropdownMenu
-                            items={movieMenuItems}
+                            items={getMovieMenuItems}
                             onClose={() => setMovieDropdownOpen(false)}
                         />
                     )}
@@ -132,7 +99,7 @@ const Header = () => {
                             />
                             {isUserDropdownOpen && (
                                 <DropdownMenu
-                                    items={userMenuItems}
+                                    items={getUserMenuItems}
                                     onClose={() => setUserDropdownOpen(false)}
                                 />
                             )}
