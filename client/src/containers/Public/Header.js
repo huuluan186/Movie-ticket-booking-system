@@ -1,4 +1,4 @@
-import React, {useCallback,useState,useRef} from 'react'
+import React, {useCallback,useState,useRef,useEffect} from 'react'
 import logo from '../../assets/logo-dark-transparent.png'
 import {Button, DropdownMenu, SearchBox} from "../../components";
 import { path } from "../../utils/constant";
@@ -11,7 +11,9 @@ import { useClickMouseOutside } from '../../hooks';
 const {RiArrowDropDownLine, IoPersonCircle, IoInformationCircleOutline,AiOutlineHistory,IoLogOutOutline} = icons
 
 const Header = () => {
-    const {isLoggedIn,currentUser}=useSelector(state=>state.auth)
+    const {isLoggedIn}=useSelector(state=>state.auth)
+    const { currentData } = useSelector(state => state.user)
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -81,7 +83,11 @@ const Header = () => {
         });
     };
 
-   
+    // useEffect(() => {
+    //     if (isLoggedIn) {
+    //         dispatch(actions.getCurrent()); // Dispatch action getCurrent
+    //     }
+    // }, [isLoggedIn, dispatch]);
 
     return (
         <div className='container'>
@@ -122,7 +128,7 @@ const Header = () => {
                     <>
                         <div className="relative" ref={userDropdownRef}>
                             <Button
-                            text={currentUser || 'Bạn chưa đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle}
+                            text={currentData?.username || 'Bạn chưa đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle}
                             />
                             {isUserDropdownOpen && (
                                 <DropdownMenu

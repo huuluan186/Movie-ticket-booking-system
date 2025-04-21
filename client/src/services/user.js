@@ -1,0 +1,16 @@
+import axiosConfig from "../axios.config";
+
+export const apiGetCurrentUser = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/user/get-current-user',
+        });
+        console.log("📤 Request Headers:", response.config.headers);
+        resolve(response.data); // Trả về response.data thay vì toàn bộ response
+        
+    } catch (error) {
+        console.error("API error:", error.response?.data || error.message);
+        reject(error.response?.data || error);
+    }
+});

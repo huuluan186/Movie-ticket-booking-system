@@ -33,7 +33,7 @@ export const login = (payload) => async (dispatch) => {
             dispatch({
                 type: actionTypes.LOGIN_SUCCESS,
                 data: response.data.token,
-                user: response.data.username
+                //user: response.data.username
             }) 
         }else{
             dispatch({
