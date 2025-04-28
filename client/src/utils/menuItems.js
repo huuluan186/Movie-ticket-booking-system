@@ -1,12 +1,13 @@
 import icons from './icon'
 import * as actions from '../store/actions'  // Đảm bảo đường dẫn đúng trong thư mục `src`
+
 const { IoInformationCircleOutline, AiOutlineHistory, IoLogOutOutline } = icons
 
-export const userMenuItems = (navigate, dispatch) => [
+export const userMenuItems = (navigate, dispatch, currentData) => [
   {
     label: 'Thông tin tài khoản',
     icon: <IoInformationCircleOutline />,
-    onClick: () => navigate('/user-info'),
+    onClick: () => navigate(`/profile/${currentData?.username || ''}`),
   },
   {
     label: 'Lịch sử giao dịch',
@@ -16,7 +17,10 @@ export const userMenuItems = (navigate, dispatch) => [
   {
     label: 'Đăng xuất',
     icon: <IoLogOutOutline />,
-    onClick: () => dispatch(actions.logout()),
+    onClick: () => {
+        dispatch(actions.logout());
+        navigate('/');
+    }    
   }
 ]
 
