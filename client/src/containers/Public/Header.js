@@ -1,14 +1,14 @@
-import React, {useCallback,useState,useRef,useEffect} from 'react'
+import React, {useCallback,useState,useRef} from 'react'
 import logo from '../../assets/logo-dark-transparent.png'
 import {Button, DropdownMenu, SearchBox} from "../../components";
 import { path } from "../../utils/constant";
 import {Link,useNavigate} from 'react-router-dom';
 import icons from '../../utils/icon'
 import { useSelector, useDispatch } from "react-redux";
-import * as actions from '../../store/actions'
 import { useClickMouseOutside } from '../../hooks';
+import { movieMenuItems, userMenuItems } from '../../utils/menuItems';
 
-const {RiArrowDropDownLine, IoPersonCircle, IoInformationCircleOutline,AiOutlineHistory,IoLogOutOutline} = icons
+const {RiArrowDropDownLine, IoPersonCircle} = icons
 
 const Header = () => {
     const {isLoggedIn}=useSelector(state=>state.auth)
@@ -16,6 +16,9 @@ const Header = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const getUserMenuItems = userMenuItems(navigate, dispatch,currentData);
+    const getMovieMenuItems = movieMenuItems(navigate);
 
     const goLogin = useCallback((flag)=>{
         navigate(path.LOGIN,
@@ -25,42 +28,11 @@ const Header = () => {
         )
     })
 
-    const userMenuItems = [
-        {
-          label: 'Thông tin tài khoản',
-          icon: <IoInformationCircleOutline />,
-          onClick: () => navigate('/info-user'),
-        },
-        {
-          label: 'Lịch sử giao dịch',
-          icon: <AiOutlineHistory />,
-          onClick: () => navigate('/history-transaction'),
-        },
-        {
-          label: 'Đăng xuất',
-          icon: <IoLogOutOutline />,
-          onClick: () =>  dispatch(actions.logout()),
-        },
-    ];
-
-    const movieMenuItems = [
-        {
-          label: 'Phim đang chiếu',
-          onClick: () => navigate('/now-showing'),
-        },
-        {
-          label: 'Phim sắp chiếu',
-          onClick: () => navigate('/coming-soon'),
-        }
-    ];
-
     const [isMovieDropdownOpen, setMovieDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setUserDropdownOpen] = useState(false);
     const movieDropdownRef = useRef(null);
     const userDropdownRef = useRef(null);
-    // Tạo một mảng chứa các ref của dropdown
-    const dropdownRefs = [movieDropdownRef, userDropdownRef];
-
+  
      // Dùng custom hook để đóng cả 2 dropdown nếu click ra ngoài
      useClickMouseOutside([movieDropdownRef, userDropdownRef], () => {
         setMovieDropdownOpen(false);
@@ -83,11 +55,6 @@ const Header = () => {
         });
     };
 
-    // useEffect(() => {
-    //     if (isLoggedIn) {
-    //         dispatch(actions.getCurrent()); // Dispatch action getCurrent
-    //     }
-    // }, [isLoggedIn, dispatch]);
 
     return (
         <div className='container'>
@@ -104,12 +71,12 @@ const Header = () => {
                         className="text-black px-4 py-2 rounded-md hover:text-orange-700 flex items-center justify-center gap-1"
                         onClick={toggleMovieDropdown}
                     >
-                        <span className='font-medium'>Phim</span>
-                        <span><RiArrowDropDownLine/></span>
+                        <span className='font-medium text-xl'>Phim</span>
+                        <span className='text-xl'><RiArrowDropDownLine/></span>
                     </button>
                     {isMovieDropdownOpen && (
                         <DropdownMenu
-                            items={movieMenuItems}
+                            items={getMovieMenuItems}
                             onClose={() => setMovieDropdownOpen(false)}
                         />
                     )}
@@ -128,11 +95,10 @@ const Header = () => {
                     <>
                         <div className="relative" ref={userDropdownRef}>
                             <Button
-                            text={currentData?.username || 'Bạn chưa đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle}
-                            />
+                            text={currentData?.username || 'Bạn chưa đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle} IcAfter={RiArrowDropDownLine}  />
                             {isUserDropdownOpen && (
                                 <DropdownMenu
-                                    items={userMenuItems}
+                                    items={getUserMenuItems}
                                     onClose={() => setUserDropdownOpen(false)}
                                 />
                             )}
