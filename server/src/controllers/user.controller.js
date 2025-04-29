@@ -8,7 +8,7 @@ export const getUserInfo = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             err: -1,
-            msg: 'Failed at user controller: ' + error
+            msg: 'Failed at user controller 1: ' + error
         })
     }
 }
@@ -23,6 +23,20 @@ export const updateUserInfo = async (req, res) => {
         return res.status(500).json({
             err: -1,
             msg: 'Failed at user controller 2: ' + error
+        })
+    }
+}
+
+export const changePassword = async(req,res)=>{
+    const { user_id } = req.user
+    const data = req.body
+    try {
+        const response = await services.changePasswordService(user_id,data)
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Failed at user controller 3: ' + error
         })
     }
 }

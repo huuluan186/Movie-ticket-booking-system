@@ -1,5 +1,6 @@
 import db from '../models'
 import { Op } from 'sequelize'
+import bcrypt from 'bcryptjs'
 // GET CURRENT
 export const getOne = (user_id) => new Promise(async (resolve, reject) => {
     try {
@@ -86,3 +87,67 @@ export const updateUserService = (user_id, data) => new Promise(async (resolve, 
       reject(error);
     }
   });
+
+
+const hashPassword= password => bcrypt.hashSync(password,bcrypt.genSaltSync(12));
+
+//change password
+export const changePasswordService = (user_id, data) => new Promise(async (resolve, reject) => {
+    try {
+        const { currentPassword, newPassword, confirmNewPassword } = data;
+
+        //Kiểm tra input
+        if (!currentPassword || !newPassword || !confirmNewPassword) {
+            return resolve({
+              err: 1,
+              msg: 'Vui lòng nhập đầy đủ thông tin.',
+              response: null,
+            });
+          }
+
+          if (newPassword !== confirmNewPassword) {
+            return resolve({
+              err: 1,
+              msg: 'Mật khẩu mới và xác nhận mật khẩu không khớp.',
+              response: null,
+            });
+          }
+
+        const user = await db.User.findOne({
+            where: {user_id},
+            raw:true
+        });
+        if(!user) return resolve({err:1,msg:'Không tìm thấy người dùng',response:null})
+        
+        // Kiểm tra mật khẩu cũ
+        const isMatch = bcrypt.compareSync(currentPassword, user.password);
+        if (!isMatch) {
+            return resolve({
+            err: 1,
+            msg: 'Mật khẩu hiện tại không đúng.',
+            response: null,
+            });
+        }
+        // Cập nhật mật khẩu
+        await db.User.update(
+            { password: hashPassword(newPassword) },
+            { where: { user_id } }
+        );
+
+        // Lấy lại thông tin user sau khi cập nhật
+        const updatedUser = await db.User.findOne({
+            where: { user_id },
+            raw: true,
+            attributes: { exclude: ['password'] },
+        });
+
+        resolve({
+            err: 0,
+            msg: 'Đổi mật khẩu thành công.',
+            response: updatedUser,
+          });
+
+    } catch (error) {
+        reject(error);
+    }
+})
