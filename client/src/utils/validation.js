@@ -1,7 +1,26 @@
-export const validateFields = (fields, isRegister = false) => {
+export const validateFields = (fields, isRegister = false, isUpdate=false) => {
     const errors = [];
+    if (isUpdate) {
+        // Kiểm tra trống cho username, email, phone trong một if
+        const requiredFields = [
+          { name: 'username', label: 'tên tài khoản' },
+          { name: 'email', label: 'email' },
+          { name: 'phone', label: 'số điện thoại' },
+        ];
+       // Kiểm tra các trường có trong fields
+        requiredFields.forEach((field) => {
+            if (field.name in fields && !fields[field.name]?.trim()) {
+            errors.push({ name: field.name, message: `Vui lòng nhập ${field.label}.` });
+            }
+        });
+    
+        // Kiểm tra định dạng email nếu không trống
+        if (fields.email?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
+          errors.push({ name: 'email', message: 'Email không hợp lệ.' });
+        }
 
-    if (isRegister) {
+    }    
+    else if (isRegister) {
         if (!fields.username?.trim()) {
             errors.push({ name: 'username', message: 'Vui lòng nhập tên tài khoản.' });
         }

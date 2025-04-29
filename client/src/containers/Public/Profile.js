@@ -1,15 +1,15 @@
 import React  , {useState, useEffect} from 'react';
-import { Button } from '../../components';
+import { Button, InputField} from '../../components';
 import { validateFields } from "../../utils/validation"; 
 import * as actions from '../../store/actions'
 import { useDispatch, useSelector} from "react-redux";
+import { toast } from "react-toastify";
 
 const Profile = () => {
-    //const dispatch = useDispatch();
-    //const {isLoggedIn,msg,update} =useSelector(state=>state.auth)
-    const { currentData } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const { currentData, msg, update} = useSelector((state) => state.user);
     const [isUpdateInfo, setIsUpdateInfo] = useState(false)
-    //const [invalidFields, setInvalidFields] = useState([]);
+    const [invalidFields, setInvalidFields] = useState([]);
 
     const [formData, setFormData] = useState({
         username: '',
@@ -18,26 +18,25 @@ const Profile = () => {
         user_role: '',
       });
 
+    // Cập nhật formData khi currentData thay đổi
     useEffect(() => {
-        if (currentData) {
-          setFormData({
-            username: currentData.username,
-            phone: currentData.phone,
-            email: currentData.email,
-            user_role: currentData.user_role,
-          });
+        if (currentData && Object.keys(currentData).length > 0) {
+        setFormData({
+            username: currentData.username || '',
+            phone: currentData.phone || '',
+            email: currentData.email || '',
+            user_role: currentData.user_role || '',
+        });
+        } else {
+        dispatch(actions.getCurrent()); // Gọi API lấy thông tin user
         }
-      }, [currentData]);
+    }, [currentData, dispatch]);
 
     const handleClickUpdateInfoButton = () => {
         setIsUpdateInfo((prevState) => !prevState);
         setInvalidFields([]); //clear validate error khi nhấn vào
     };
 
-    const handleConfirmUpdateData = ()=> {
-        setIsUpdateInfo(false);
-        alert("update thành công!")
-    }
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -46,7 +45,39 @@ const Profile = () => {
         }));
       };
 
-   
+    const handleConfirmUpdateData = async () => {
+        // Chuẩn bị payload, chỉ gửi các trường đã thay đổi
+        const payload = {};
+        if (formData.username && formData.username !== currentData.username) {
+            payload.username = formData.username;
+        }
+        if (formData.email && formData.email !== currentData.email) {
+            payload.email = formData.email;
+        }
+        if (formData.phone && formData.phone !== currentData.phone) {
+            payload.phone = formData.phone;
+        }
+        console.log('Profile - payload:', payload);
+        // Validate
+        const errors = validateFields(payload, false, isUpdateInfo);
+        setInvalidFields(errors);
+        if (errors.length > 0) return;
+        const result = await dispatch(actions.updateProfile(payload));
+        if (result.success) {
+            toast.success(result.message || "Cập nhật thành công!");
+            setIsUpdateInfo(false);
+        } else {
+            toast.error(result.message || "Cập nhật thất bại!");
+        }
+    };
+
+    const fields = [
+        { name: 'username', label: 'Họ và tên' },
+        { name: 'email', label: 'Email' },
+        { name: 'phone', label: 'Số điện thoại' },
+        { name: 'user_role', label: 'Loại tài khoản', readOnly: true },
+    ];
+
     return (
         <div className="w-full m-auto max-w-md py-10">
             <div className='text-center'>
@@ -58,61 +89,21 @@ const Profile = () => {
                 </h1>
             </div>
 
-            { isUpdateInfo ?
-            <div className='space-y-4'>
-                <div className='group'>
-                    <label className="text-sm text-gray-500 group-focus-within:text-blue-700 group-focus-within:font-medium">Họ và tên</label>
-                    <input
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleInputChange}
-                        className="w-full pb-1 bg-transparent border-b border-blue-500 focus:outline-none "
-                    />
-                </div> 
-                <div className='group'>
-                    <label className="text-sm text-gray-500 group-focus-within:text-blue-700 group-focus-within:font-medium">Email</label>
-                    <input
-                        type="text"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className="w-full pb-1 bg-transparent border-b border-blue-500 focus:outline-none"
-                    />
-                </div>
-                <div className='group'>
-                    <label className="text-sm text-gray-500 group-focus-within:text-blue-700 group-focus-within:font-medium">Số điện thoại</label>
-                    <input
-                        type="text"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="w-full pb-1 bg-transparent border-b border-blue-500 focus:outline-none"
-                    />
-                </div>
+            <div className="space-y-4">
+            {fields.map(({ name, label, readOnly }) => (
+                <InputField
+                    key={name}
+                    name={name}
+                    label={label}
+                    value={formData[name]}
+                    onChange={handleInputChange}
+                    error={invalidFields.find(err => err.name === name)?.message}
+                    readOnly={readOnly}
+                    isUpdateInfo={isUpdateInfo}
+                />
+            ))}
             </div>
-            :
-                <div>
-                    <div className="space-y-4">
-                        <div className='flex items-center justify-between border-b border-blue-500'>
-                            <p className="text-black text-md font-semibold">Họ và tên: </p>
-                            <p className=" p-1 bg-transparent text-black focus:outline-none"> {formData.username} </p>
-                        </div>
-                        <div className='flex items-center justify-between border-b border-blue-500'>
-                            <p className="text-black text-md font-semibold">Email: </p>
-                            <p className=" p-1 bg-transparent text-black focus:outline-none"> {formData.email} </p>
-                        </div>
-                        <div className='flex items-center justify-between border-b border-blue-500'>
-                            <p className="text-black text-md font-semibold">Số điện thoại: </p>
-                            <p className=" p-1 bg-transparent text-black focus:outline-none"> {formData.phone} </p>
-                        </div>
-                        <div className='flex items-center justify-between border-b border-blue-500'>
-                            <p className="text-black text-md font-semibold">Loại tài khoản: </p>
-                            <p className=" p-1 bg-transparent text-black focus:outline-none"> {formData.user_role} </p>
-                        </div>
-                    </div>
-                </div>
-            }
+
             <div className="flex justify-center items-center gap-4 mt-8">
             {isUpdateInfo &&
                 <Button
