@@ -22,7 +22,7 @@ export const getOne = (user_id) => new Promise(async (resolve, reject) => {
 })
 
 //Update user
-export const updateUserService = (user_id, data) => new Promise(async (resolve, reject) => {
+export const updateUserService = (user_id, {username, email, phone}) => new Promise(async (resolve, reject) => {
     try {
         // Tìm user theo user_id
         const user = await db.User.findOne({ where: { user_id }, raw: true });
@@ -36,51 +36,90 @@ export const updateUserService = (user_id, data) => new Promise(async (resolve, 
   
         // Chuẩn bị dữ liệu cập nhật (chỉ lấy các trường được gửi)
         const updateData = {};
-        if (data.username) updateData.username = data.username.trim();
-        if (data.email) updateData.email = data.email.trim();
-        if (data.phone) updateData.phone = data.phone.trim();
-  
-       // Kiểm tra trùng từng trường
-        if (data.email || data.phone || data.username) {
-            const conditions = [];
-            if (data.email) conditions.push({ email: data.email });
-            if (data.phone) conditions.push({ phone: data.phone });
-            if (data.username) conditions.push({ username: data.username });
-        
-            const existingUser = await db.User.findOne({
-            where: {
-                [Op.or]: conditions,
-                user_id: { [Op.ne]: user_id }, // Loại trừ user hiện tại
-            },
-            raw: true,
-            });
-  
-            if (existingUser) {
-                let field;
-                if (existingUser.username === data.username) field = 'Tên tài khoản';
-                else if (existingUser.email === data.email) field = 'Email';
-                else field = 'Số điện thoại';            
+        // Kiểm tra và xử lý từng trường
+        if (username !== user.username) {
+            if (username === '') {
                 return resolve({
-                err: 1,
-                msg: `${field} đã được sử dụng bởi người dùng khác!`,
-                response: null,
-            });
+                    err: 1,
+                    msg: 'Tên tài khoản không được để trống!',
+                    response: null,
+                });
             }
+            updateData.username = username;
+        }
+
+        if (email !== user.email) {
+            if (email === '') {
+                return resolve({
+                    err: 1,
+                    msg: 'Email không được để trống!',
+                    response: null,
+                });
+            }
+            updateData.email = email;
+        }
+
+        if (phone !== user.phone) {
+            if (phone === '') {
+                return resolve({
+                    err: 1,
+                    msg: 'Số điện thoại không được để trống!',
+                    response: null,
+                });
+            }
+            updateData.phone = phone;
         }
   
-        // Cập nhật thông tin (chỉ các trường được gửi)
-        await db.User.update(updateData, { where: { user_id } });
+       // Kiểm tra trùng lặp từng trường
+        if (Object.keys(updateData).length > 0) {
+            const conditions = [];
+            if (email) conditions.push({ email: email });
+            if (phone) conditions.push({ phone: phone });
+            if (username) conditions.push({ username: username });
+            
+            if (conditions.length > 0) {
+                const existingUser = await db.User.findOne({
+                where: {
+                    [Op.or]: conditions,
+                    user_id: { [Op.ne]: user_id }, // Loại trừ user hiện tại
+                },
+                raw: true,
+                });
     
+                if (existingUser) {
+                    let field;
+                    if (existingUser.username === username) field = 'Tên tài khoản';
+                    else if (existingUser.email === email) field = 'Email';
+                    else field = 'Số điện thoại';            
+                    return resolve({
+                    err: 1,
+                    msg: `${field} đã được sử dụng bởi người dùng khác!`,
+                    response: null,
+                });
+                }
+            }    
+
+            // Cập nhật thông tin (chỉ các trường được gửi)
+            await db.User.update(updateData, { where: { user_id } });
+        }
+  
         // Lấy lại thông tin user sau khi cập nhật
-        const updatedUser = await db.User.findOne({
-            where: { user_id },
-            raw: true,
-            attributes: { exclude: ['password'] },
-        });
+        let updatedUser;
+        if (Object.keys(updateData).length > 0) {
+            updatedUser = await db.User.findOne({
+                where: { user_id },
+                raw: true,
+                attributes: { exclude: ['password'] },
+            });
+        } else {
+            // Loại bỏ password từ user cũ
+            updatedUser = { ...user };
+            delete updatedUser.password;
+        }
   
         resolve({
             err: 0,
-            msg: 'Cập nhật thông tin thành công!',
+            msg: Object.keys(updateData).length > 0 ? 'Cập nhật thông tin thành công!' : 'Thông tin được giữ nguyên!',
             response: updatedUser,
         });
     } catch (error) {
