@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { InputField } from "../../components";
+import { InputField, Button } from "../../components";
 import { useLocation } from 'react-router-dom';
 
 const ChangePassword = ()=>{
@@ -33,6 +33,15 @@ const ChangePassword = ()=>{
                     />
                 )
                 )}
+            </div>
+            <div className="flex justify-center items-center gap-4 mt-8">
+                <Button
+                    text="ĐỔI MẬT KHẨU"
+                    bgColor="bg-green-400"
+                    textColor="text-black"
+                    hover="hover:bg-green-600"
+                    onClick={()=>alert("Đổi mật khẩu thành công")}
+                />
             </div>
         </div>
     )
