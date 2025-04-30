@@ -1,76 +1,78 @@
-export const validateFields = (fields, isRegister = false, isUpdate=false) => {
+import {
+    checkEmpty,
+    checkEmail,
+    checkPassword,
+    checkConfirmPassword
+} from './helpers';
+
+// ----- validateLogin.js -----
+export const validateLogin = (fields) => {
     const errors = [];
-    if (isUpdate) {
-        // Kiểm tra trống cho username, email, phone trong một if
-        const requiredFields = [
-          { name: 'username', label: 'tên tài khoản' },
-          { name: 'email', label: 'email' },
-          { name: 'phone', label: 'số điện thoại' },
-        ];
-       // Kiểm tra các trường có trong fields
-        requiredFields.forEach((field) => {
-            if (field.name in fields && !fields[field.name]?.trim()) {
-            errors.push({ name: field.name, message: `Vui lòng nhập ${field.label}.` });
-            }
-        });
-    
-        // Kiểm tra định dạng email nếu không trống
-        if (fields.email?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
-          errors.push({ name: 'email', message: 'Email không hợp lệ.' });
-        }
 
-    }    
-    else if (isRegister) {
-        if (!fields.username?.trim()) {
-            errors.push({ name: 'username', message: 'Vui lòng nhập tên tài khoản.' });
-        }
+    const emailErr = checkEmpty(fields.email, 'email', 'số điện thoại hoặc email') || checkEmail(fields.email);
+    if (emailErr) errors.push(emailErr);
 
-        if (!fields.phone?.trim()) {
-            errors.push({ name: 'phone', message: 'Vui lòng nhập số điện thoại.' });
-        } 
-        // else if (!/^(0|\+84)[0-9]{9}$/.test(fields.phone)) {
-        //     errors.push({ name: 'phone', message: 'Số điện thoại không hợp lệ.' });
-        // }
+    const pwErr = checkPassword(fields.password);
+    if (pwErr) errors.push(pwErr);
 
-        if (!fields.email?.trim()) {
-            errors.push({ name: 'email', message: 'Vui lòng nhập email.' });
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
-            errors.push({ name: 'email', message: 'Email không hợp lệ.' });
-        }
+    return errors;
+};
 
-        if (!fields.password ) {
-            errors.push({ name: 'password', message: 'Vui lòng nhập mật khẩu.' });
-        }
-        if(fields.password && fields.password.length < 6) {
-            errors.push({ name: 'password', message: 'Mật khẩu phải có ít nhất 6 ký tự.' });
-        }
+// ----- validateRegister.js -----
+export const validateRegister = (fields) => {
+    const errors = [];
 
-        if (!fields.confirmPassword) {
-            errors.push({ name: 'confirmPassword', message: 'Vui lòng nhập lại mật khẩu xác nhận.' });
-        } else if (fields.confirmPassword !== fields.password) {
-            errors.push({ name: 'confirmPassword', message: 'Mật khẩu xác nhận không khớp.' });
-        }
-    } else {
-        if (!fields.email?.trim()) {
-            errors.push({ name: 'email', message: 'Vui lòng nhập số điện thoại hoặc email.' });
-        } else {
-            const isEmail = fields.email.includes('@');
-            if (isEmail) {
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
-                    errors.push({ name: 'email', message: 'Email không hợp lệ.' });
-                }
-            } 
-            // else {
-            //     // if (!/^(0|\+84)[0-9]{9}$/.test(fields.email)) {
-            //     //     errors.push({ name: 'email', message: 'Số điện thoại không hợp lệ.' });
-            //     // }
-            // }
-        }
+    ['username', 'phone', 'email'].forEach(name => {
+        const err = checkEmpty(fields[name], name, name === 'username' ? 'tên tài khoản' : name);
+        if (err) errors.push(err);
+    });
 
-        if (!fields.password || fields.password.length < 6) {
-            errors.push({ name: 'password', message: 'Mật khẩu phải có ít nhất 6 ký tự.' });
-        }
+    const emailErr = checkEmail(fields.email);
+    if (emailErr) errors.push(emailErr);
+
+    const pwErr = checkPassword(fields.password);
+    if (pwErr) errors.push(pwErr);
+
+    const cpwErr = checkConfirmPassword(fields.password, fields.confirmPassword);
+    if (cpwErr) errors.push(cpwErr);
+
+    return errors;
+};
+
+// ----- validateUpdateInfo.js -----
+export const validateUpdateInfo = (fields) => {
+    const errors = [];
+
+    const requiredFields = [
+        { name: 'username', label: 'tên tài khoản' },
+        { name: 'email', label: 'email' },
+        { name: 'phone', label: 'số điện thoại' },
+    ];
+
+    requiredFields.forEach(({ name, label }) => {
+        const err = checkEmpty(fields[name], name, label);
+        if (err) errors.push(err);
+    });
+
+    const emailErr = checkEmail(fields.email);
+    if (emailErr) errors.push(emailErr);
+
+    return errors;
+};
+
+// ----- validateChangePassword.js -----
+export const validateChangePassword = (fields) => {
+    const errors = [];
+
+    if (!fields.oldPassword) {
+        errors.push({ name: 'oldPassword', message: 'Vui lòng nhập mật khẩu cũ.' });
     }
+
+    const pwErr = checkPassword(fields.newPassword);
+    if (pwErr) errors.push({ name: 'newPassword', message: 'Mật khẩu mới không hợp lệ.' });
+
+    const cpwErr = checkConfirmPassword(fields.newPassword, fields.confirmPassword);
+    if (cpwErr) errors.push(cpwErr);
 
     return errors;
 };
