@@ -1,9 +1,9 @@
 import React from 'react';
 
-const InputField = ({ name, label, value, onChange, error, readOnly, isUpdateInfo }) => {
-  if (isUpdateInfo && readOnly) return null; // Đang sửa mà readonly thì bỏ qua không render
+const InputField = ({ name, label, value, onChange, error, readOnly, state=true }) => {
+  if (state && readOnly) return null; // Đang sửa mà readonly thì bỏ qua không render
 
-  if (!isUpdateInfo) {
+  if (!state) {
     // Không sửa thông tin => render 2 cột: label bên trái + giá trị bên phải
     return (
       <div className='space-y-4'>

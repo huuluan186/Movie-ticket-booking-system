@@ -99,7 +99,7 @@ const Profile = () => {
                     onChange={handleInputChange}
                     error={invalidFields.find(err => err.name === name)?.message}
                     readOnly={readOnly}
-                    isUpdateInfo={isUpdateInfo}
+                    state={isUpdateInfo}
                 />
             ))}
             </div>
