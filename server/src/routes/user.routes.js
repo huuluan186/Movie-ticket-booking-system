@@ -7,5 +7,5 @@ const router = express.Router()
 router.use(verifyToken)
 router.get('/get-current-user', userController.getUserInfo)
 router.put('/profile',userController.updateUserInfo)
-
+router.put('/change-password', userController.changePassword)
 export default router

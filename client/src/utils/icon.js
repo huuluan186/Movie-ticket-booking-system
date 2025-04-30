@@ -9,7 +9,7 @@ import {
     FaFacebook,
   } from 'react-icons/fa';
   import { FiSearch } from 'react-icons/fi';
-
+  import { MdOutlineChangeCircle } from "react-icons/md";
 const icons = {
     RiArrowDropDownLine,
     IoPersonCircle, 
@@ -22,7 +22,8 @@ const icons = {
     FaMapMarkerAlt,
     FaGithub, 
     FaFacebook,
-    FiSearch
+    FiSearch,
+    MdOutlineChangeCircle
 }
 
 export default icons;

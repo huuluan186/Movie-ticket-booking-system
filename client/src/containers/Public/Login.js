@@ -67,7 +67,7 @@ const Login = () => {
 
     const handleSubmit = async () => {
         // validate dữ liệu
-        const errors = validateFields(payload, isRegister);
+        const errors = validateFields(payload, isRegister, false);
         setInvalidFields(errors);
         if (errors.length > 0) return;
 
@@ -76,7 +76,6 @@ const Login = () => {
     
         if (isRegister) {
             finalPayload = data; // Gửi hết thông tin khi đăng ký
-
         } else {
             // Kiểm tra người dùng nhập email hay phone để gửi đúng key
             const isEmail = payload.email.includes('@');
