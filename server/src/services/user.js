@@ -93,7 +93,7 @@ export const updateUserService = (user_id, {username, email, phone}) => new Prom
                     else field = 'Số điện thoại';            
                     return resolve({
                     err: 1,
-                    msg: `${field} đã được sử dụng bởi người dùng khác!`,
+                    msg: `${field} đã tồn tại!`,
                     response: null,
                 });
                 }

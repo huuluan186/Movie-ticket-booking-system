@@ -1,6 +1,6 @@
 import React from 'react';
 
-const InputField = ({ name, label, value, onChange, error, readOnly, state=true }) => {
+const InputField = ({ type, name, label, value, onChange, error, readOnly, state=true }) => {
   if (state && readOnly) return null; // Đang sửa mà readonly thì bỏ qua không render
 
   if (!state) {
@@ -23,7 +23,7 @@ const InputField = ({ name, label, value, onChange, error, readOnly, state=true 
       </label>
       <>
         <input
-          type="text"
+          type={type ? type : 'text'}
           name={name}
           value={value}
           onChange={onChange}

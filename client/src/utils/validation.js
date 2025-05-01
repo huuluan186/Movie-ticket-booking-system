@@ -67,7 +67,7 @@ export const validateRegister = (fields) => {
 };
 
 // ----- validateUpdateInfo.js -----
-export const validateUpdateInfo = (fields, originalFields) => {
+export const validateUpdateInfo = (fields) => {
     const errors = [];
 
     const requiredFields = [
@@ -76,17 +76,22 @@ export const validateUpdateInfo = (fields, originalFields) => {
         { name: 'phone', label: 'số điện thoại' },
     ];
 
-    requiredFields.forEach((field) => {
-        if (field.name in fields && !fields[field.name]?.trim()) {
-            const err = checkEmpty(field.name);
-            errors.push(err);
-        }
+     // Kiểm tra các trường bắt buộc
+    requiredFields.forEach(({ name, label }) => {
+        const error = checkEmpty(fields[name], name, label);
+        if (error) errors.push(error);
     });
-
-    // Kiểm tra định dạng email
-    const emailErr = checkEmail(fields.email);
-    if (emailErr) errors.push(emailErr);
-
+    // Kiểm tra định dạng email nếu có giá trị
+    if (fields.email) {
+        const emailError = checkEmail(fields.email);
+        if (emailError) errors.push(emailError);
+    }
+    // Kiểm tra định dạng số điện thoại nếu có giá trị
+    if (fields.phone) {
+        const phoneError = checkPhoneNumber(fields.phone,'phone');
+        if (phoneError) errors.push(phoneError);
+    }
+    
     return errors;
 };
 
