@@ -2,33 +2,60 @@ import {
     checkEmpty,
     checkEmail,
     checkPassword,
-    checkConfirmPassword
+    checkConfirmPassword,
+    checkPhoneNumber
 } from './helpers';
 
 // ----- validateLogin.js -----
 export const validateLogin = (fields) => {
     const errors = [];
 
-    const emailErr = checkEmpty(fields.email, 'email', 'số điện thoại hoặc email') || checkEmail(fields.email);
-    if (emailErr) errors.push(emailErr);
+    const input = fields.email?.trim();
+
+    if (!input) {
+        const emailErr = checkEmpty(input, 'email', 'số điện thoại hoặc email');
+        if (emailErr) errors.push(emailErr);
+    } else {
+        const isEmail = input.includes('@');
+        if (isEmail) {
+            const emailErr = checkEmail(input);
+            if (emailErr) errors.push(emailErr);
+        } else {
+            const phoneErr = checkPhoneNumber(input);
+            if (phoneErr) errors.push(phoneErr);
+        }
+    }
 
     const pwErr = checkPassword(fields.password);
     if (pwErr) errors.push(pwErr);
-
+    console.log(errors);
     return errors;
 };
+
 
 // ----- validateRegister.js -----
 export const validateRegister = (fields) => {
     const errors = [];
 
-    ['username', 'phone', 'email'].forEach(name => {
-        const err = checkEmpty(fields[name], name, name === 'username' ? 'tên tài khoản' : name);
-        if (err) errors.push(err);
-    });
+    // Kiểm tra rỗng cho từng trường cụ thể
+    const usernameErr = checkEmpty(fields.username, 'username', 'tên tài khoản');
+    if (usernameErr) errors.push(usernameErr);
 
-    const emailErr = checkEmail(fields.email);
-    if (emailErr) errors.push(emailErr);
+    const phoneErrEmpty = checkEmpty(fields.phone, 'phone', 'số điện thoại');
+    if (phoneErrEmpty) {
+        errors.push(phoneErrEmpty);
+    } else {
+        const phoneErrFormat = checkPhoneNumber(fields.phone,'phone');
+        if (phoneErrFormat) errors.push(phoneErrFormat);
+    }
+
+    const emailErrEmpty = checkEmpty(fields.email, 'email', 'email');
+    if (emailErrEmpty) {
+        errors.push(emailErrEmpty);
+    } else {
+        const emailErrFormat = checkEmail(fields.email);
+        if (emailErrFormat) errors.push(emailErrFormat);
+    }
 
     const pwErr = checkPassword(fields.password);
     if (pwErr) errors.push(pwErr);
@@ -40,7 +67,7 @@ export const validateRegister = (fields) => {
 };
 
 // ----- validateUpdateInfo.js -----
-export const validateUpdateInfo = (fields) => {
+export const validateUpdateInfo = (fields, originalFields) => {
     const errors = [];
 
     const requiredFields = [
@@ -49,11 +76,14 @@ export const validateUpdateInfo = (fields) => {
         { name: 'phone', label: 'số điện thoại' },
     ];
 
-    requiredFields.forEach(({ name, label }) => {
-        const err = checkEmpty(fields[name], name, label);
-        if (err) errors.push(err);
+    requiredFields.forEach((field) => {
+        if (field.name in fields && !fields[field.name]?.trim()) {
+            const err = checkEmpty(field.name);
+            errors.push(err);
+        }
     });
 
+    // Kiểm tra định dạng email
     const emailErr = checkEmail(fields.email);
     if (emailErr) errors.push(emailErr);
 

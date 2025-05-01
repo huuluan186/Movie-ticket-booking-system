@@ -28,3 +28,9 @@ export const checkConfirmPassword = (password, confirmPassword) => {
     return null;
 };
 
+export const checkPhoneNumber = (phone, fieldName = 'email') => {
+    if (!/^\d+$/.test(phone.trim())) return {name: fieldName, message:'Số điện thoại không phải chỉ gồm số.'}
+    return null;
+}
+
+//đặt name:'email thay vì phone' vì ở đăng nhập sử dụng input chính để đại diện kiểm tra là email
