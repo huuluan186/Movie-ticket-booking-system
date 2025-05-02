@@ -28,7 +28,6 @@ export const validateLogin = (fields) => {
 
     const pwErr = checkPassword(fields.password);
     if (pwErr) errors.push(pwErr);
-    console.log(errors);
     return errors;
 };
 
@@ -60,7 +59,7 @@ export const validateRegister = (fields) => {
     const pwErr = checkPassword(fields.password);
     if (pwErr) errors.push(pwErr);
 
-    const cpwErr = checkConfirmPassword(fields.password, fields.confirmPassword);
+    const cpwErr = checkConfirmPassword(fields.password, fields.confirmPassword,'confirmPassword');
     if (cpwErr) errors.push(cpwErr);
 
     return errors;
@@ -99,15 +98,24 @@ export const validateUpdateInfo = (fields) => {
 export const validateChangePassword = (fields) => {
     const errors = [];
 
-    if (!fields.oldPassword) {
-        errors.push({ name: 'oldPassword', message: 'Vui lòng nhập mật khẩu cũ.' });
-    }
+    const requiredFields = [
+        { name: 'currentPassword', label: 'mật khẩu cũ' },
+        { name: 'newPassword', label: 'mật khẩu mới' },
+        { name: 'confirmNewPassword', label: 'mật khẩu xác nhận' },
+    ];
 
-    const pwErr = checkPassword(fields.newPassword);
-    if (pwErr) errors.push({ name: 'newPassword', message: 'Mật khẩu mới không hợp lệ.' });
+     // Kiểm tra các trường bắt buộc
+    requiredFields.forEach(({ name, label }) => {
+        const error = checkEmpty(fields[name], name, label);
+        if (error) errors.push(error);
+    });
 
-    const cpwErr = checkConfirmPassword(fields.newPassword, fields.confirmPassword);
+    const pwErr = checkPassword(fields.newPassword,'newPassword');
+    if (pwErr) errors.push(pwErr);
+
+    const cpwErr = checkConfirmPassword(fields.newPassword, fields.confirmNewPassword);
     if (cpwErr) errors.push(cpwErr);
 
+    console.log(errors)
     return errors;
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const InputField = ({ type, name, label, value, onChange, error, readOnly, state=true }) => {
+const InputField = ({ type, name, label, value, onChange, readOnly, state=true, invalidFields = [], setInvalidFields}) => {
   if (state && readOnly) return null; // Đang sửa mà readonly thì bỏ qua không render
 
   if (!state) {
@@ -15,6 +15,8 @@ const InputField = ({ type, name, label, value, onChange, error, readOnly, state
     );
   }
 
+  const errorMessage = invalidFields?.find(item => item.name === name)?.message;
+
   // Trường hợp đang update info => cho nhập input
   return (
     <div className="group">
@@ -27,10 +29,11 @@ const InputField = ({ type, name, label, value, onChange, error, readOnly, state
           name={name}
           value={value}
           onChange={onChange}
+          onFocus={()=> setInvalidFields && setInvalidFields(prev => prev.filter(item => item.name !== name))}
           className="w-full pb-1 bg-transparent border-b border-blue-500 focus:outline-none"
         />
-        {error && (
-          <p className="text-red-500 text-xs">{error}</p>
+        {errorMessage && (
+          <p className="text-red-500 text-xs">{errorMessage}</p>
         )}
       </>
     </div>
