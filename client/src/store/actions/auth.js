@@ -25,6 +25,10 @@ export const register = (payload) => async (dispatch) => {
     }
 }
 
+export const resetRegisterStatus = () => ({
+    type: actionTypes.RESET_REGISTER_STATUS
+});
+
 export const login = (payload) => async (dispatch) => {
     try {
         const response = await apiLogin(payload);

@@ -39,8 +39,6 @@ const Header = () => {
         setUserDropdownOpen(false);
     });
     
-    
-
     const toggleMovieDropdown = () => {
         setMovieDropdownOpen(prev => {
             if (!prev) setUserDropdownOpen(false); // Đóng user dropdown nếu đang mở
@@ -88,8 +86,8 @@ const Header = () => {
                     {!isLoggedIn 
                     ?
                     <>
-                        <Button text={'Đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500'  onClick={()=>goLogin(false)}/>
-                        <Button text={'Đăng ký'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500'  onClick={()=>goLogin(true)}/>   
+                        <Button text={'Đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={()=>goLogin(false)}/>
+                        <Button text={'Đăng ký'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={()=>goLogin(true)}/>   
                     </>  
                     :
                     <>

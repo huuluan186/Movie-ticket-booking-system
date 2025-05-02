@@ -6,6 +6,7 @@ import * as actions from '../../store/actions'
 import { useDispatch, useSelector} from "react-redux";
 import {validateLogin, validateRegister} from "../../utils/validation";
 import { toast } from "react-toastify";
+import { path } from "../../utils/constant";
 
 const {IoPersonCircle,IoCheckmarkCircle} = icons
 
@@ -40,6 +41,7 @@ const Login = () => {
     useEffect(() => {
         // Cập nhật giá trị của isRegister bằng flag từ location.state (nếu có)
         setIsRegister(location.state?.flag);
+        
     }, [location.state?.flag]); // Chạy lại khi location.state?.flag thay đổi
 
     useEffect(() => {
@@ -55,10 +57,13 @@ const Login = () => {
         if(isRegistered) {
             toast.success("Đăng ký thành công!");
             setTimeout(() => {
+                dispatch(actions.resetRegisterStatus()); // Reset isRegistered
                 setIsRegister(false) 
+                // Đặt lại location.state để đảm bảo đồng bộ
+                navigate(path.LOGIN, { state: { flag: false }, replace: true });
             }, 800);
         }
-    }, [isRegistered]); // Kiểm tra thay đổi của isRegistered
+    }, [isRegistered,navigate,dispatch]); // Kiểm tra thay đổi của isRegistered
     
     //Lấy thông báo từ redux
     useEffect(()=>{
@@ -66,6 +71,7 @@ const Login = () => {
      },[msg,update])
 
     const handleSubmit = async () => {
+        setInvalidFields([]);
         // validate dữ liệu
         const errors = isRegister ? validateRegister(payload) : validateLogin(payload);
         setInvalidFields(errors);
