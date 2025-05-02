@@ -22,9 +22,9 @@ const Profile = () => {
     useEffect(() => {
         if (currentData && Object.keys(currentData).length > 0) {
             setFormData({
-                username: currentData.username || '',
-                phone: currentData.phone || '',
-                email: currentData.email || '',
+                username: currentData.username.trim() || '',
+                phone: currentData.phone.trim() || '',
+                email: currentData.email.trim() || '',
                 user_role: currentData.user_role || '',
             });
         } else {
@@ -38,9 +38,9 @@ const Profile = () => {
             if (prevState) {
                 // Reset formData về giá trị ban đầu từ currentData
                 setFormData({
-                    username: currentData.username || '',
-                    phone: currentData.phone || '',
-                    email: currentData.email || '',
+                    username: currentData.username.trim() || '',
+                    phone: currentData.phone.trim() || '',
+                    email: currentData.email.trim() || '',
                     user_role: currentData.user_role || '',
                 });
             }
@@ -53,28 +53,21 @@ const Profile = () => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [name]: value.trim(),
+            [name]: value,
         }));
     };
 
     const handleConfirmUpdateData = async () => {
         // Reset lỗi trước khi validate
         setInvalidFields([]);
-        // Tạo payload đầy đủ để validate
-        const payload = {
-            username: formData.username,
-            email: formData.email,
-            phone: formData.phone
-        };
-       
-        console.log('Profile - payload:', payload);
+        console.log('Profile - payload:', formData);
         // Validate
-        const errors = validateUpdateInfo(payload);
+        const errors = validateUpdateInfo(formData);
         if (errors.length > 0) {
             setInvalidFields(errors);
             return;
         }
-        const result = await dispatch(actions.updateProfile(payload));
+        const result = await dispatch(actions.updateProfile(formData));
         if (result.success) {
             toast.success(result.message || "Cập nhật thành công!");
             setIsUpdateInfo(false);
@@ -109,7 +102,8 @@ const Profile = () => {
                         label={label}
                         value={formData[name]}
                         onChange={handleInputChange}
-                        error={invalidFields.find(err => err.name === name)?.message}
+                        invalidFields={invalidFields} 
+                        setInvalidFields={setInvalidFields}
                         readOnly={readOnly}
                         state={isUpdateInfo}
                     />

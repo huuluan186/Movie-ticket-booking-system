@@ -1,6 +1,7 @@
 import db from '../models'
 import { Op } from 'sequelize'
 import bcrypt from 'bcryptjs'
+
 // GET CURRENT
 export const getOne = (user_id) => new Promise(async (resolve, reject) => {
     try {
@@ -24,9 +25,20 @@ export const getOne = (user_id) => new Promise(async (resolve, reject) => {
 //Update user
 export const updateUserService = (user_id, {username, email, phone}) => new Promise(async (resolve, reject) => {
     try {
+        // Log dữ liệu đầu vào
+        console.log('Input data:', { username, email, phone });
+        // Trim các trường đầu vào
+        const trimmedData = {
+            username: username?.trim() || '',
+            email: email?.trim() || '',
+            phone: phone?.trim() || ''
+        };
+         // Log dữ liệu sau khi trim
+         console.log('Trimmed data:', trimmedData);
         // Tìm user theo user_id
         const user = await db.User.findOne({ where: { user_id }, raw: true });
         if (!user) {
+            console.log('User not found for user_id:', user_id);
             return resolve({
             err: 1,
             msg: 'Người dùng không tồn tại!',
@@ -37,46 +49,50 @@ export const updateUserService = (user_id, {username, email, phone}) => new Prom
         // Chuẩn bị dữ liệu cập nhật (chỉ lấy các trường được gửi)
         const updateData = {};
         // Kiểm tra và xử lý từng trường
-        if (username !== user.username) {
-            if (username === '') {
+        if (trimmedData.username !== user.username) {
+            if (trimmedData.username === '') {
+                console.log('Username is empty');
                 return resolve({
                     err: 1,
                     msg: 'Tên tài khoản không được để trống!',
                     response: null,
                 });
             }
-            updateData.username = username;
+            updateData.username = trimmedData.username;
         }
 
-        if (email !== user.email) {
-            if (email === '') {
+        if (trimmedData.email !== user.email) {
+            if (trimmedData.email === '') {
+                console.log('Email is empty');
                 return resolve({
                     err: 1,
                     msg: 'Email không được để trống!',
                     response: null,
                 });
             }
-            updateData.email = email;
+            updateData.email = trimmedData.email;
         }
 
-        if (phone !== user.phone) {
-            if (phone === '') {
+        if (trimmedData.phone !== user.phone) {
+            if (trimmedData.phone === '') {
+                console.log('Phone is empty');
                 return resolve({
                     err: 1,
                     msg: 'Số điện thoại không được để trống!',
                     response: null,
                 });
             }
-            updateData.phone = phone;
+            updateData.phone = trimmedData.phone;
         }
-  
+         // Log dữ liệu sẽ cập nhật
+         console.log('Update data:', updateData);
        // Kiểm tra trùng lặp từng trường
         if (Object.keys(updateData).length > 0) {
             const conditions = [];
-            if (email) conditions.push({ email: email });
-            if (phone) conditions.push({ phone: phone });
-            if (username) conditions.push({ username: username });
-            
+            if (trimmedData.email) conditions.push({ email: trimmedData.email });
+            if (trimmedData.phone) conditions.push({ phone: trimmedData.phone });
+            if (trimmedData.username) conditions.push({ username: trimmedData.username });
+            console.log('Duplicate check conditions:', conditions);
             if (conditions.length > 0) {
                 const existingUser = await db.User.findOne({
                 where: {
@@ -88,41 +104,48 @@ export const updateUserService = (user_id, {username, email, phone}) => new Prom
     
                 if (existingUser) {
                     let field;
-                    if (existingUser.username === username) field = 'Tên tài khoản';
-                    else if (existingUser.email === email) field = 'Email';
-                    else field = 'Số điện thoại';            
-                    return resolve({
-                    err: 1,
-                    msg: `${field} đã tồn tại!`,
-                    response: null,
-                });
+                    if (existingUser.username === trimmedData.username) field = 'Tên tài khoản';
+                    else if (existingUser.email === trimmedData.email) field = 'Email';
+                    else if(existingUser.phone === trimmedData.phone) field = 'Số điện thoại';     
+                    console.log('Existing user:', existingUser);
+                    console.log('Duplicate field:', field);      
+                    
+                    if (field) {
+                        return resolve({
+                            err: 1,
+                            msg: `${field} đã tồn tại!`,
+                            response: user,
+                        });
+                    }
                 }
             }    
-
+            // Cập nhật thông tin (chỉ các trường được gửi)
+            console.log('Updating user with data:', updateData);
             // Cập nhật thông tin (chỉ các trường được gửi)
             await db.User.update(updateData, { where: { user_id } });
         }
   
-        // Lấy lại thông tin user sau khi cập nhật
-        let updatedUser;
-        if (Object.keys(updateData).length > 0) {
-            updatedUser = await db.User.findOne({
-                where: { user_id },
-                raw: true,
-                attributes: { exclude: ['password'] },
-            });
-        } else {
-            // Loại bỏ password từ user cũ
-            updatedUser = { ...user };
-            delete updatedUser.password;
-        }
+        // // Lấy lại thông tin user sau khi cập nhật
+        // let updatedUser;
+        // if (Object.keys(updateData).length > 0) {
+        //     updatedUser = await db.User.findOne({
+        //         where: { user_id },
+        //         raw: true,
+        //         attributes: { exclude: ['password'] },
+        //     });
+        // } else {
+        //     // Loại bỏ password từ user cũ
+        //     updatedUser = { ...user };
+        //     delete updatedUser.password;
+        // }
   
         resolve({
             err: 0,
             msg: Object.keys(updateData).length > 0 ? 'Cập nhật thông tin thành công!' : 'Thông tin được giữ nguyên!',
-            response: updatedUser,
+            //response: updatedUser,
         });
     } catch (error) {
+        console.error('Error in updateUserService:', error);
       reject(error);
     }
   });
@@ -173,17 +196,9 @@ export const changePasswordService = (user_id, data) => new Promise(async (resol
             { where: { user_id } }
         );
 
-        // Lấy lại thông tin user sau khi cập nhật
-        const updatedUser = await db.User.findOne({
-            where: { user_id },
-            raw: true,
-            attributes: { exclude: ['password'] },
-        });
-
         resolve({
             err: 0,
             msg: 'Đổi mật khẩu thành công.',
-            response: updatedUser,
           });
 
     } catch (error) {
