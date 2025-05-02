@@ -4,7 +4,7 @@ import {Button,InputForm} from '../../components'
 import icons from "../../utils/icon";
 import * as actions from '../../store/actions'
 import { useDispatch, useSelector} from "react-redux";
-import { validateFields } from "../../utils/validation"; 
+import {validateLogin, validateRegister} from "../../utils/validation";
 import { toast } from "react-toastify";
 
 const {IoPersonCircle,IoCheckmarkCircle} = icons
@@ -67,7 +67,7 @@ const Login = () => {
 
     const handleSubmit = async () => {
         // validate dữ liệu
-        const errors = validateFields(payload, isRegister, false);
+        const errors = isRegister ? validateRegister(payload) : validateLogin(payload);
         setInvalidFields(errors);
         if (errors.length > 0) return;
 

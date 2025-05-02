@@ -15,9 +15,9 @@ export const getUserInfo = async (req, res) => {
 
 export const updateUserInfo = async (req, res) => {
     const { user_id } = req.user
-    const data = req.body // { username, email, phone }
+    const { username, email, phone } = req.body 
     try {
-        const response = await services.updateUserService(user_id,data)
+        const response = await services.updateUserService(user_id,req.body)
         return res.status(200).json(response)
     } catch (error) {
         return res.status(500).json({
