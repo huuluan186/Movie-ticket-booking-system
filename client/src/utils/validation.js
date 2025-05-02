@@ -1,57 +1,121 @@
-export const validateFields = (fields, isRegister = false) => {
+import {
+    checkEmpty,
+    checkEmail,
+    checkPassword,
+    checkConfirmPassword,
+    checkPhoneNumber
+} from './helpers';
+
+// ----- validateLogin.js -----
+export const validateLogin = (fields) => {
     const errors = [];
 
-    if (isRegister) {
-        if (!fields.username?.trim()) {
-            errors.push({ name: 'username', message: 'Vui lòng nhập tên tài khoản.' });
-        }
+    const input = fields.email?.trim();
 
-        if (!fields.phone?.trim()) {
-            errors.push({ name: 'phone', message: 'Vui lòng nhập số điện thoại.' });
-        } 
-        // else if (!/^(0|\+84)[0-9]{9}$/.test(fields.phone)) {
-        //     errors.push({ name: 'phone', message: 'Số điện thoại không hợp lệ.' });
-        // }
-
-        if (!fields.email?.trim()) {
-            errors.push({ name: 'email', message: 'Vui lòng nhập email.' });
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
-            errors.push({ name: 'email', message: 'Email không hợp lệ.' });
-        }
-
-        if (!fields.password ) {
-            errors.push({ name: 'password', message: 'Vui lòng nhập mật khẩu.' });
-        }
-        if(fields.password && fields.password.length < 6) {
-            errors.push({ name: 'password', message: 'Mật khẩu phải có ít nhất 6 ký tự.' });
-        }
-
-        if (!fields.confirmPassword) {
-            errors.push({ name: 'confirmPassword', message: 'Vui lòng nhập lại mật khẩu xác nhận.' });
-        } else if (fields.confirmPassword !== fields.password) {
-            errors.push({ name: 'confirmPassword', message: 'Mật khẩu xác nhận không khớp.' });
-        }
+    if (!input) {
+        const emailErr = checkEmpty(input, 'email', 'số điện thoại hoặc email');
+        if (emailErr) errors.push(emailErr);
     } else {
-        if (!fields.email?.trim()) {
-            errors.push({ name: 'email', message: 'Vui lòng nhập số điện thoại hoặc email.' });
+        const isEmail = input.includes('@');
+        if (isEmail) {
+            const emailErr = checkEmail(input);
+            if (emailErr) errors.push(emailErr);
         } else {
-            const isEmail = fields.email.includes('@');
-            if (isEmail) {
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
-                    errors.push({ name: 'email', message: 'Email không hợp lệ.' });
-                }
-            } 
-            // else {
-            //     // if (!/^(0|\+84)[0-9]{9}$/.test(fields.email)) {
-            //     //     errors.push({ name: 'email', message: 'Số điện thoại không hợp lệ.' });
-            //     // }
-            // }
-        }
-
-        if (!fields.password || fields.password.length < 6) {
-            errors.push({ name: 'password', message: 'Mật khẩu phải có ít nhất 6 ký tự.' });
+            const phoneErr = checkPhoneNumber(input);
+            if (phoneErr) errors.push(phoneErr);
         }
     }
 
+    const pwErr = checkPassword(fields.password);
+    if (pwErr) errors.push(pwErr);
+    return errors;
+};
+
+
+// ----- validateRegister.js -----
+export const validateRegister = (fields) => {
+    const errors = [];
+
+    // Kiểm tra rỗng cho từng trường cụ thể
+    const usernameErr = checkEmpty(fields.username, 'username', 'tên tài khoản');
+    if (usernameErr) errors.push(usernameErr);
+
+    const phoneErrEmpty = checkEmpty(fields.phone, 'phone', 'số điện thoại');
+    if (phoneErrEmpty) {
+        errors.push(phoneErrEmpty);
+    } else {
+        const phoneErrFormat = checkPhoneNumber(fields.phone,'phone');
+        if (phoneErrFormat) errors.push(phoneErrFormat);
+    }
+
+    const emailErrEmpty = checkEmpty(fields.email, 'email', 'email');
+    if (emailErrEmpty) {
+        errors.push(emailErrEmpty);
+    } else {
+        const emailErrFormat = checkEmail(fields.email);
+        if (emailErrFormat) errors.push(emailErrFormat);
+    }
+
+    const pwErr = checkPassword(fields.password);
+    if (pwErr) errors.push(pwErr);
+
+    const cpwErr = checkConfirmPassword(fields.password, fields.confirmPassword,'confirmPassword');
+    if (cpwErr) errors.push(cpwErr);
+
+    return errors;
+};
+
+// ----- validateUpdateInfo.js -----
+export const validateUpdateInfo = (fields) => {
+    const errors = [];
+
+    const requiredFields = [
+        { name: 'username', label: 'tên tài khoản' },
+        { name: 'email', label: 'email' },
+        { name: 'phone', label: 'số điện thoại' },
+    ];
+
+     // Kiểm tra các trường bắt buộc
+    requiredFields.forEach(({ name, label }) => {
+        const error = checkEmpty(fields[name], name, label);
+        if (error) errors.push(error);
+    });
+    // Kiểm tra định dạng email nếu có giá trị
+    if (fields.email) {
+        const emailError = checkEmail(fields.email);
+        if (emailError) errors.push(emailError);
+    }
+    // Kiểm tra định dạng số điện thoại nếu có giá trị
+    if (fields.phone) {
+        const phoneError = checkPhoneNumber(fields.phone,'phone');
+        if (phoneError) errors.push(phoneError);
+    }
+    
+    return errors;
+};
+
+// ----- validateChangePassword.js -----
+export const validateChangePassword = (fields) => {
+    const errors = [];
+
+    const requiredFields = [
+        { name: 'currentPassword', label: 'mật khẩu cũ' },
+        { name: 'newPassword', label: 'mật khẩu mới' },
+        { name: 'confirmNewPassword', label: 'mật khẩu xác nhận' },
+    ];
+
+     // Kiểm tra các trường bắt buộc
+    requiredFields.forEach(({ name, label }) => {
+        const error = checkEmpty(fields[name], name, label);
+        if (error) errors.push(error);
+    });
+
+    const pwErr = checkPassword(fields.newPassword,'newPassword');
+    if (pwErr) errors.push(pwErr);
+
+    const cpwErr = checkConfirmPassword(fields.newPassword, fields.confirmNewPassword);
+    if (cpwErr) errors.push(cpwErr);
+
+    console.log(errors)
     return errors;
 };

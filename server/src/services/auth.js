@@ -84,8 +84,8 @@ export const loginService = ({ phone, email, password }) => new Promise(async (r
             process.env.SECRET_KEY,
             { expiresIn: '2d' }
         );
-
-        resolve({ err: 0, msg: 'Đăng nhập thành công!', token ,username: response.username});
+        resolve({ err: 0, msg: 'Đăng nhập thành công!', token });
+        //resolve({ err: 0, msg: 'Đăng nhập thành công!', token ,username: response.username});
 
     } catch (error) {
         reject(error);

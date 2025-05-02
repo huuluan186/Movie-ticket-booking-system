@@ -25,6 +25,10 @@ export const register = (payload) => async (dispatch) => {
     }
 }
 
+export const resetRegisterStatus = () => ({
+    type: actionTypes.RESET_REGISTER_STATUS
+});
+
 export const login = (payload) => async (dispatch) => {
     try {
         const response = await apiLogin(payload);
@@ -33,7 +37,7 @@ export const login = (payload) => async (dispatch) => {
             dispatch({
                 type: actionTypes.LOGIN_SUCCESS,
                 data: response.data.token,
-                user: response.data.username
+                //user: response.data.username
             }) 
         }else{
             dispatch({

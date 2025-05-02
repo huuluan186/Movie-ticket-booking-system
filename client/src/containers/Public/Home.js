@@ -5,8 +5,6 @@ const Home = () => {
     const location = useLocation();
     const isLoginPage = location.pathname === "/login";
 
-    
-
     return (
         <div className="min-h-screen flex flex-col wrapper">
             {/* Header */}
