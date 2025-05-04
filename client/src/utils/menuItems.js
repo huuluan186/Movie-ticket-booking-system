@@ -7,12 +7,12 @@ export const userMenuItems = (navigate, dispatch, currentData) => [
   {
     label: 'Thông tin tài khoản',
     icon: <IoInformationCircleOutline />,
-    onClick: () => navigate(`/profile/${currentData?.username || ''}`),
+    onClick: () => navigate(`/profile/${currentData?.user_id || ''}`),
   },
   {
     label: 'Đổi mật khẩu',
     icon: <MdOutlineChangeCircle/>,
-    onClick: () => navigate(`/change-password/${currentData?.username || ''}`),
+    onClick: () => navigate(`/change-password/${currentData?.user_id || ''}`),
   },
   {
     label: 'Lịch sử giao dịch',
