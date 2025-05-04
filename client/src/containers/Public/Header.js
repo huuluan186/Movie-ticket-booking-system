@@ -1,24 +1,26 @@
-import React, {useCallback,useState,useRef} from 'react'
+import React, {useCallback,useState,useRef,useEffect} from 'react'
 import logo from '../../assets/logo-dark-transparent.png'
 import {Button, DropdownMenu, SearchBox} from "../../components";
 import { path } from "../../utils/constant";
 import {Link,useNavigate} from 'react-router-dom';
 import icons from '../../utils/icon'
+import { toSlug } from '../../utils/toSlug';
 import { useSelector, useDispatch } from "react-redux";
 import { useClickMouseOutside } from '../../hooks';
-import { movieMenuItems, userMenuItems } from '../../utils/menuItems';
+import { userMenuItems } from '../../utils/menuItems';
+import { apiGetMovieStatuses } from '../../services/movie';
 
 const {RiArrowDropDownLine, IoPersonCircle} = icons
 
 const Header = () => {
     const {isLoggedIn}=useSelector(state=>state.auth)
     const { currentData } = useSelector(state => state.user)
+    const [categories, setCategories]=useState([])
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const getUserMenuItems = userMenuItems(navigate, dispatch,currentData);
-    const getMovieMenuItems = movieMenuItems(navigate);
 
     const goLogin = useCallback((flag)=>{
         navigate(path.LOGIN,
@@ -53,6 +55,15 @@ const Header = () => {
         });
     };
 
+    useEffect(()=>{
+        const fetchCategories = async ()=>{
+            const response = await apiGetMovieStatuses()
+            if(response?.data.err===0){
+                setCategories(response.data.response)
+            }
+        }
+        fetchCategories()
+    },[])
 
     return (
         <div className='container'>
@@ -68,46 +79,51 @@ const Header = () => {
                     <button
                         className="text-black px-4 py-2 rounded-md hover:text-orange-700 flex items-center justify-center gap-1"
                         onClick={toggleMovieDropdown}
-                    >
-                        <span className='font-medium text-xl'>Phim</span>
-                        <span className='text-xl'><RiArrowDropDownLine/></span>
-                    </button>
-                    {isMovieDropdownOpen && (
-                        <DropdownMenu
-                            items={getMovieMenuItems}
-                            onClose={() => setMovieDropdownOpen(false)}
-                        />
-                    )}
-                </div>
+                    ><span className='font-medium text-xl'>Phim</span>
+                    <span className='text-xl'><RiArrowDropDownLine/></span>
+                </button>
+                {isMovieDropdownOpen && (
+                    <DropdownMenu
+                        items={categories.map(item => ({
+                            label: item.vietnameseValue,
+                            onClick: () => {
+                                navigate(`/movies/${toSlug(item.englishValue)}`)
+                                setMovieDropdownOpen(false)
+                            }
+                        }))}
+                        onClose={() => setMovieDropdownOpen(false)}
+                    />
+                )}
+            </div>
 
-                <SearchBox/>    
+            <SearchBox/>    
 
-                <div className='flex items-center justify-center gap-4 '>
-                    {!isLoggedIn 
-                    ?
-                    <>
-                        <Button text={'Đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={()=>goLogin(false)}/>
-                        <Button text={'Đăng ký'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={()=>goLogin(true)}/>   
-                    </>  
-                    :
-                    <>
-                        <div className="relative" ref={userDropdownRef}>
-                            <Button
-                            text={currentData?.username || 'Bạn chưa đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle} IcAfter={RiArrowDropDownLine}  />
-                            {isUserDropdownOpen && (
-                                <DropdownMenu
-                                    items={getUserMenuItems}
-                                    onClose={() => setUserDropdownOpen(false)}
-                                />
-                            )}
-                        </div>
-                    </>
-                    }
-                   
-                </div>
-           </div>
-        </div>
-    )
+            <div className='flex items-center justify-center gap-4 '>
+                {!isLoggedIn 
+                ?
+                <>
+                    <Button text={'Đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={()=>goLogin(false)}/>
+                    <Button text={'Đăng ký'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={()=>goLogin(true)}/>   
+                </>  
+                :
+                <>
+                    <div className="relative" ref={userDropdownRef}>
+                        <Button
+                        text={currentData?.username || 'Bạn chưa đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle} IcAfter={RiArrowDropDownLine}  />
+                        {isUserDropdownOpen && (
+                            <DropdownMenu
+                                items={getUserMenuItems}
+                                onClose={() => setUserDropdownOpen(false)}
+                            />
+                        )}
+                    </div>
+                </>
+                }
+               
+            </div>
+       </div>
+    </div>
+)
 }
 
 export default Header

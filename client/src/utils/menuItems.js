@@ -28,14 +28,3 @@ export const userMenuItems = (navigate, dispatch, currentData) => [
     }    
   }
 ]
-
-export const movieMenuItems = (navigate) => [
-  {
-    label: 'Phim đang chiếu',
-    onClick: () => navigate('/now-showing'),
-  },
-  {
-    label: 'Phim sắp chiếu',
-    onClick: () => navigate('/coming-soon'),
-  }
-]

@@ -5,3 +5,4 @@ export {default as Homepage} from "./Homepage"
 export {default as Footer} from "./Footer"
 export {default as Profile} from "./Profile"
 export {default as ChangePassword} from './ChangePassword'
+export {default as MovieByStatus} from './MovieByStatus'
