@@ -1,4 +1,6 @@
 import db from '../models';
+import movie from '../models/movie';
+import { v4 } from 'uuid';
 
 const statusTranslations = {
   'Coming Soon': 'Phim sắp chiếu',
@@ -33,3 +35,53 @@ export const getMovieStatusesService = () => new Promise(async (resolve, reject)
     reject(error);
   }
 });
+
+export const createMovieService = ({ title, country, genre, duration, release_date, age_limit, director, cast, description, linkTrailer, thumbnail, poster, status }) => new Promise(async (resolve, reject) => {
+    try {
+        // Kiểm tra các trường bắt buộc
+        if (!title || !country || !genre || !duration || !release_date || !status) {
+            return resolve({ err: 1, msg: 'Missing input value: title, country, genre, duration, release_date, and status are required.' });
+        }
+
+        const movie = await db.Movie.create({
+            movie_id: v4(),
+            title,
+            country,
+            genre,
+            duration,
+            release_date,
+            age_limit: age_limit || 'Not rated',
+            director: director || 'Unknown',
+            cast: cast || 'Unknown',
+            description: description || 'No description',
+            linkTrailer: linkTrailer || null,
+            thumbnail: thumbnail || null, 
+            poster: poster || null,
+            status
+        });
+
+        resolve({
+            err: movie ? 0 : 1,
+            msg: movie ? 'Movie created successfully!' : 'Failed to create movie.',
+            response: movie
+        })
+    } catch (error) {
+        reject(error);
+    }
+})
+
+export const getMovieDetailService = (movie_id) => new Promise(async (resolve, reject) => {
+    try {
+        const response = await db.Movie.findOne({
+            where: { movie_id },
+            raw: true
+        });
+        resolve({
+            err: response ? 0 : 1,
+            msg: response ? 'OK' : 'Failed to get current user.',
+            response
+        })
+    } catch (error) {
+        reject(error);
+    }
+})
