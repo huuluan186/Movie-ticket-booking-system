@@ -11,7 +11,9 @@ module.exports = {
       username: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
+        charset: 'utf8mb4',    // Đặt mã hóa UTF-8mb4
+        collate: 'utf8mb4_bin', // Phân biệt chữ hoa/thường và có dấu/không dấu
       },
       password: {
         type: Sequelize.STRING

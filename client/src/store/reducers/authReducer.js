@@ -38,6 +38,12 @@ const authReducer = (state=initState,action)=>{
                 update:!state.update
             };
 
+        case actionTypes.RESET_REGISTER_STATUS:
+            return {
+                ...state,
+                isRegistered: false,
+                msg: ""
+            };
         case actionTypes.LOGOUT:
             return{
                 ...state,

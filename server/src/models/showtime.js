@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-
+        // Định nghĩa quan hệ thuộc về Movie
+      Showtime.belongsTo(models.Movie, {
+        foreignKey: 'movie_id',
+        as: 'movie' // Tùy chọn alias nếu cần
+      });
     }
   }
   Showtime.init({
@@ -18,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     showtime_starttime: DataTypes.TIME,
     showtime_endtime: DataTypes.TIME,
     showtime_price: DataTypes.DECIMAL,
-    movie_id: DataTypes.INTEGER,
+    movie_id: DataTypes.STRING,
     cinema_id: DataTypes.INTEGER,
   }, {
     sequelize,

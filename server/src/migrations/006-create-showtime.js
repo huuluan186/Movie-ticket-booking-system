@@ -26,7 +26,7 @@ module.exports = {
         allowNull: false
       },
       movie_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         references: {
           model: 'Movies',
           key: 'movie_id'
