@@ -1,7 +1,7 @@
 export const path={
     HOME:'/',
     LOGIN:'/login',
-    PROFILE:'/profile/:username',
-    CHANGEPASSWORD:'/change-password/:username',
+    PROFILE:'user/profile',
+    CHANGEPASSWORD:'user/change-password',
     MOVIES_BY_STATUS: '/movies/:status'
 }
