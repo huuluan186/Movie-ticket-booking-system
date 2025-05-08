@@ -20,7 +20,7 @@ const Header = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const getUserMenuItems = userMenuItems(navigate, dispatch,currentData);
+    const getUserMenuItems = userMenuItems(navigate, dispatch);
 
     const goLogin = useCallback((flag)=>{
         navigate(path.LOGIN,
