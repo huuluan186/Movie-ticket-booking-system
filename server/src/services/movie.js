@@ -1,11 +1,12 @@
 import db from '../models';
-import movie from '../models/movie';
 import { v4 } from 'uuid';
 
 const statusTranslations = {
   'Coming Soon': 'Phim sắp chiếu',
   'Now Showing': 'Phim đang chiếu'
 };
+// Các trường bắt buộc
+const requiredFields = ['title', 'country', 'genre', 'duration', 'release_date', 'status'];
 
 export const getMovieStatusesService = () => new Promise(async (resolve, reject) => {
   try {
@@ -39,10 +40,18 @@ export const getMovieStatusesService = () => new Promise(async (resolve, reject)
 export const createMovieService = ({ title, country, genre, duration, release_date, age_limit, director, cast, description, linkTrailer, thumbnail, poster, status }) => new Promise(async (resolve, reject) => {
     try {
         // Kiểm tra các trường bắt buộc
-        if (!title || !country || !genre || !duration || !release_date || !status) {
-            return resolve({ err: 1, msg: 'Missing input value: title, country, genre, duration, release_date, and status are required.' });
-        }
+        const inputData = { title, country, genre, duration, release_date, status };
 
+        // Kiểm tra các trường bắt buộc
+        for (const field of requiredFields) {
+            if (!inputData[field] || inputData[field].toString().trim() === '') {
+                return resolve({
+                    err: 1,
+                    msg: `Missing input value: '${field}' is required.`
+                });
+            }
+        }
+       
         const movie = await db.Movie.create({
             movie_id: v4(),
             title,
@@ -72,16 +81,62 @@ export const createMovieService = ({ title, country, genre, duration, release_da
 
 export const getMovieDetailService = (movie_id) => new Promise(async (resolve, reject) => {
     try {
-        const response = await db.Movie.findOne({
-            where: { movie_id },
-            raw: true
-        });
+        const response = await db.Movie.findOne({where: { movie_id }, raw: true});
         resolve({
             err: response ? 0 : 1,
-            msg: response ? 'OK' : 'Failed to get current user.',
+            msg: response ? 'OK' : 'Phim không tồn tại.',
             response
         })
     } catch (error) {
         reject(error);
     }
 })
+
+export const updateMovieService = (movie_id,  data ) => new Promise(async (resolve, reject) => {
+    try {
+        const { title, country, genre, duration, release_date, age_limit, director, cast, description, linkTrailer, thumbnail, poster, status } = data;
+
+        const response = await db.Movie.findOne({where: { movie_id }, raw: true});
+        if(!response) {
+            return resolve({
+                err: 1,
+                msg: 'Phim không tồn tại.',
+                response: null
+            })
+        }
+    
+        for (const field of requiredFields) {
+            if (field in data) {
+                const newValue = data[field];
+                const oldValue = response[field];
+
+                // Nếu có thay đổi mà newValue bị rỗng => báo lỗi
+                if (newValue !== oldValue && (!newValue || newValue.toString().trim() === '')) {
+                    return resolve({
+                        err: 1,
+                        msg: `${field} không được để trống.`,
+                    });
+                }
+            }
+        }
+        await db.Movie.update(data, { where: { movie_id } });
+        resolve({
+            err: 0,
+            msg: 'Cập nhật phim thành công!',
+        });
+    } catch (error) {
+        reject(error);
+    }
+})
+
+export const deleteMovieService = (movie_id) => new Promise(async (resolve, reject) => {
+    try {
+        const response = await db.Movie.destroy({ where: { movie_id } });
+        resolve({
+            err: response ? 0 : 1,
+            msg: response ? 'Xóa phim thành công!' : 'Phim không tồn tại.',
+        });
+    } catch (error) {
+        reject(error);
+    }
+});

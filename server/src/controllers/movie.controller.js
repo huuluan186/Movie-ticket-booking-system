@@ -54,3 +54,30 @@ export const getMovieDetail = async (req, res) => {
         })
     }
 }
+
+export const updateMovie = async (req, res) => {
+    const { movieId } = req.params;
+    const data = req.body;
+    try {
+        const response = await service.updateMovieService(movieId, data);
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Failed to update movie controller: ' + error.message,
+        })
+    }
+}
+
+export const deleteMovie = async (req, res) => {
+    const { movieId } = req.params;
+    try {
+        const response = await service.deleteMovieService(movieId);
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Failed to delete movie controller: ' + error.message,
+        })
+    }
+}
