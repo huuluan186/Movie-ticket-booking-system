@@ -1,0 +1,15 @@
+import React from 'react'
+
+const Card = ({ title, image, releaseDate }) => {
+    return (
+        <div className="w-full max-w-sm bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" title={title}>
+            <img src={image} alt={title} className="w-full h-80 object-cover" />
+            <div className="p-4">
+                <h3 className="text-xl capitalize font-bold text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis">{title}</h3>
+                <p className="mt-2"><span className='font-semibold'>Khởi chiếu:</span> {releaseDate}</p>
+            </div>
+        </div>
+    )
+}
+
+export default Card

@@ -7,10 +7,35 @@ export const getMovieStatuses = async (req,res) => {
     } catch (error) {
         return res.status(500).json({
             err: -1,
-            msg: 'Failed at movie controller : ' + error
+            msg: 'Failed at get movie status controller : ' + error
         })
     }
 }
+
+export const getMovieLimitController = async (req, res) => {
+    const { limit, offset } = req.query;
+    try {
+        const response = await service.getMovieLimitService(limit, offset);
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Failed at get movie limit list controller : ' + error
+        })
+    }
+};
+
+export const getAllMoviesController = async (req, res) => {
+    try {
+        const response = await service.getAllMoviesService();
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Failed at get movie limit list controller : ' + error
+        })
+    }
+};
 
 export const createMovie = async (req, res) => {
     try {
