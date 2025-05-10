@@ -10,6 +10,7 @@ const actionTypes = {
     UPDATE_PROFILE_SUCCESS: 'UPDATE_PROFILE_SUCCESS',
     UPDATE_PROFILE_FAIL: 'UPDATE_PROFILE_FAIL',
 
+    GET_MOVIES: 'GET_MOVIES',
 }
 
 export default actionTypes;

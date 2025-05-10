@@ -1,3 +1,4 @@
+import { raw } from 'express';
 import db from '../models';
 import { v4 } from 'uuid';
 
@@ -36,6 +37,37 @@ export const getMovieStatusesService = () => new Promise(async (resolve, reject)
     reject(error);
   }
 });
+
+export const getMovieLimitService = (limit, offset) => new Promise(async (resolve, reject) => {
+    try {
+        const response = await db.Movie.findAndCountAll({
+            raw: true,
+            //nested: true,
+            limit: +process.env.LIMIT || limit,
+            offset: offset * (+process.env.LIMIT) || 0,
+        });
+        resolve ({
+            err: response ? 0 : 1,
+            msg: response ? 'OK' : 'Failed to get movie list limit',
+            response: response
+          });
+    } catch (error) {
+        reject(error);
+    }
+})
+
+export const getAllMoviesService = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await db.Movie.findAll();
+        resolve ({
+            err: response ? 0 : 1,
+            msg: response ? 'OK' : 'Failed to get all movies',
+            response: response
+          });
+    } catch (error) {
+        reject(error);
+    }
+})
 
 export const createMovieService = ({ title, country, genre, duration, release_date, age_limit, director, cast, description, linkTrailer, thumbnail, poster, status }) => new Promise(async (resolve, reject) => {
     try {

@@ -3,5 +3,6 @@ export const path={
     LOGIN:'/login',
     PROFILE:'user/profile',
     CHANGEPASSWORD:'user/change-password',
-    MOVIES_BY_STATUS: '/movies/:status'
+    COMING_SOON: '/movies/coming-soon',
+    NOW_SHOWING: '/movies/now-showing',
 }
