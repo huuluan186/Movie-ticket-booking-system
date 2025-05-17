@@ -1,5 +1,5 @@
 import actionTypes from './actionTypes'
-import { apiGetMovieList } from '../../services/movie'
+import { apiGetMovieDetail, apiGetMovieList } from '../../services/movie'
 
 export const getMovieList = () => async (dispatch) => {
     try {
@@ -22,6 +22,31 @@ export const getMovieList = () => async (dispatch) => {
             type: actionTypes.GET_MOVIES,
             moviesData: null,
             msg: error || "Lỗi khi lấy danh sách phim!",
+        })
+    }
+}
+
+export const getMovieDetail = (movieId) => async (dispatch) => {
+    try {
+        const response = await apiGetMovieDetail(movieId)
+        console.log("response action get movie detail: ",response);
+        if (response?.data.err === 0) {
+            dispatch({
+                type: actionTypes.GET_MOVIE_DETAIL,
+                movieDetail: response.data.response,
+            })
+        } else {
+            dispatch({
+                type: actionTypes.GET_MOVIE_DETAIL,
+                msg: response.data.msg,
+                movieDetail: null
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: actionTypes.GET_MOVIE_DETAIL,
+            movieDetail: null,
+            msg: error || "Lỗi khi lấy thông tin phim!",
         })
     }
 }

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions'
 import {SliderBanner} from '../../components/index'
 import slides from '../../utils/sliders'
+import { toSlug } from '../../utils/toSlug';
 import {Card} from '../../components/index'
 import placehoder from "../../assets/placeholder.png";
 import { getImageUrl, formatDate, sortMoviesByReleaseDate } from '../../utils/helpers';
@@ -27,12 +28,12 @@ const Homepage = () => {
         dispatch(actions.getMovieList());
     }, [dispatch]);
     
-     const latestMovies = sortMoviesByReleaseDate(moviesData, 5);
+    const latestMovies = sortMoviesByReleaseDate(moviesData, 5);
     
     return (
         <div className="w-full mx-auto border border-red-500">
             <SliderBanner slides={slides} />
-            <div className='container mx-auto my-6'>
+            <div className='container mx-auto my-6 px-4'>
                 <section className="mt-10">
                     <div className="text-orange-600 text-3xl font-bold text-center mb-8 block mx-auto">
                         PHIM MỚI
@@ -48,6 +49,7 @@ const Homepage = () => {
                                     title={movie?.title || "Untitled"}
                                     image={movie?.poster ? getImageUrl(movie?.poster) : placehoder}
                                     releaseDate={formatDate(movie?.release_date)}
+                                    navigateTo={`movies/detail/${toSlug(movie?.title)}`}
                                 />
                             ))
                         ) : (

@@ -26,3 +26,15 @@ export const apiGetMovieList = () => new Promise(async (resolve,reject)=>{
     }
 })
 
+export const apiGetMovieDetail = (movieId) => new Promise(async (resolve,reject)=>{
+    try {
+        const response = await axiosConfig({
+            method:'get',
+            url: `/api/v1/movies/${movieId}`,
+        })
+        console.log(response)
+        resolve(response)
+    } catch (error) {
+        reject(error)
+    }
+})

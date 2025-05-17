@@ -11,6 +11,7 @@ const actionTypes = {
     UPDATE_PROFILE_FAIL: 'UPDATE_PROFILE_FAIL',
 
     GET_MOVIES: 'GET_MOVIES',
+    GET_MOVIE_DETAIL: 'GET_MOVIE_DETAIL',
 }
 
 export default actionTypes;

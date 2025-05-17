@@ -1,14 +1,19 @@
-import React from 'react'
+import { Link, useLocation } from 'react-router-dom';
 
-const Card = ({ title, image, releaseDate }) => {
+const Card = ({ title, image, releaseDate, navigateTo }) => {
+    const { pathname } = useLocation();
     return (
-        <div className="w-full max-w-sm bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" title={title}>
-            <img src={image} alt={title} className="w-full h-80 object-cover" />
-            <div className="p-4">
-                <h3 className="text-xl capitalize font-bold text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis">{title}</h3>
-                <p className="mt-2"><span className='font-semibold'>Khởi chiếu:</span> {releaseDate}</p>
+       <Link to={navigateTo ? navigateTo : pathname} className="flex justify-center items-center">
+            <div className="w-full max-w-sm bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" 
+                title={title}
+            >
+                <img src={image} alt={title} className="w-full h-80 object-cover" />
+                <div className="p-4">
+                    <h3 className="text-xl capitalize font-bold text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis">{title}</h3>
+                    <p className="mt-2"><span className='font-semibold'>Khởi chiếu:</span> {releaseDate}</p>
+                </div>
             </div>
-        </div>
+       </Link>
     )
 }
 
