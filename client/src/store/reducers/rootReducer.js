@@ -1,5 +1,6 @@
 import authReducer from "./authReducer";
 import userReducer from "./userReducer";
+import movieReducer from "./movieReducer";
 import { combineReducers } from "redux";
 import storage from "redux-persist/lib/storage";
 import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
@@ -18,7 +19,8 @@ const authConfig={
 
 const rootReducer = combineReducers({
     auth: persistReducer(authConfig,authReducer),
-    user:userReducer
+    user:userReducer,
+    movie:movieReducer,
 })
 
 export default rootReducer;

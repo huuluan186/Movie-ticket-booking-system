@@ -5,7 +5,7 @@ import * as userController from '../controllers/user.controller'
 const router = express.Router()
 
 router.use(verifyToken)
-router.get('/get-current-user', userController.getUserInfo)
-router.put('/profile',userController.updateUserInfo)
-router.put('/change-password', userController.changePassword)
+router.get('/me', userController.getUserInfo)
+router.put('/me/profile',userController.updateUserInfo)
+router.put('/me/password', userController.changePassword)
 export default router

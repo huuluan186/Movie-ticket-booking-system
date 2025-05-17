@@ -1,4 +1,4 @@
-import { RiArrowDropDownLine } from "react-icons/ri";
+import { RiArrowDropDownLine, RiTicket2Line } from "react-icons/ri";
 import { IoPersonCircle, IoCheckmarkCircle, IoInformationCircleOutline, IoLogOutOutline } from "react-icons/io5";
 import { AiOutlineHistory } from "react-icons/ai";
 import { 
@@ -12,6 +12,7 @@ import {
   import { MdOutlineChangeCircle } from "react-icons/md";
 const icons = {
     RiArrowDropDownLine,
+    RiTicket2Line,
     IoPersonCircle, 
     IoCheckmarkCircle,
     IoInformationCircleOutline,

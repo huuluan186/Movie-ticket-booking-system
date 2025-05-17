@@ -4,7 +4,7 @@ export const apiGetCurrentUser = () => new Promise(async (resolve, reject) => {
     try {
         const response = await axiosConfig({
             method: 'get',
-            url: '/api/v1/user/get-current-user',
+            url: '/api/v1/users/me',
         });
         console.log("Request Headers:", response.config.headers);
         resolve(response.data); // Trả về response.data thay vì toàn bộ response
@@ -19,7 +19,7 @@ export const apiUpdateInfoCurrentUser = (payload) => new Promise(async (resolve,
     try {
         const response = await axiosConfig({
             method: 'put',
-            url: '/api/v1/user/profile',
+            url: '/api/v1/users/me/profile',
             data:payload
         });
         console.log("Request Headers:", response.config.headers);
@@ -35,7 +35,7 @@ export const apiChangePassword = (payload) => new Promise(async (resolve,reject)
     try {
         const response = await axiosConfig({
             method:'put',
-            url:'/api/v1/user/change-password',
+            url:'/api/v1/users/me/password',
             data:payload
         })
         console.log("Request Headers:", response.config.headers);

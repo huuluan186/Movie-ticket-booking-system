@@ -34,3 +34,27 @@ export const checkPhoneNumber = (phone, fieldName = 'email') => {
 }
 
 //đặt name:'email thay vì phone' vì ở đăng nhập sử dụng input chính để đại diện kiểm tra là email
+
+export const BASE_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
+
+export const getImageUrl = (relativePath) => {
+    if (!relativePath) return null; // Trả về null nếu không có đường dẫn
+    return `${BASE_URL}${relativePath}`;
+};
+
+export const formatDate = (dateString) => {
+    const date = new Date(dateString); // Chuyển đổi chuỗi thành đối tượng Date
+    return date.toLocaleDateString('en-GB'); // Định dạng ngày theo kiểu dd/mm/yyyy
+};
+
+// Helper để sắp xếp và phân trang dữ liệu
+export const sortMoviesByReleaseDate = (movies, limit = null) => {
+    if (movies && movies.length > 0) {
+        // Sắp xếp phim theo ngày phát hành
+        const sortedMovies = movies.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+        
+        // Nếu limit được truyền, cắt mảng theo số lượng phim yêu cầu
+        return limit ? sortedMovies.slice(0, limit) : sortedMovies;
+    }
+    return [];
+};
