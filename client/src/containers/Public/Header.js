@@ -66,7 +66,7 @@ const Header = () => {
     },[])
 
     return (
-        <div className='container'>
+        <div className='container px-4'>
            <div className="w-full flex items-center justify-between">
                 <Link to={'/'} >
                     <img

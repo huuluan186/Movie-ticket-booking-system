@@ -2,6 +2,7 @@ import actionTypes from "../actions/actionTypes";
 
 const initState = {
     moviesData: {},
+    movieDetail: null,
     msg:'',
 }
 
@@ -11,6 +12,12 @@ const movieReducer = (state = initState, action) => {
             return {
                 ...state,
                 moviesData: action.moviesData || [],
+                msg: action.msg || '',
+            };
+        case actionTypes.GET_MOVIE_DETAIL:
+            return {
+                ...state,
+                movieDetail: action.movieDetail || {},
                 msg: action.msg || '',
             };
         default:
