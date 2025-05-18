@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, MovieInfoItem } from '../../components';
 import placehoder from '../../assets/placeholder.png'
-import { toSlug } from '../../utils/toSlug';
 import { getImageUrl, formatDate, getYouTubeEmbedUrl } from '../../utils/helpers';
 import * as actions from '../../store/actions'
 import { useEffect, useState } from 'react';
@@ -14,29 +13,17 @@ const isActive = 'flex items-center space-x-2 font-bold text-xl border-white'
 const isNotActive = 'flex items-center space-x-2 text-lg'
 
 const MovieDetail = () => {
-    const { title } = useParams();
+    const { id } = useParams();
     const dispatch = useDispatch();
-    const { moviesData, movieDetail } = useSelector(state => state.movie);
-
-    const [movieId, setMovieId] = useState(null);
+    const { movieDetail } = useSelector(state => state.movie);
     const [activeTab, setActiveTab] = useState('details');
-
-    // Tìm movieId từ slug
-    useEffect(() => {
-        if (moviesData && Array.isArray(moviesData)) {
-        const found = moviesData.find(m => toSlug(m.title) === title);
-        if (found) {
-            setMovieId(found.movie_id);
-        }
-        }
-    }, [title, moviesData]);
 
     // Gọi API khi đã có movieId
     useEffect(() => {
-        if (movieId) {
-        dispatch(actions.getMovieDetail(movieId));
+        if (id) {
+            dispatch(actions.getMovieDetail(id));
         }
-    }, [movieId, dispatch]);
+    }, [id, dispatch]);
 
     return (
         <div className='container mx-auto my-6 px-4'>
