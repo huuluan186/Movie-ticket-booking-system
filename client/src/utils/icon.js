@@ -1,6 +1,7 @@
 import { RiArrowDropDownLine, RiTicket2Line } from "react-icons/ri";
 import { IoPersonCircle, IoCheckmarkCircle, IoInformationCircleOutline, IoLogOutOutline } from "react-icons/io5";
 import { AiOutlineHistory } from "react-icons/ai";
+import { FaRegHandPointRight } from "react-icons/fa6";
 import { 
     FaPhone, 
     FaEnvelope, 
@@ -24,7 +25,8 @@ const icons = {
     FaGithub, 
     FaFacebook,
     FiSearch,
-    MdOutlineChangeCircle
+    MdOutlineChangeCircle,
+    FaRegHandPointRight,
 }
 
 export default icons;
