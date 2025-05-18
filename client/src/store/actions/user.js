@@ -1,6 +1,6 @@
 import actionTypes from './actionTypes'
 import {apiGetCurrentUser, apiUpdateInfoCurrentUser } from '../../services/user'
-
+import { logout } from './auth';
 
 export const getCurrent = () => async (dispatch) => {
     try {
@@ -24,6 +24,11 @@ export const getCurrent = () => async (dispatch) => {
             currentData: null,
             msg: error,
         })
+
+         //Khi token hết hạn thì sẽ logout
+        if (error.err === 1 && error.msg.includes('expired')) {
+                dispatch(logout());
+        }
     }
 };
 
