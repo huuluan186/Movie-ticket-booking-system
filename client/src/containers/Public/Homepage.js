@@ -23,7 +23,6 @@ const events = [
 
 const Homepage = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const {moviesData} = useSelector(state => state.movie);
     // Gọi API khi component mount
     useEffect( () => {

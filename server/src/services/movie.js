@@ -38,30 +38,29 @@ export const getMovieStatusesService = () => new Promise(async (resolve, reject)
   }
 });
 
-export const getMovieLimitService = (limit, offset) => new Promise(async (resolve, reject) => {
+export const getMoviesService = ({ status, limit, offset }) => new Promise(async (resolve, reject) => {
     try {
-        const response = await db.Movie.findAndCountAll({
+        const query = {
             raw: true,
-            //nested: true,
-            limit: +process.env.LIMIT || limit,
-            offset: offset * (+process.env.LIMIT) || 0,
-        });
-        resolve ({
-            err: response ? 0 : 1,
-            msg: response ? 'OK' : 'Failed to get movie list limit',
-            response: response
-          });
-    } catch (error) {
-        reject(error);
-    }
-})
+            where: {},
+        };
 
-export const getAllMoviesService = () => new Promise(async (resolve, reject) => {
-    try {
-        const response = await db.Movie.findAll();
+        if (status) {
+            query.where.status = status; // lọc theo status nếu có
+        }
+
+        if(limit) {
+            const parsedLimit = limit ? +limit : (+process.env.LIMIT || 8);
+            const parsedOffset = offset ? offset * parsedLimit : 0;
+            query.limit = parsedLimit;
+            query.offset = parsedOffset;
+        }
+        // Nếu không có limit, lấy tất cả, nên dùng findAndCountAll để lấy count + rows
+        const response = await db.Movie.findAndCountAll(query);
+
         resolve ({
             err: response ? 0 : 1,
-            msg: response ? 'OK' : 'Failed to get all movies',
+            msg: response ? 'OK' : 'Failed to get movies list',
             response: response
           });
     } catch (error) {
