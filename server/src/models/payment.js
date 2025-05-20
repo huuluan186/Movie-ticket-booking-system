@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Payment.init({
-    order_id: DataTypes.INTEGER,
+    payment_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      primaryKey: true,
+    },
+    order_id: DataTypes.STRING,
     payment_method: DataTypes.ENUM(['Credit Card', 'Debit Card','PayPal', 'Cash']),
     transaction_id: DataTypes.STRING,
     payment_time: DataTypes.DATE,

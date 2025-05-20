@@ -14,9 +14,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Ticket.init({
-    showtime_id: DataTypes.INTEGER,
-    order_id: DataTypes.INTEGER,
-    seat_id: DataTypes.INTEGER,
+    ticket_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      primaryKey: true,
+    },
+    showtime_id: DataTypes.STRING,
+    order_id: DataTypes.STRING,
+    seat_id: DataTypes.STRING,
     purchase_time: DataTypes.DATE,
     ticket_status: DataTypes.ENUM(['Booked', 'Used', 'Canceled']),
   }, {

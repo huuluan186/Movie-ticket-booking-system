@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   OrderTable.init({
-    user_id: DataTypes.INTEGER,
+    order_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      primaryKey: true,
+    },
+    user_id: DataTypes.STRING,
     order_date: DataTypes.DATE,
     total_amount: DataTypes.DECIMAL,
     payment_status: DataTypes.ENUM(['Pending', 'Completed', 'Canceled']),

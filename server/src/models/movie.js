@@ -33,7 +33,6 @@ module.exports = (sequelize, DataTypes) => {
     cast: DataTypes.TEXT,
     description: DataTypes.TEXT('long'),
     linkTrailer: DataTypes.STRING,
-    thumbnail: DataTypes.STRING,
     poster: DataTypes.STRING,
     status: DataTypes.ENUM(['Coming Soon', 'Now Showing']),
   }, {
