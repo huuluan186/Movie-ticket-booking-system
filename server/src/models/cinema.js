@@ -10,12 +10,24 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+        Cinema.belongsTo(models.CinemaCluster, {
+            foreignKey: 'cluster_id',
+        });
 
+        Cinema.hasMany(models.Showtime, {
+            foreignKey: 'cinema_id',
+            onDelete: 'CASCADE', 
+        });
     }
   }
   Cinema.init({
+    cinema_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        primaryKey: true,
+    },
     cinema_name: DataTypes.STRING,
-    cluster_id: DataTypes.INTEGER,
+    cluster_id: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Cinema',

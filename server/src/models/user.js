@@ -18,6 +18,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true,
+        charset: 'utf8mb4',
+        collate: 'utf8mb4_bin',
     },
     username: DataTypes.STRING,
     password: DataTypes.STRING,
