@@ -6,7 +6,9 @@ module.exports = {
       movie_id: {
         type: Sequelize.STRING,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
+        charset: 'utf8mb4',
+        collate: 'utf8mb4_bin',
       },
       title: {
         type: Sequelize.STRING,
@@ -45,10 +47,6 @@ module.exports = {
         allowNull: true
       },
       linkTrailer: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      thumbnail: {
         type: Sequelize.STRING,
         allowNull: true
       },

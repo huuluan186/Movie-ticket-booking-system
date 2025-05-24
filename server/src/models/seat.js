@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Seat.init({
-    cinema_id: DataTypes.INTEGER,
+    seat_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      primaryKey: true,
+    },
+    cinema_id: DataTypes.STRING,
     seat_row: DataTypes.STRING,
     seat_column: DataTypes.STRING,
     seat_type: DataTypes.ENUM(['VIP', 'Normal']),

@@ -12,13 +12,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
         Cinema.belongsTo(models.CinemaCluster, {
             foreignKey: 'cluster_id',
-            as: 'cinema_cluster'
+            as: 'cinema_cluster',
         });
 
         Cinema.hasMany(models.Showtime, {
             foreignKey: 'cinema_id',
             onDelete: 'CASCADE', 
-            as:'cinema'
+            as:'cinema',
         });
     }
   }
