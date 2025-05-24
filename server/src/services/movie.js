@@ -1,4 +1,3 @@
-import { raw } from 'express';
 import db from '../models';
 import { v4 } from 'uuid';
 
@@ -123,34 +122,49 @@ export const getMovieDetailService = (movie_id) => new Promise(async (resolve, r
     }
 })
 
-export const updateMovieService = (movie_id,  data ) => new Promise(async (resolve, reject) => {
+export const updateMovieService = (movie_id, data) => new Promise(async (resolve, reject) => {
     try {
-        const { title, country, genre, duration, release_date, age_limit, director, cast, description, linkTrailer, thumbnail, poster, status } = data;
-
-        const response = await db.Movie.findOne({where: { movie_id }, raw: true});
-        if(!response) {
+        const movie = await db.Movie.findOne({ where: { movie_id }, raw: true });
+        if (!movie) {
             return resolve({
                 err: 1,
                 msg: 'Phim không tồn tại.',
                 response: null
-            })
+            });
         }
-    
+
+        // Kiểm tra trường bắt buộc nếu được sửa và khác dữ liệu cũ
         for (const field of requiredFields) {
             if (field in data) {
                 const newValue = data[field];
-                const oldValue = response[field];
+                const oldValue = movie[field];
 
-                // Nếu có thay đổi mà newValue bị rỗng => báo lỗi
                 if (newValue !== oldValue && (!newValue || newValue.toString().trim() === '')) {
                     return resolve({
                         err: 1,
-                        msg: `${field} không được để trống.`,
+                        msg: `Trường '${field}' không được để trống.`,
                     });
                 }
             }
         }
-        await db.Movie.update(data, { where: { movie_id } });
+
+        // Chỉ cập nhật trường thay đổi
+        const updatedFields = {};
+        for (const key in data) {
+            if (data[key] !== movie[key]) {
+                updatedFields[key] = data[key];
+            }
+        }
+
+        if (Object.keys(updatedFields).length === 0) {
+            return resolve({
+                err: 0,
+                msg: 'Không có thay đổi nào được gửi lên.',
+            });
+        }
+
+        await db.Movie.update(updatedFields, { where: { movie_id } });
+
         resolve({
             err: 0,
             msg: 'Cập nhật phim thành công!',
@@ -158,7 +172,8 @@ export const updateMovieService = (movie_id,  data ) => new Promise(async (resol
     } catch (error) {
         reject(error);
     }
-})
+});
+
 
 export const deleteMovieService = (movie_id) => new Promise(async (resolve, reject) => {
     try {
