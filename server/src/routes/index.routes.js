@@ -11,6 +11,7 @@ const initRoutes=(app)=>{
     app.use('/api/v1/cinemachains',cinemaChainRouter)
     app.use('/api/v1/cinemaclusters',cinemaClusterRouter)
     app.use('/api/v1/cinemas',cinemaRouter)
+    
     return app.use('/',(req,res)=>{
         res.send("server on...")
     })

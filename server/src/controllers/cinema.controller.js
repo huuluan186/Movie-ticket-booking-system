@@ -1,5 +1,6 @@
 import * as service from '../services/cinema.js';
 
+
 //chain controller
 export const createCinemeChainController = async (req, res) => {
     try {

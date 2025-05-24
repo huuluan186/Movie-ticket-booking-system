@@ -3,6 +3,7 @@ import {nanoid} from 'nanoid'
 import {compareVietnameseUsername} from '../utils/generateCode'
 import { Op } from 'sequelize';
 
+
 //api chains
 export const createCinemChainService = ({chain_name, logo}) => new Promise(async (resolve, reject) => {  
     try {

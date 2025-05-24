@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'CASCADE', 
             as:'cinema'
         });
-
     }
   }
   Cinema.init({

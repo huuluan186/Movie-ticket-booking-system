@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         CinemaCluster.hasMany(models.Cinema, {
             foreignKey: 'cluster_id',
             onDelete: 'CASCADE',
-            as: 'cinema_cluster'
+            as: 'cinema_cluster',
         });
     }
   }

@@ -1,6 +1,6 @@
 import express from "express"
 import * as cinemaController from '../controllers/cinema.controller'
-import { uploadImages, attachImagePaths } from '../middlewares/upload';
+import { uploadImages, attachImagePaths } from '../middlewares/upload'
 
 const router = express.Router()
 
