@@ -12,10 +12,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
         CinemaCluster.belongsTo(models.CinemaChain, {
             foreignKey: 'chain_id',
+            as: 'cinema_chain'
         });
         CinemaCluster.hasMany(models.Cinema, {
             foreignKey: 'cluster_id',
             onDelete: 'CASCADE',
+            as: 'cinema_cluster',
         });
     }
   }
@@ -28,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     cluster_name: DataTypes.STRING,
     address: DataTypes.STRING,
     chain_id: DataTypes.STRING,
-    city: DataTypes.STRING,
+    //city: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'CinemaCluster',
