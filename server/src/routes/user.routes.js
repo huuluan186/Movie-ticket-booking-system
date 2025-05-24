@@ -4,6 +4,7 @@ import * as userController from '../controllers/user.controller'
 
 const router = express.Router()
 
+router.get('/',userController.getAllUsersController)
 router.use(verifyToken)
 router.get('/me', userController.getUserInfo)
 router.put('/me/profile',userController.updateUserInfo)
