@@ -5,7 +5,7 @@ import { Op } from 'sequelize';
 
 
 //api chains
-export const createCinemChainService = ({chain_name, logo}) => new Promise(async (resolve, reject) => {  
+export const createCinemaChainService = ({chain_name, logo}) => new Promise(async (resolve, reject) => {  
     try {
         const existingChains = await db.CinemaChain.findAll({ attributes: ['chain_name'] });
         const isDuplicate = existingChains.some(chain => 
@@ -48,6 +48,25 @@ export const getAllCinemaChainsService = () => new Promise(async (resolve, rejec
             err: chains ? 0 : 1,
             msg: chains ? 'Lấy danh sách chuỗi rạp thành công!' : 'Lấy danh sách chuỗi rạp thất bại!',
             response: chains
+        });
+    } catch (error) {
+        reject(error);
+    }
+});
+
+export const getCinemaChainByIdService = (chain_id) => new Promise(async (resolve, reject) => {
+    try {
+        const chain = await db.CinemaChain.findOne({
+            where: { chain_id },
+            raw: true,
+            nested: true,
+            attributes: ['chain_id','chain_name', 'logo'],
+        });
+
+        resolve({
+            err: chain ? 0 : 1,
+            msg: chain ? `Lấy thông tin chuỗi rạp: ${chain_id} thành công!` : 'Lấy thông tin chuỗi rạp thất bại!',
+            response: chain
         });
     } catch (error) {
         reject(error);
@@ -178,7 +197,7 @@ export const createCinemaClusterService = ({cluster_name, address, city, chain_i
     }
 });
 
-export const getAllCinemaClusterService = (chain_id) => new Promise(async (resolve, reject) => {
+export const getAllCinemaClustersService = (chain_id) => new Promise(async (resolve, reject) => {
     try {
         const response = await db.CinemaCluster.findAndCountAll({
             raw: true,
@@ -359,7 +378,7 @@ export const createCinemaService = ({cinema_name, cluster_id}) => new Promise(as
     }
 });
 
-export const getAllCinemaService = (cluster_id) => new Promise(async (resolve, reject) => {
+export const getAllCinemasService = (cluster_id) => new Promise(async (resolve, reject) => {
     try {
         const response = await db.Cinema.findAndCountAll({
             raw: true,
