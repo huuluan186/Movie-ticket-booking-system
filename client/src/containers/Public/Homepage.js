@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import * as actions from '../../store/actions'
 import {SliderBanner} from '../../components/index'
 import slides from '../../utils/sliders'
@@ -49,7 +50,7 @@ const Homepage = () => {
                                     title={movie?.title || "Untitled"}
                                     image={movie?.poster ? getImageUrl(movie?.poster) : placehoder}
                                     releaseDate={formatDate(movie?.release_date)}
-                                    navigateTo={`movies/detail/${toSlug(movie?.title)}`}
+                                    navigateTo={`movies/detail/${movie?.movie_id}/${toSlug(movie?.title)}`}
                                 />
                             ))
                         ) : (

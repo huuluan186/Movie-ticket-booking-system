@@ -5,6 +5,5 @@ export {default as Homepage} from "./Homepage"
 export {default as Footer} from "./Footer"
 export {default as Profile} from "./Profile"
 export {default as ChangePassword} from './ChangePassword'
-export {default as ComingSoon} from './ComingSoon'
-export {default as NowShowing} from './NowShowing'
+export {default as MoviesByStatus} from './MoviesByStatus'
 export {default as MovieDetail} from './MovieDetail'

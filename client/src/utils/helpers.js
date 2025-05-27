@@ -58,3 +58,21 @@ export const sortMoviesByReleaseDate = (movies, limit = null) => {
     }
     return [];
 };
+
+// Hàm chuyển đổi link YouTube sang dạng embed
+export const getYouTubeEmbedUrl = (url) => {
+    if (!url) return '';
+    // Extract video ID from various YouTube URL formats
+    const videoIdMatch = url.match(/(?:v=|\.be\/)([a-zA-Z0-9_-]{11})/);
+    const videoId = videoIdMatch ? videoIdMatch[1] : null;
+    return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=0` : '';
+};
+
+// Hàm chuyển đổi văn bản
+export const toCapitalize = (str) => {
+    return str
+      .toLowerCase() // Chuyển thành chữ thường
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Viết hoa chữ cái đầu
+      .join(' ');
+};

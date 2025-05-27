@@ -40,3 +40,15 @@ export const changePassword = async(req,res)=>{
         })
     }
 }
+
+export const getAllUsersController = async (req, res) => {
+    try {
+        const response = await services.getAllUsersService()
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Failed at user controller 4: ' + error
+        })
+    }
+}

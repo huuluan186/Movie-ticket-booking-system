@@ -1,14 +1,14 @@
 import actionTypes from './actionTypes'
 import { apiGetMovieDetail, apiGetMovieList } from '../../services/movie'
 
-export const getMovieList = () => async (dispatch) => {
+export const getMovieList = (query={}) => async (dispatch) => {
     try {
-        const response = await apiGetMovieList()
+        const response = await apiGetMovieList(query)
         console.log("response action get movie list: ",response);
         if (response?.data.err === 0) {
             dispatch({
                 type: actionTypes.GET_MOVIES,
-                moviesData: response.data.response,
+                moviesData: response.data.response.rows,
             })
         } else {
             dispatch({
