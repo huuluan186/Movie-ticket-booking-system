@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "migrate": "sequelize db:migrate --config src/config/config.js",
     "start": "nodemon --exec babel-node server.js"
   },
   "keywords": [],
