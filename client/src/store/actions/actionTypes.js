@@ -12,6 +12,9 @@ const actionTypes = {
 
     GET_MOVIES: 'GET_MOVIES',
     GET_MOVIE_DETAIL: 'GET_MOVIE_DETAIL',
+
+    GET_ALL_CINEMA_CHAINS: 'GET_ALL_CINEMA_CHAINS',
+    GET_CINEMA_CLUSTER: 'GET_CINEMA_CLUSTER',
 }
 
 export default actionTypes;
