@@ -1,8 +1,7 @@
 import * as service from '../services/cinema.js';
 
-
 //chain controller
-export const createCinemaChainController = async (req, res) => {
+export const createCinemeChainController = async (req, res) => {
     try {
         const { chain_name, logo } = req.body;
         if(!chain_name){
@@ -12,7 +11,7 @@ export const createCinemaChainController = async (req, res) => {
             });
         }
 
-        const response = await service.createCinemaChainService({ chain_name, logo });
+        const response = await service.createCinemChainService({ chain_name, logo });
         return res.status(200).json(response);
     } catch (error) {
         return res.status(500).json({
@@ -51,14 +50,6 @@ export const updateCinemaChainController = async (req, res) => {
     try {
         const { chain_id } = req.params;
         const { chain_name, logo } = req.body;
-
-        if (!chain_name) {
-            return res.status(400).json({
-                err: 1,
-                msg: 'Missing required fields: chain_name'
-            });
-        }
-
         const response = await service.updateCinemaChainService(chain_id, { chain_name, logo });
         return res.status(200).json(response);
     } catch (error) {
@@ -103,10 +94,10 @@ export const createCinemaClusterController = async (req, res)=>{
     }
 }
 
-export const getAllCinemaClustersController = async (req, res) => {
+export const getAllCinemaClusterController = async (req, res) => {
     try {
         const {chain_id}=req.query
-        const response = await service.getAllCinemaClustersService(chain_id);
+        const response = await service.getAllCinemaClusterService(chain_id);
         return res.status(200).json(response);
     } catch (error) {
         return res.status(500).json({
@@ -177,10 +168,10 @@ export const createCinemaController = async (req, res)=>{
     }
 }
 
-export const getAllCinemasController = async (req, res) => {
+export const getAllCinemaController = async (req, res) => {
     try {
         const {cluster_id} = req.query
-        const response = await service.getAllCinemasService(cluster_id);
+        const response = await service.getAllCinemaService(cluster_id);
         return res.status(200).json(response);
     } catch (error) {
         return res.status(500).json({
