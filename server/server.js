@@ -18,6 +18,8 @@ app.use('/images', express.static('src/public/images'));
 initRoutes(app)
 connectDatabase()
 
+require('./cron')
+
 const port=process.env.PORT || 5000
 app.listen(port,()=>{
     console.log(`Website listening on port ${port}`)
