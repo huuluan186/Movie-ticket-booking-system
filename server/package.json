@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "migrate": "sequelize db:migrate --config src/config/config.js",
     "start": "nodemon --exec babel-node server.js"
   },
   "keywords": [],
@@ -16,10 +17,11 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "moment": "^2.30.1" ,
+    "moment": "^2.30.1",
     "multer": "^1.4.5-lts.2",
     "mysql2": "^3.14.0",
-    "nanoid": "^5.1.5" ,
+    "nanoid": "^5.1.5",
+    "node-cron": "^4.0.7",
     "nodemon": "^3.1.9",
     "sequelize": "^6.37.7",
     "uuid": "^11.1.0"

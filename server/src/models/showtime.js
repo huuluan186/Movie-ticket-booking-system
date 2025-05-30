@@ -16,10 +16,12 @@ module.exports = (sequelize, DataTypes) => {
         as: 'movie' // Tùy chọn alias nếu cần
       });
 
-      Showtime.belongsTo(models.Movie, {
+      Showtime.belongsTo(models.Cinema, {
         foreignKey: 'cinema_id',
         as: 'cinema' 
       });
+
+      Showtime.hasMany(models.Ticket, { foreignKey: 'showtime_id', as: 'tickets' });
       
     }
   }
@@ -32,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     showtime_date: DataTypes.DATEONLY,
     showtime_starttime: DataTypes.TIME,
     showtime_endtime: DataTypes.TIME,
-    showtime_price: DataTypes.DECIMAL,
+    price: DataTypes.DECIMAL,
     movie_id: DataTypes.STRING,
     cinema_id: DataTypes.STRING,
   }, {
