@@ -5,4 +5,5 @@ export const path={
     CHANGEPASSWORD:'user/change-password',
     MOVIES_BY_STATUS: '/movies/:statusSlug',
     MOVIE_DETAIL: '/movies/detail/:id/:slug',
+    SHOWTIME: '/showtime',
 }
