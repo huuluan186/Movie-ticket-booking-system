@@ -7,3 +7,4 @@ export {default as Profile} from "./Profile"
 export {default as ChangePassword} from './ChangePassword'
 export {default as MoviesByStatus} from './MoviesByStatus'
 export {default as MovieDetail} from './MovieDetail'
+export {default as Showtime} from './Showtime'
