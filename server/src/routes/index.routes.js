@@ -4,6 +4,7 @@ import movieRouter from './movie.routes'
 import cinemaChainRouter from './cinemaChain.routes'
 import cinemaClusterRouter from './cinemaCluster.routes'
 import cinemaRouter from './cinema.routes'
+import showtimeRouter from './showtime.routes'
 const initRoutes=(app)=>{
     app.use('/api/v1/auth',authRouter)
     app.use('/api/v1/users', userRouter)
@@ -11,7 +12,7 @@ const initRoutes=(app)=>{
     app.use('/api/v1/cinemachains',cinemaChainRouter)
     app.use('/api/v1/cinemaclusters',cinemaClusterRouter)
     app.use('/api/v1/cinemas',cinemaRouter)
-    
+    app.use('/api/v1/showtimes', showtimeRouter)
     return app.use('/',(req,res)=>{
         res.send("server on...")
     })
