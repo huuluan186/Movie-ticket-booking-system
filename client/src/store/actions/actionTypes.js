@@ -15,6 +15,7 @@ const actionTypes = {
 
     GET_ALL_CINEMA_CHAINS: 'GET_ALL_CINEMA_CHAINS',
     GET_CINEMA_CLUSTER: 'GET_CINEMA_CLUSTER',
+    GET_SHOWTIME: 'GET_SHOWTIME',
 }
 
 export default actionTypes;
