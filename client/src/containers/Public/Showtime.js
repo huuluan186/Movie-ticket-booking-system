@@ -1,23 +1,33 @@
 import { useEffect, useState } from 'react';
 import smallBanner from '../../assets/small-banner.png';
-import { Banner } from '../../components';
+import { Banner, Modal} from '../../components';
 import * as actions from '../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatDate, getImageUrl  } from '../../utils/helpers';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import icons from '../../utils/icon';
+import {getModalButtons} from '../../utils/modalBtnDatas';
+
+const  {RiErrorWarningLine} = icons
 
 const Showtime = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { cinemaChains, cinemaClusters } = useSelector(state => state.cinema);
     const { movies, showtimesByDate } = useSelector(state => state.showtime);
-    
+    const {isLoggedIn} =useSelector(state=>state.auth)
+
     const [selectedChainName, setSelectedChainName] = useState(null); //để lưu tên chuỗi rạp chưa có cụm
     const [selectedClusterName, setSelectedClusterName] = useState(null); //để lưu tên cụm rạp chưa có lịch chiếu
     const [selectedMovieId, setSelectedMovieId] = useState(null);
     const [selectedClusterId, setSelectedClusterId] = useState(null);
     const [selectedChainId, setSelectedChainId] = useState(null);
+    const [selectedShowtimeId, setSelectedShowtimeId] = useState(null);
     const [clusterMovies, setClusterMovies] = useState([]);
     const [hasInitialized, setHasInitialized] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    // Lấy danh sách button cho modal
+    const modalButtons = getModalButtons(setIsModalOpen, navigate, selectedShowtimeId);
 
     useEffect(() => {
         dispatch(actions.getAllCinemaChains());
@@ -62,6 +72,16 @@ const Showtime = () => {
             dispatch(actions.getShowtime(selectedClusterId, movieId)); // truyền cả movie và cluster
         }
     }
+
+    const handleShowtimeClick = (showtimeId) => {
+        if (!isLoggedIn) {
+            setSelectedShowtimeId(showtimeId);
+            setIsModalOpen(true); // Hiển thị modal nếu chưa đăng nhập
+        } else {
+            dispatch(actions.getShowtimeDetailById(showtimeId));
+            navigate(`/booking/${showtimeId}/select-seat`);
+        }
+    };
 
     useEffect(() => {
         if (cinemaChains?.length > 0 && !hasInitialized) {
@@ -168,13 +188,13 @@ const Showtime = () => {
                                             <h4 className="text-md font-bold text-gray-300 mb-2">{formatDate(date)}</h4>
                                             <div className="flex flex-wrap gap-3">
                                                 {showtimes.map(st => (
-                                                    <Link
+                                                    <button
                                                         key={st.showtime_id}
-                                                        to={`/booking/${st.showtime_id}`}
+                                                        onClick={()=>handleShowtimeClick(st.showtime_id)}
                                                         className="px-3 py-2 bg-white text-black border border-gray-300 rounded hover:bg-orange-400 hover:text-white"
                                                     >
                                                         {st.start_time.slice(0, 5)}
-                                                    </Link>
+                                                    </button>
                                                 ))}
                                             </div>
                                         </div>
@@ -189,6 +209,13 @@ const Showtime = () => {
                     </div>
                 </div>
             </div>
+            <Modal
+                isOpen={isModalOpen}
+                title="Yêu cầu đăng nhập"
+                message="Vui lòng đăng nhập để tiếp tục đặt vé!"
+                icon={RiErrorWarningLine}
+                buttons={modalButtons}
+            />
         </>
     );
 };

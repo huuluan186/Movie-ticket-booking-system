@@ -73,54 +73,6 @@ export const createShowtimesService = ({ showtime_date, showtime_starttime, show
     }
 });
 
-// Service để lấy tất cả suất chiếu theo phim
-// export const getShowtimesByClusterService = (cluster_id) => new Promise(async (resolve, reject) => {
-//     try {
-//         let whereCondition = {};
-//         let cinemaIds = [];
-
-//         // Nếu có cluster_id, lấy các cinema_id thuộc cụm rạp
-//         if (cluster_id) {
-//             const clusterExists = await checkExistence(db.CinemaCluster, 'cluster_id', cluster_id);
-//             if (!clusterExists) {
-//                 return resolve({
-//                     err: 1,
-//                     msg: 'Cụm rạp không tồn tại!'
-//                 });
-//             }
-
-//             // Lấy danh sách cinema_id thuộc cụm rạp
-//             const cinemas = await db.Cinema.findAll({
-//                 where: { cluster_id },
-//                 attributes: ['cinema_id'],
-//                 raw: true,
-//             });
-//             cinemaIds = cinemas.map(cinema => cinema.cinema_id);
-//             whereCondition = { cinema_id: { [Op.in]: cinemaIds } };
-//         }
-
-//         // Lấy tất cả suất chiếu dựa trên điều kiện
-//         const showtimes = await db.Showtime.findAndCountAll({
-//         where: whereCondition,
-//         include: [
-//             { model: db.Movie, as: 'movie', attributes: ['title', 'poster'] },
-//             { model: db.Cinema, as: 'cinema', attributes: ['cinema_name'] }
-//         ],
-//         raw: true,
-//         nest: true
-//         });
-
-//         resolve({
-//         err: showtimes ? 0 : 1,
-//         msg: cluster_id 
-//             ? (showtimes ? 'Lấy danh sách suất chiếu theo cụm rạp thành công!' : 'Không tìm thấy suất chiếu nào cho cụm rạp này!')
-//             : (showtimes ? 'Lấy tất cả suất chiếu thành công!' : 'Không tìm thấy suất chiếu nào!'),
-//         response: showtimes
-//         });
-//     } catch (error) {
-//         reject(error);
-//     }
-// });
 export const getShowtimesByQueryService = (cluster_id, movie_id = null) => new Promise(async (resolve, reject) => {
   try {
     let whereCondition = {};
@@ -171,7 +123,6 @@ export const getShowtimesByQueryService = (cluster_id, movie_id = null) => new P
     reject({ err: 1, msg: 'Lỗi khi lấy suất chiếu: ' + error.message });
   }
 });
-
 
 //Lấy thông tin chi tiết suất chiếu
 export const getShowtimeDetailService = (showtime_id) => new Promise(async (resolve, reject) => {
