@@ -1,5 +1,5 @@
 import actionTypes from './actionTypes';
-import { apiGetShowtime } from '../../services/showtime';
+import { apiGetShowtime, apiGetShowtimeDetailById } from '../../services/showtime';
 
 export const getShowtime = (cluster_id, movie_id) => async (dispatch) => {
     try {
@@ -28,7 +28,34 @@ export const getShowtime = (cluster_id, movie_id) => async (dispatch) => {
         return {};
     }
 };
+ export const getShowtimeDetailById = (showtime_id) => async (dispatch) => {
+    try {
+        const response = await apiGetShowtimeDetailById(showtime_id);
+        if (response?.data.err === 0) {
+            dispatch({
+                type: actionTypes.GET_SHOWTIME_DETAIL,
+                showtimeDetail: response?.data?.response || {},
+            });
+            return response?.data?.response || {};
+        } else {
+            dispatch({
+                type: actionTypes.GET_SHOWTIME_DETAIL,
+                msg: response.data.msg,
+                showtimeDetail: {},
+            });
+            return {};
+        }
+    } catch (error) {
+        dispatch({
+            type: actionTypes.GET_SHOWTIME,
+            showtimeDetail: {},
+            msg: error || "Lỗi khi lấy thông tin lịch chiếu!",
+        });
+        return {};
+    }
+};
+
 
 export const resetShowtimes = () => ({
-    type: 'RESET_SHOWTIMES',
+    type: actionTypes.RESET_SHOWTIMES,
 });
