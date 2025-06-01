@@ -6,4 +6,5 @@ export const path={
     MOVIES_BY_STATUS: '/movies/:statusSlug',
     MOVIE_DETAIL: '/movies/detail/:id/:slug',
     SHOWTIME: '/showtime',
+    BOOKING_TICKET:'/booking/:showtime_id/select-seat',
 }
