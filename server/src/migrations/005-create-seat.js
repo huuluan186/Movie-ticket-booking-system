@@ -10,29 +10,26 @@ module.exports = {
       },
       cinema_id: {
         type: Sequelize.STRING,
-        unique: true,
         references: {
           model: 'Cinemas',
           key: 'cinema_id'
         },
         onDelete: 'CASCADE',
-        allowNull: true
+        allowNull: false
       },
-        seat_row: {
-            type: Sequelize.STRING(1),
+        row: {
+            type: Sequelize.INTEGER,
             allowNull: false,
-            unique:true
         },
-        seat_column: {
-            type: Sequelize.STRING(2),
+        column: {
+            type: Sequelize.INTEGER,
             allowNull: false,
-            unique:true
         },
-        seat_type:{
+        type:{
             type: Sequelize.ENUM('VIP', 'Normal'),
             allowNull: false
         },
-        is_booked:{
+        booked:{
             type: Sequelize.BOOLEAN,
             allowNull: false,
             defaultValue: false
@@ -45,6 +42,13 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false
       }
+    },
+    {
+        uniqueKeys: {
+            unique_seat: {
+            fields: ['cinema_id', 'row', 'column']
+            }
+        }
     });
   },
   down: async (queryInterface, Sequelize) => {

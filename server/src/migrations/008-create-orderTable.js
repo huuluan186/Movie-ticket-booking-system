@@ -23,11 +23,13 @@ module.exports = {
       }, 
       total_amount:{
         type: Sequelize.DECIMAL(10, 2),
-        allowNull: false
+        allowNull: false,
+        defaultValue: 0.00
       },
       payment_status:{
         type: Sequelize.ENUM('Pending', 'Completed', 'Canceled'),
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'Completed'
       }, 
       createdAt: {
         type: Sequelize.DATE,
