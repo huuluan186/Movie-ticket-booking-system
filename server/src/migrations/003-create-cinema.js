@@ -4,22 +4,30 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Cinemas', {
       cinema_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        primaryKey: true
+          type: Sequelize.STRING,
+          allowNull: false,
+          primaryKey: true
       },
       cinema_name: {
-        type: Sequelize.STRING,
-        allowNull: false
+          type: Sequelize.STRING,
+          allowNull: false
       },
       cluster_id: {
-        type: Sequelize.STRING,
-        references: {
-          model: 'CinemaClusters',
-          key: 'cluster_id'
-        },
-        onDelete: 'CASCADE',
-        allowNull: true
+          type: Sequelize.STRING,
+          references: {
+            model: 'CinemaClusters',
+            key: 'cluster_id'
+          },
+          onDelete: 'CASCADE',
+          allowNull: false
+      },
+      rowCount: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      columnCount: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE,
