@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { Op } from 'sequelize';
 import db from '../models';
 
@@ -6,66 +6,93 @@ import db from '../models';
  * Kiểm tra thời gian bắt đầu, thời gian kết thúc và định dạng hợp lệ
  */
 // Hàm kiểm tra thời gian
-export const isTimeRangeValid = (date, startTime, endTime, duration) => {
-    const now = moment().tz('Asia/Ho_Chi_Minh'); // Thời gian hiện tại với múi giờ +07:00
-    let start = startTime ? moment(`${date} ${startTime}`, 'YYYY-MM-DD HH:mm') : now; // Nếu không có startTime, lấy thời gian hiện tại
-    let end = endTime ? moment(`${date} ${endTime}`, 'YYYY-MM-DD HH:mm') : moment(start).add((duration+15), 'minutes'); // Nếu không có endTime, cộng duration
+const TIMEZONE = 'Asia/Ho_Chi_Minh';
 
-    // Kiểm tra định dạng hợp lệ
+export const isTimeRangeValid = (date, startTime, endTime, duration) => {
+    const now = moment.tz(TIMEZONE);
+    const start = moment.tz(`${date} ${startTime}`, 'YYYY-MM-DD HH:mm', TIMEZONE);
+    let end = endTime 
+        ? moment.tz(`${date} ${endTime}`, 'YYYY-MM-DD HH:mm', TIMEZONE) 
+        : moment(start).add(duration + 15, 'minutes'); // Cộng thời lượng phim + 15 phút nghỉ
+
+    // Kiểm tra tính hợp lệ của thời gian
     if (!start.isValid() || !end.isValid()) {
         return { valid: false, msg: 'Thời gian không hợp lệ!' };
     }
 
-    // Kiểm tra start trước end
-    if (!start.isBefore(end)) {
-        return { valid: false, msg: 'Giờ bắt đầu phải sớm hơn giờ kết thúc!' };
+    // Kiểm tra thời lượng nếu endTime được cung cấp
+    const timeDiff = end.diff(start, 'minutes');
+    if (endTime && timeDiff < duration) {
+        return { 
+            valid: false, 
+            msg: `Thời gian kết thúc không hợp lệ, phải lớn hơn hoặc bằng thời lượng phim (${duration} phút)!` 
+        };
     }
 
-    // Kiểm tra khoảng thời gian có lớn hơn hoặc bằng duration không
-    const timeDiff = end.diff(start, 'minutes'); // Khoảng thời gian tính bằng phút
-    if (timeDiff < duration) {
-        return { valid: false, msg: `Khoảng thời gian phải lớn hơn hoặc bằng thời lượng phim (${duration} phút)!` };
+    // Nếu end trước start và endTime được cung cấp, thêm 1 ngày
+    if (end.isBefore(start) && endTime) {
+        end.add(1, 'day');
     }
 
-    // Kiểm tra thời gian kết thúc không được nhỏ hơn thời gian hiện tại + 30 phút
+    // Kiểm tra thời gian kết thúc không được nhỏ hơn thời gian hiện tại + 45 phút
     const minEndTime = moment(now).add(45, 'minutes');
     if (end.isBefore(minEndTime)) {
-        return { valid: false, msg: 'Thời gian kết thúc phải sớm thời gian hiện tại ít nhất 45 phút!' };
+        return { valid: false, msg: 'Thời gian kết thúc phải sớm hơn thời gian hiện tại ít nhất 45 phút!' };
     }
 
-    return { 
-        valid: true, 
-        startTime: start.format('HH:mm'), 
-        endTime: end.format('HH:mm') // Trả về endTime đã được cập nhật
+    const result = {
+        valid: true,
+        startTime: start.format('HH:mm'),
+        endTime: end.format('HH:mm'),
+        startDate: start.format('YYYY-MM-DD'),
+        endDate: end.format('YYYY-MM-DD')
     };
+    return result;
 };
-
 
 /**
  * Kiểm tra xem trong rạp đã có suất chiếu trùng khung giờ chưa
  */
-export const checkTimeConflict = async (cinema_id, date, start, end, excludeShowtimeId = null) => {
-    const whereCondition = {
-        cinema_id,
-        showtime_date: date,
-        [Op.or]: [
-            { showtime_starttime: { [Op.between]: [start, end] } },
-            { showtime_endtime: { [Op.between]: [start, end] } },
-            {
-                [Op.and]: [
-                    { showtime_starttime: { [Op.lte]: start } },
-                    { showtime_endtime: { [Op.gte]: end } }
-                ]
+export const checkTimeConflict = async (cinema_id, startDate, startTime, endDate, endTime, excludeShowtimeId = null) => {
+    try {
+        const start = moment.tz(`${startDate} ${startTime}`, 'YYYY-MM-DD HH:mm', TIMEZONE);
+        const end = moment.tz(`${endDate} ${endTime}`, 'YYYY-MM-DD HH:mm', TIMEZONE);
+
+        if (!start.isValid() || !end.isValid()) {
+            return true;
+        }
+
+        // Lấy tất cả các suất chiếu trong cùng rạp
+        const showtimes = await db.Showtime.findAll({
+            where: {
+                cinema_id,
+                ...(excludeShowtimeId && {
+                    showtime_id: { [Op.ne]: excludeShowtimeId }
+                })
+            },
+            raw: true
+        });
+
+        for (const s of showtimes) {
+            const existingStart = moment.tz(`${s.showtime_date} ${s.showtime_starttime}`, 'YYYY-MM-DD HH:mm', TIMEZONE);
+            const existingEnd = moment.tz(`${s.showtime_date} ${s.showtime_endtime}`, 'YYYY-MM-DD HH:mm', TIMEZONE);
+
+            // Nếu end < start nghĩa là suất đó kéo qua ngày hôm sau
+            if (existingEnd.isBefore(existingStart)) {
+                existingEnd.add(1, 'day');
             }
-        ]
-    };
 
-    if (excludeShowtimeId) {
-        whereCondition.showtime_id = { [Op.ne]: excludeShowtimeId };
+            // Thêm thời gian đệm để tránh xung đột sát giờ
+            const buffer = 10; // phút
+            const adjustedExistingStart = moment(existingStart).subtract(buffer, 'minutes');
+            const adjustedExistingEnd = moment(existingEnd).add(buffer, 'minutes');
+
+            if (start.isBefore(adjustedExistingEnd) && end.isAfter(adjustedExistingStart)) return true;
+        }
+        return false;
+    } catch (error) {
+        return true;
     }
-
-    const existing = await db.Showtime.findAll({ where: whereCondition });
-    return existing.length > 0;
 };
 
 /**
@@ -97,12 +124,12 @@ export const getShowtimes = async (whereCondition, db) => {
         {
             model: db.Cinema,
             as: 'cinema',
-            attributes: ['cinema_name'],
+            attributes: ['cinema_name','cinema_id'],
         },
         ],
         order: [
-        ['showtime_date', 'ASC'],
-        ['showtime_starttime', 'ASC'],
+            ['showtime_date', 'ASC'],
+            ['showtime_starttime', 'ASC'],
         ],
         raw: true,
         nest: true,
@@ -115,9 +142,9 @@ export const getUniqueMovies = (showtimes) => {
         showtimes.map(st => [
             st.movie.movie_id,
             {
-            movie_id: st.movie.movie_id,
-            title: st.movie.title,
-            poster: st.movie.poster,
+                movie_id: st.movie.movie_id,
+                title: st.movie.title,
+                poster: st.movie.poster,
             }
         ])
         ).values(),
@@ -127,24 +154,20 @@ export const getUniqueMovies = (showtimes) => {
 export const groupShowtimesByDate = (showtimes) => {
     const grouped = {};
     showtimes.forEach(st => {
-        if (!st.showtime_date || !st.showtime_starttime) {
-        console.warn('Invalid showtime data:', st);
-        return;
-        }
+        if (!st.showtime_date || !st.showtime_starttime) return;
         const dateKey = st.showtime_date;
         if (!grouped[dateKey]) grouped[dateKey] = [];
 
         grouped[dateKey].push({
-        showtime_id: st.showtime_id,
-        start_time: st.showtime_starttime,
-        end_time: st.showtime_endtime,
-        price: st.price,
-        cinema_name: st.cinema.cinema_name,
-        movie_id: st.movie.movie_id,
+            showtime_id: st.showtime_id,
+            start_time: st.showtime_starttime,
+            end_time: st.showtime_endtime,
+            price: st.price,
+            cinema_name: st.cinema.cinema_name,
+            cinema_id: st.cinema.cinema_id,
+            movie_id: st.movie.movie_id,
         });
     });
 
-    return Object.keys(grouped)
-        .sort()
-        .map(date => ({ date, showtimes: grouped[date] }));
+    return Object.keys(grouped).sort().map(date => ({ date, showtimes: grouped[date] }));
 };

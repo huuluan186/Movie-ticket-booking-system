@@ -13,12 +13,14 @@ module.exports = (sequelize, DataTypes) => {
         // Định nghĩa quan hệ thuộc về Movie
       Showtime.belongsTo(models.Movie, {
         foreignKey: 'movie_id',
-        as: 'movie' // Tùy chọn alias nếu cần
+        as: 'movie',
+        onDelete: 'CASCADE'
       });
 
       Showtime.belongsTo(models.Cinema, {
         foreignKey: 'cinema_id',
-        as: 'cinema' 
+        as: 'cinema',
+        onDelete: 'CASCADE' 
       });
 
       Showtime.hasMany(models.Ticket, { foreignKey: 'showtime_id', as: 'tickets' });

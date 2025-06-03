@@ -32,6 +32,8 @@ export const createShowtimesService = ({ showtime_date, showtime_starttime, show
         // Cập nhật showtime_starttime và showtime_endtime nếu không được cung cấp
         const finalStartTime = showtime_starttime || timeCheck.startTime;
         const finalEndTime = showtime_endtime || timeCheck.endTime;
+        const finalStartDate = timeCheck.startDate;
+        const finalEndDate = timeCheck.endDate;
 
         // 3. Kiểm tra cinema_id có tồn tại không
         const cinemaExists = await checkExistence(db.Cinema, 'cinema_id', cinema_id);
@@ -43,7 +45,7 @@ export const createShowtimesService = ({ showtime_date, showtime_starttime, show
         }
 
         // 4. Kiểm tra trùng suất chiếu
-        const hasConflict = await checkTimeConflict(cinema_id, showtime_date, finalStartTime, finalEndTime);
+        const hasConflict = await checkTimeConflict(cinema_id, finalStartDate, finalStartTime, finalEndDate, finalEndTime);
         if (hasConflict) {
             return resolve({
                 err: 1,
@@ -54,7 +56,7 @@ export const createShowtimesService = ({ showtime_date, showtime_starttime, show
         // 5. Tạo suất chiếu mới
         const showtime = await db.Showtime.create({
             showtime_id: nanoid(), 
-            showtime_date,
+            showtime_date: finalStartDate,
             showtime_starttime: finalStartTime,
             showtime_endtime: finalEndTime,
             price,
@@ -130,21 +132,22 @@ export const getShowtimeDetailService = (showtime_id) => new Promise(async (reso
         const showtime = await db.Showtime.findOne({
         where: { showtime_id },
         include: [
-            { model: db.Movie, as:'movie', attributes: ['movie_id', 'title', 'poster'] },
+            { model: db.Movie, as:'movie', attributes: ['title', 'poster'] },
             { 
                 model: db.Cinema, 
                 as:'cinema', 
-                attributes: ['cinema_id', 'cinema_name', 'cluster_id'],
+                attributes: ['cinema_name', 'cluster_id'],
                 include: [
                     { 
                         model: db.CinemaCluster, 
                         as: 'cinema_cluster', 
-                        attributes: ['cluster_id', 'cluster_name', 'chain_id'], 
+                        attributes: ['cluster_name', 'chain_id'], 
                         include: [
                             { 
                                 model: db.CinemaChain, 
                                 as: 'cinema_chain', 
-                                attributes: ['chain_id', 'chain_name'] }
+                                attributes: ['chain_name'] 
+                            }
                         ]
                     },
                 ]
@@ -213,7 +216,7 @@ export const deleteShowtimeService = ({ showtime_id }) => new Promise(async (res
 // Service để tự động xóa các suất chiếu cũ
 export const autoDeleteShowtimesService = () => new Promise(async (resolve, reject) => {
     try {
-        const now = moment().tz('Asia/Ho_Chi_Minh'); // 09:45 AM +07, 25/05/2025
+        const now = moment().tz('Asia/Ho_Chi_Minh'); 
         const showtimes = await db.Showtime.findAll({
             include: [{ model: db.Ticket, as: 'tickets' }]
         });
@@ -221,7 +224,11 @@ export const autoDeleteShowtimesService = () => new Promise(async (resolve, reje
         let deletedCount = 0;
         for (const showtime of showtimes) {
             const startTime = moment(`${showtime.showtime_date}T${showtime.showtime_starttime}+07:00`);
-            const endTime = moment(`${showtime.showtime_date}T${showtime.showtime_endtime}+07:00`);
+            let endTime = moment(`${showtime.showtime_date}T${showtime.showtime_endtime}+07:00`);
+            // Nếu endTime < startTime, cộng thêm 1 ngày cho endTime
+            if (endTime.isBefore(startTime)) {
+                endTime = endTime.add(1, 'day'); 
+            }
             const timeDelete = moment(startTime).add(45, 'minutes');
 
             // Xóa bất kể có vé đặt hay không
@@ -245,8 +252,10 @@ export const updateShowtimeService = ({ showtime_id, showtime_date, showtime_sta
     try {
         const showtime = await db.Showtime.findOne({ where: { showtime_id } });
         if (!showtime) return resolve({ err: 1, msg: 'Suất chiếu không tồn tại.' });
-
-        const movie = movie_id ? await db.Movie.findOne({ where: { movie_id }, raw: true }) : null;
+    
+        const movie = movie_id
+            ? await db.Movie.findOne({ where: { movie_id }, raw: true })
+            : await db.Movie.findOne({ where: { movie_id: showtime.movie_id }, raw: true });
         if (movie_id && !movie) return resolve({ err: 1, msg: 'Phim không tồn tại.' });
 
         const cinemaExists = cinema_id ? await checkExistence(db.Cinema, 'cinema_id', cinema_id) : true;
@@ -255,7 +264,7 @@ export const updateShowtimeService = ({ showtime_id, showtime_date, showtime_sta
         const updatedShowtime = {
             showtime_date: showtime_date || showtime.showtime_date,
             showtime_starttime: showtime_starttime || showtime.showtime_starttime,
-            showtime_endtime: showtime_endtime || showtime.showtime_endtime,
+            showtime_endtime: showtime_starttime ? null : (showtime_endtime || showtime.showtime_endtime),
             price: price || showtime.price,
             movie_id: movie_id || showtime.movie_id,
             cinema_id: cinema_id || showtime.cinema_id
@@ -265,14 +274,16 @@ export const updateShowtimeService = ({ showtime_id, showtime_date, showtime_sta
             updatedShowtime.showtime_date,
             updatedShowtime.showtime_starttime,
             updatedShowtime.showtime_endtime,
-            movie?.duration || (await db.Movie.findOne({ where: { movie_id: showtime.movie_id }, raw: true })).duration
+            movie?.duration
         );
         if (!timeCheck.valid) return resolve({ err: 1, msg: timeCheck.msg });
 
         const finalStartTime = timeCheck.startTime;
         const finalEndTime = timeCheck.endTime;
+        const finalStartDate = timeCheck.startDate;
+        const finalEndDate = timeCheck.endDate;
 
-        const hasConflict = await checkTimeConflict(cinema_id || showtime.cinema_id, updatedShowtime.showtime_date, finalStartTime, finalEndTime, showtime_id);
+        const hasConflict = await checkTimeConflict(cinema_id || showtime.cinema_id, finalStartDate, finalStartTime, finalEndDate, finalEndTime, showtime_id);
         if (hasConflict) return resolve({ err: 1, msg: 'Khung giờ này đã có suất chiếu khác!' });
 
         await showtime.update({

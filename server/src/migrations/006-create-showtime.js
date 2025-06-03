@@ -31,7 +31,7 @@ module.exports = {
           key: 'movie_id'
         },
         onDelete: 'CASCADE',
-        allowNull: true
+        allowNull: false
       },
       cinema_id: {
         type: Sequelize.STRING,
@@ -40,7 +40,7 @@ module.exports = {
           key: 'cinema_id'
         },
         onDelete: 'CASCADE',
-        allowNull: true
+        allowNull: false
       },
       createdAt: {
         type: Sequelize.DATE,
