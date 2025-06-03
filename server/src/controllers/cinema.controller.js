@@ -150,15 +150,15 @@ export const deleteCinemaClusterController = async (req, res) => {
 //cinema controller
 export const createCinemaController = async (req, res)=>{
     try {
-        const { cinema_name, cluster_id } = req.body;
-        if(!cinema_name || !cluster_id){
+        const { cinema_name, cluster_id, rowCount, columnCount} = req.body;
+        if(!cinema_name || !cluster_id || !rowCount || !columnCount){
             return res.status(400).json({
                 err: 1,
-                msg: 'Missing required fields: cinema_name or cluster_id'
+                msg: 'Missing one of required fields (cinema_name, cluster_id, rowCount, columnCount)'
             });
         }
 
-        const response = await service.createCinemaService({  cinema_name, cluster_id });
+        const response = await service.createCinemaService({  cinema_name, cluster_id, rowCount, columnCount });
         return res.status(200).json(response);
     } catch (error) {
         return res.status(500).json({
@@ -197,8 +197,8 @@ export const getCinemaByIdController = async (req, res) => {
 export const updateCinemaController = async (req, res) => {
     try {
         const {cinema_id} = req.params;
-        const {cinema_name, cluster_id} = req.body;
-        const response = await service.updateCinemaService(cinema_id,{cinema_name, cluster_id});
+        const {cinema_name, cluster_id, rowCount, columnCount} = req.body;
+        const response = await service.updateCinemaService(cinema_id,{cinema_name, cluster_id, rowCount, columnCount});
         return res.status(200).json(response);
     } catch (error) {
         return res.status(500).json({
