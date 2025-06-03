@@ -10,7 +10,6 @@ module.exports = {
       },
       showtime_id: {
         type: Sequelize.STRING,
-        unique:true,
         references: {
           model: 'Showtimes',
           key: 'showtime_id'
@@ -29,7 +28,6 @@ module.exports = {
       },
       seat_id: {
         type: Sequelize.STRING,
-        unique:true,
         references: {
           model: 'Seats',
           key: 'seat_id'
@@ -37,13 +35,10 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: true
       },
-     purchase_time:{
-        type:Sequelize.DATE,
-        allowNull:false
-     },
      ticket_status:{
         type: Sequelize.ENUM('Booked', 'Used', 'Canceled'),
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'Booked'
      },  
       createdAt: {
         type: Sequelize.DATE,
@@ -52,6 +47,13 @@ module.exports = {
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false
+      }
+    },
+    {
+      uniqueKeys: {
+        unique_ticket: {
+          fields: ['showtime_id', 'seat_id']
+        }
       }
     });
   },

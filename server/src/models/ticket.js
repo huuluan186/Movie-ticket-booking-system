@@ -10,11 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-        Ticket.belongsTo(models.Showtime, { foreignKey: 'showtime_id', as: 'showtime' });
-
-        Ticket.belongsTo(models.Seat, { foreignKey: 'seat_id', as: 'seat' });
-
-        //Ticket.belongsTo(models.Order, { foreignKey: 'order_id', as: 'order' });
+        Ticket.belongsTo(models.Showtime, { foreignKey: 'showtime_id', onDelete: 'CASCADE', as: 'showtime' });
+        Ticket.belongsTo(models.Seat, { foreignKey: 'seat_id', onDelete: 'CASCADE', as: 'seat' });
+        Ticket.belongsTo(models.OrderTable, { foreignKey: 'order_id', onDelete: 'CASCADE', as: 'order' });
     }
   }
   Ticket.init({
@@ -26,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     showtime_id: DataTypes.STRING,
     order_id: DataTypes.STRING,
     seat_id: DataTypes.STRING,
-    purchase_time: DataTypes.DATE,
     ticket_status: DataTypes.ENUM(['Booked', 'Used', 'Canceled']),
   }, {
     sequelize,

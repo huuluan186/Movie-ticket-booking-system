@@ -18,6 +18,9 @@ const actionTypes = {
     GET_SHOWTIME: 'GET_SHOWTIME',
     RESET_SHOWTIMES: 'RESET_SHOWTIMES',
     GET_SHOWTIME_DETAIL: 'GET_SHOWTIME_DETAIL',
+
+    GET_SEATS: 'GET_SEATS',
+
 }
 
 export default actionTypes;
