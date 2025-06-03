@@ -1,3 +1,16 @@
+import dayjs from 'dayjs';
+
+export const computeShowtimeDateRange = (date, startTime, endTime) => {
+    const isOvernight = startTime?.slice(0, 5) > endTime?.slice(0, 5);
+
+    const startDate = date;
+    const endDate = isOvernight
+        ? dayjs(date).add(1, 'day').format('YYYY-MM-DD')
+        : date;
+
+    return { startDate, endDate };
+};
+
 // Kiểm tra trống một trường
 export const checkEmpty = (value, name, label) => {
     if (!value?.trim()) {
