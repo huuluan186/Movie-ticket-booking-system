@@ -73,12 +73,13 @@ const Showtime = () => {
         }
     }
 
-    const handleShowtimeClick = (showtimeId) => {
+    const handleShowtimeClick = (showtimeId, cinemaId) => {
         if (!isLoggedIn) {
             setSelectedShowtimeId(showtimeId);
             setIsModalOpen(true); // Hiển thị modal nếu chưa đăng nhập
         } else {
             dispatch(actions.getShowtimeDetailById(showtimeId));
+            dispatch(actions.getSeatLayout(cinemaId));
             navigate(`/booking/${showtimeId}/select-seat`);
         }
     };
@@ -190,7 +191,7 @@ const Showtime = () => {
                                                 {showtimes.map(st => (
                                                     <button
                                                         key={st.showtime_id}
-                                                        onClick={()=>handleShowtimeClick(st.showtime_id)}
+                                                        onClick={()=>handleShowtimeClick(st.showtime_id, st.cinema_id)}
                                                         className="px-3 py-2 bg-white text-black border border-gray-300 rounded hover:bg-orange-400 hover:text-white"
                                                     >
                                                         {st.start_time.slice(0, 5)}
