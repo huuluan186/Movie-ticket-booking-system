@@ -10,12 +10,6 @@ const seatReducer = (state = initState, action) => {
         case actionTypes.GET_SEATS:
             return {
                 ...state,
-                seatLayout: action.seatLayout || [],
-                msg: action.msg || '',
-            };
-        case actionTypes.GET_SEATS:
-            return {
-                ...state,
                 seatLayout: action.seatLayout || {},
                 msg: action.msg || '',
             };

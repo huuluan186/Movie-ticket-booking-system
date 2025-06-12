@@ -1,10 +1,9 @@
 import actionTypes from './actionTypes'
 import {apiGetSeats} from '../../services/seat'
 
-export const getSeatLayout = (cinema_id) => async (dispatch) => {
+export const getSeatLayout = (cinema_id, showtime_id) => async (dispatch) => {
     try {
-        const response = await apiGetSeats(cinema_id)
-        console.log("response getSeatLayout: ",response);
+        const response = await apiGetSeats(cinema_id, showtime_id)
         if (response?.data.err === 0) {
             dispatch({
                 type: actionTypes.GET_SEATS,
