@@ -1,45 +1,79 @@
 import db from '../models';
-import {nanoid} from 'nanoid';
+import { nanoid } from 'nanoid';
 
-export const getCinemaSeatLayoutService = (cinema_id) => new Promise(async (resolve, reject) => {
+export const createSeatsForCinemaService = (cinema_id) => new Promise(async (resolve, reject) => {
     try {
-        // Lấy thông tin rạp
+        const cinema = await db.Cinema.findOne({
+            where: { cinema_id },
+            attributes: ['rowCount', 'columnCount'],
+            raw: true
+        });
+
+        if (!cinema) return resolve({ err: 1, msg: 'Rạp không tồn tại!' });
+
+        const seats = [];
+        for (let row = 1; row <= cinema.rowCount; row++) {
+            for (let col = 1; col <= cinema.columnCount; col++) {
+                seats.push({
+                    seat_id: nanoid(),
+                    row,
+                    column: col,
+                    type: row > 3 ? 'VIP' : 'Normal',
+                    cinema_id
+                });
+            }
+        }
+
+        await db.Seat.bulkCreate(seats);
+        resolve({ err: 0, msg: 'Tạo ghế thành công!' });
+    } catch (error) {
+        reject(error);
+    }
+});
+
+export const getCinemaSeatLayoutService = (cinema_id, showtime_id) => new Promise(async (resolve, reject) => {
+    try {
         const cinema = await db.Cinema.findOne({
             where: { cinema_id },
             attributes: ['cinema_id', 'rowCount', 'columnCount'],
             raw: true
         });
 
-        if (!cinema) {
-            return resolve({
-                err: 1,
-                msg: 'Rạp không tồn tại!'
-            });
-        }
-
-        // Lấy danh sách ghế đã lưu trong DB (nếu có)
-        const existingSeats = await db.Seat.findAll({
-            where: { cinema_id },
-            attributes: ['seat_id', 'row', 'column', 'type', 'booked'],
+        const showtime = await db.Showtime.findOne({
+            where: { showtime_id },
+            attributes: ['showtime_id'],
             raw: true
         });
 
-        // Tạo layout ghế động
+        if (!cinema) return resolve({ err: 1, msg: 'Rạp không tồn tại!' });
+        if (!showtime) return resolve({ err: 1, msg: 'Suất chiếu không tồn tại!' });
+
+        const allSeats = await db.Seat.findAll({
+            where: { cinema_id },
+            attributes: ['seat_id', 'row', 'column', 'type'],
+            raw: true
+        });
+
+        const bookedTickets = await db.Ticket.findAll({
+            where: { showtime_id },
+            attributes: ['seat_id'],
+            raw: true
+        });
+        const bookedSeatIds = bookedTickets.map(t => t.seat_id);
+
         const seatLayout = [];
         for (let row = 1; row <= cinema.rowCount; row++) {
             const seats = [];
             for (let col = 1; col <= cinema.columnCount; col++) {
-                // Kiểm tra xem ghế đã tồn tại trong DB chưa
-                const existingSeat = existingSeats.find(
-                    seat => seat.row === row && seat.column === col
-                );
+                const existingSeat = allSeats.find(s => s.row === row && s.column === col);
+                if (!existingSeat) continue;
 
                 seats.push({
-                    seatId : existingSeat ? existingSeat.seat_id : nanoid(6),
+                    seatId: existingSeat.seat_id,
                     row,
                     column: col,
-                    type: existingSeat ? existingSeat.type : (row > 3 ? 'VIP' : 'Normal'), 
-                    booked: existingSeat ? existingSeat.booked : false 
+                    type: existingSeat.type,
+                    booked: bookedSeatIds.includes(existingSeat.seat_id)
                 });
             }
             seatLayout.push({ row, seats });

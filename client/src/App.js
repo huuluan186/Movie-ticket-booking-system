@@ -2,7 +2,7 @@ import { Routes, Route, Navigate, useLocation  } from "react-router-dom";
 import { path } from "./utils/constant";
 import { ToastContainer, Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { Home, Login, Homepage, Profile, ChangePassword, MoviesByStatus, MovieDetail, Showtime, BookingTicket} from "./containers/Public";
+import { Home, Login, Homepage, Profile, ChangePassword, MoviesByStatus, MovieDetail, Showtime, BookingTicket, MyTicket} from "./containers/Public";
 import * as actions from './store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
@@ -11,9 +11,7 @@ function App() {
     const dispatch = useDispatch()
     const { isLoggedIn } = useSelector(state => state.auth)
     useEffect(() => {
-        setTimeout(() => {
         isLoggedIn && dispatch(actions.getCurrent())
-        }, 500)
     }, [isLoggedIn])
 
     const { pathname } = useLocation();
@@ -36,6 +34,7 @@ function App() {
                     <Route path={path.PROFILE} element={isLoggedIn && <Profile />} />
                     <Route path={path.CHANGEPASSWORD} element={isLoggedIn && <ChangePassword/>}/>  
                     <Route path={path.BOOKING_TICKET} element={isLoggedIn && <BookingTicket/>}/> 
+                    <Route path={path.MY_TICKET} element={isLoggedIn && <MyTicket/>}/>
                 </>
                 }
                 <Route path={path.MOVIES_BY_STATUS} element={<MoviesByStatus />} />

@@ -24,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     row: DataTypes.INTEGER,
     column: DataTypes.INTEGER,
     type: DataTypes.ENUM(['VIP', 'Normal']),
-    booked: DataTypes.BOOLEAN,
   }, {
     sequelize,
     modelName: 'Seat',

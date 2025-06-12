@@ -89,3 +89,9 @@ export const toCapitalize = (str) => {
       .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Viết hoa chữ cái đầu
       .join(' ');
 };
+
+export const convertRowToLetter = (rowNumber) => {
+    return String.fromCharCode(64 + rowNumber); // 1 -> A, 2 -> B, etc.
+};
+
+export const roundToUnit = (num, unit) => Math.round(num / unit) * unit;

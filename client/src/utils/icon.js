@@ -12,6 +12,8 @@ import {
 import { FiSearch } from 'react-icons/fi';
 import { MdOutlineChangeCircle } from "react-icons/md";
 import { GoQuestion } from "react-icons/go";
+import { GrSubtractCircle } from "react-icons/gr";
+import { CiCirclePlus } from "react-icons/ci";
 
 const icons = {
     RiArrowDropDownLine,
@@ -31,6 +33,8 @@ const icons = {
     FaRegHandPointRight,
     GoQuestion,
     RiErrorWarningLine,
+    CiCirclePlus,
+    GrSubtractCircle
 }
 
 export default icons;

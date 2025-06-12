@@ -7,4 +7,5 @@ export const path={
     MOVIE_DETAIL: '/movies/detail/:id/:slug',
     SHOWTIME: '/showtime',
     BOOKING_TICKET:'/booking/:showtime_id/select-seat',
+    MY_TICKET:'/user/orders',
 }
