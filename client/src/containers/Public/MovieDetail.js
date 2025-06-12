@@ -27,7 +27,7 @@ const MovieDetail = () => {
     }, [id, dispatch]);
 
     return (
-        <div className='container mx-auto my-6 px-4'>
+        <div className='container mx-auto my-6 px-20'>
             {movieDetail ? (
             <>
             <div className='flex gap-[50px]'>

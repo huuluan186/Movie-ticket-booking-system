@@ -71,7 +71,7 @@ const Header = () => {
     const isMoviesActive = location.pathname.startsWith('/movies');
 
     return (
-        <div className='container px-4'>
+        <div className='container px-20'>
            <div className="w-full flex items-center justify-between">
                 <Link to={'/'} >
                     <img

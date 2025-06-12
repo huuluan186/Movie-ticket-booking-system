@@ -1,6 +1,5 @@
-import React, {useEffect} from 'react'
+import {useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import * as actions from '../../store/actions'
 import {SliderBanner} from '../../components/index'
 import slides from '../../utils/sliders'
@@ -34,7 +33,7 @@ const Homepage = () => {
     return (
         <div className="w-full mx-auto border border-red-500">
             <SliderBanner slides={slides} />
-            <div className='container mx-auto my-6 px-4'>
+            <div className='container mx-auto my-6 px-20'>
                 <section className="mt-10">
                     <div className="text-orange-600 text-3xl font-bold text-center mb-8 block mx-auto">
                         PHIM MỚI
