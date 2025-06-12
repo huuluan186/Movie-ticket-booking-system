@@ -58,7 +58,7 @@ const MoviesByStatus = () => {
                 title={toCapitalize(pageInfo.title)}
                 description={pageInfo.description}
             />
-            <div className="container mx-auto my-6 px-4">
+            <div className="container mx-auto my-6 px-20">
                 <div className="my-14">
                     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12'>
                         {moviesData && moviesData.length > 0 ? (

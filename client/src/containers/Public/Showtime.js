@@ -174,7 +174,7 @@ const Showtime = () => {
                                                         className="w-full h-full"
                                                     />
                                                 </div>
-                                                <div className="text-sm mt-1 text-center text-white w-full">
+                                                <div className="w-full text-sm mt-1 text-center text-white line-clamp-3" title={item.title}>
                                                     {item.title}
                                                 </div>
                                             </div>
