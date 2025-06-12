@@ -136,7 +136,7 @@ export const getShowtimeDetailService = (showtime_id) => new Promise(async (reso
             { 
                 model: db.Cinema, 
                 as:'cinema', 
-                attributes: ['cinema_name', 'cluster_id'],
+                attributes: ['cinema_name', 'rowCount', 'columnCount','cluster_id'],
                 include: [
                     { 
                         model: db.CinemaCluster, 
