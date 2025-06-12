@@ -29,11 +29,6 @@ module.exports = {
             type: Sequelize.ENUM('VIP', 'Normal'),
             allowNull: false
         },
-        booked:{
-            type: Sequelize.BOOLEAN,
-            allowNull: false,
-            defaultValue: false
-        },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false
