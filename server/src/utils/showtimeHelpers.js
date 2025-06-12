@@ -5,39 +5,37 @@ import db from '../models';
 /**
  * Kiểm tra thời gian bắt đầu, thời gian kết thúc và định dạng hợp lệ
  */
-// Hàm kiểm tra thời gian
 const TIMEZONE = 'Asia/Ho_Chi_Minh';
 
 export const isTimeRangeValid = (date, startTime, endTime, duration) => {
-    const now = moment.tz(TIMEZONE);
-    const start = moment.tz(`${date} ${startTime}`, 'YYYY-MM-DD HH:mm', TIMEZONE);
-    let end = endTime 
-        ? moment.tz(`${date} ${endTime}`, 'YYYY-MM-DD HH:mm', TIMEZONE) 
-        : moment(start).add(duration + 15, 'minutes'); // Cộng thời lượng phim + 15 phút nghỉ
+    const now = moment.tz(TIMEZONE).seconds(0).milliseconds(0); // 15:28, bỏ giây
+    const defaultStartTime = now.format('HH:mm'); // 15:28 cho mọi ngày
 
-    // Kiểm tra tính hợp lệ của thời gian
+    const finalStartTime = startTime || defaultStartTime;
+    const start = moment.tz(`${date} ${finalStartTime}`, 'YYYY-MM-DD HH:mm', TIMEZONE).seconds(0).milliseconds(0);
+    let end = endTime 
+        ? moment.tz(`${date} ${endTime}`, 'YYYY-MM-DD HH:mm', TIMEZONE).seconds(0).milliseconds(0) 
+        : moment(start).add(duration + 15, 'minutes');
+
     if (!start.isValid() || !end.isValid()) {
         return { valid: false, msg: 'Thời gian không hợp lệ!' };
     }
 
-    // Kiểm tra thời lượng nếu endTime được cung cấp
     const timeDiff = end.diff(start, 'minutes');
     if (endTime && timeDiff < duration) {
         return { 
             valid: false, 
-            msg: `Thời gian kết thúc không hợp lệ, phải lớn hơn hoặc bằng thời lượng phim (${duration} phút)!` 
+            msg: `Thời gian kết thúc không hợp lệ, phải >= thời lượng phim (${duration} phút)!` 
         };
     }
 
-    // Nếu end trước start và endTime được cung cấp, thêm 1 ngày
     if (end.isBefore(start) && endTime) {
         end.add(1, 'day');
     }
 
-    // Kiểm tra thời gian kết thúc không được nhỏ hơn thời gian hiện tại + 45 phút
-    const minEndTime = moment(now).add(45, 'minutes');
-    if (end.isBefore(minEndTime)) {
-        return { valid: false, msg: 'Thời gian kết thúc phải sớm hơn thời gian hiện tại ít nhất 45 phút!' };
+    const minStartTime = now; 
+    if (start.isBefore(minStartTime)) {
+        return { valid: false, msg: 'Thời gian bắt đầu phải bằng hoặc muộn hơn thời gian hiện tại!' };
     }
 
     const result = {
