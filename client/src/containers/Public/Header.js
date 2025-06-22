@@ -119,7 +119,7 @@ const Header = () => {
                 <>
                     <div className="relative" ref={userDropdownRef}>
                         <Button
-                            text={currentData?.username || 'Bạn chưa đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle} IcAfter={RiArrowDropDownLine}  
+                            text={currentData?.username || 'Đang tải...'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle} IcAfter={RiArrowDropDownLine}  
                         />
                         {isUserDropdownOpen && (
                             <DropdownMenu

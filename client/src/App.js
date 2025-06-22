@@ -10,8 +10,11 @@ import { useEffect } from 'react'
 function App() {
     const dispatch = useDispatch()
     const { isLoggedIn } = useSelector(state => state.auth)
+    
     useEffect(() => {
-        isLoggedIn && dispatch(actions.getCurrent())
+        setTimeout(() => {
+            isLoggedIn && dispatch(actions.getCurrent())
+        }, 500)
     }, [isLoggedIn])
 
     const { pathname } = useLocation();
