@@ -7,6 +7,7 @@ import { formatDate, getImageUrl  } from '../../utils/helpers';
 import { useNavigate } from 'react-router-dom';
 import icons from '../../utils/icon';
 import {getModalButtons} from '../../utils/modalBtnDatas';
+import { useRequireLogin } from '../../hooks';
 
 const  {RiErrorWarningLine} = icons
 
@@ -25,9 +26,10 @@ const Showtime = () => {
     const [selectedShowtimeId, setSelectedShowtimeId] = useState(null);
     const [clusterMovies, setClusterMovies] = useState([]);
     const [hasInitialized, setHasInitialized] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const { checkLoginBefore, modalOpen, setModalOpen, pendingAction} = useRequireLogin();
     // Lấy danh sách button cho modal
-    const modalButtons = getModalButtons(setIsModalOpen, navigate, selectedShowtimeId);
+    const modalButtons = getModalButtons(setModalOpen, pendingAction);
 
     useEffect(() => {
         dispatch(actions.getAllCinemaChains());
@@ -74,14 +76,16 @@ const Showtime = () => {
     }
 
     const handleShowtimeClick = (showtimeId, cinemaId) => {
-        if (!isLoggedIn) {
-            setSelectedShowtimeId(showtimeId);
-            setIsModalOpen(true); // Hiển thị modal nếu chưa đăng nhập
-        } else {
-            dispatch(actions.getShowtimeDetailById(showtimeId));
-            dispatch(actions.getSeatLayout(cinemaId));
-            navigate(`/booking/${showtimeId}/select-seat`);
-        }
+        checkLoginBefore(
+            () => {
+                dispatch(actions.getShowtimeDetailById(showtimeId));
+                dispatch(actions.getSeatLayout(cinemaId));
+                navigate(`/booking/${showtimeId}/select-seat`);
+                },
+                `/booking/${showtimeId}/select-seat`,   // redirectTo
+                { showtimeId },                         // extraState (nếu cần)
+                { showModal: true }                     // có thể bỏ – mặc định true
+        );
     };
 
     useEffect(() => {
@@ -211,7 +215,7 @@ const Showtime = () => {
                 </div>
             </div>
             <Modal
-                isOpen={isModalOpen}
+                isOpen={modalOpen}
                 title="Yêu cầu đăng nhập"
                 message="Vui lòng đăng nhập để tiếp tục đặt vé!"
                 icon={RiErrorWarningLine}

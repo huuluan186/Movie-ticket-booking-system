@@ -2,7 +2,7 @@ import { Routes, Route, Navigate, useLocation  } from "react-router-dom";
 import { path } from "./utils/constant";
 import { ToastContainer, Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { Home, Login, Homepage, Profile, ChangePassword, MoviesByStatus, MovieDetail, Showtime, BookingTicket, MyTicket} from "./containers/Public";
+import { Home, Login, Homepage, Profile, ChangePassword, MoviesByStatus, MovieDetail, Showtime, BookingTicket, MyTicket, RequireAuth} from "./containers/Public";
 import * as actions from './store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
@@ -10,7 +10,7 @@ import { useEffect } from 'react'
 function App() {
     const dispatch = useDispatch()
     const { isLoggedIn } = useSelector(state => state.auth)
-    
+
     useEffect(() => {
         setTimeout(() => {
             isLoggedIn && dispatch(actions.getCurrent())
@@ -21,8 +21,8 @@ function App() {
 
     useEffect(() => {
         window.scrollTo({
-        top: 0,
-        behavior: "smooth", // có thể bỏ nếu không muốn cuộn mượt
+            top: 0,
+            behavior: "smooth", // có thể bỏ nếu không muốn cuộn mượt
         });
     }, [pathname]);
 
@@ -32,14 +32,14 @@ function App() {
             <Route path={path.HOME} element={<Home />}>
                 <Route index element={<Homepage/>}/> 
                 <Route path={path.LOGIN} element={<Login />} />
-                {isLoggedIn && 
-                <>
-                    <Route path={path.PROFILE} element={isLoggedIn && <Profile />} />
-                    <Route path={path.CHANGEPASSWORD} element={isLoggedIn && <ChangePassword/>}/>  
-                    <Route path={path.BOOKING_TICKET} element={isLoggedIn && <BookingTicket/>}/> 
-                    <Route path={path.MY_TICKET} element={isLoggedIn && <MyTicket/>}/>
-                </>
-                }
+                 {/* Các route BẢO VỆ */}
+                <Route element={<RequireAuth />}>
+                    <Route path={path.PROFILE} element={<Profile />} />
+                    <Route path={path.CHANGEPASSWORD} element={<ChangePassword />} />
+                    <Route path={path.BOOKING_TICKET} element={<BookingTicket />} />
+                    <Route path={path.MY_TICKET} element={<MyTicket />} />
+                </Route>
+                {/* Các route CÔNG KHAI */}
                 <Route path={path.MOVIES_BY_STATUS} element={<MoviesByStatus />} />
                 <Route path={path.MOVIE_DETAIL} element={<MovieDetail />} />
                 <Route path={path.SHOWTIME} element={<Showtime />} />

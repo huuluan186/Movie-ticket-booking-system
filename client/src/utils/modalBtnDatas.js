@@ -1,12 +1,12 @@
-export const getModalButtons = (setIsModalOpen, navigate, showtimeId) => [
+export const getModalButtons = (setOpen, pendingAction) => [
     {
         text: 'Đồng ý',
         textColor: 'text-white',
         bgColor: 'bg-blue-600',
         hover: 'hover:bg-blue-700',
         onClick: () => {
-            setIsModalOpen(false);
-            navigate('/login',{state:{showtimeId}});
+            setOpen(false);
+            pendingAction?.();   //thực thi hành động đã giữ lại
         }
     },
     {
@@ -14,7 +14,7 @@ export const getModalButtons = (setIsModalOpen, navigate, showtimeId) => [
         textColor: 'text-white',
         bgColor: 'bg-red-600',
         hover: 'hover:bg-red-700',
-        onClick: () => setIsModalOpen(false),
+        onClick: () => setOpen(false),
     },
 ];
 

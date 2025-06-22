@@ -68,7 +68,7 @@ const BookingTicket = () => {
         else setShowConfirmModal(true);
     }
 
-    const handleConfirmPayment = () => {
+    const handleConfirmPayment = async () => {
         setShowConfirmModal(false);
         setTimeout(() => {
             setShowSuccessModal(true);        
@@ -82,7 +82,7 @@ const BookingTicket = () => {
             })),
             total_amount: totalPrice,
         };
-        dispatch(actions.createOrder(payload)); 
+        await dispatch(actions.createOrder(payload)); 
     };
 
     return (

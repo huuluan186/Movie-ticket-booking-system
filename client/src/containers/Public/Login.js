@@ -48,12 +48,11 @@ const Login = () => {
         if (isLoggedIn) {
             toast.success("Đăng nhập thành công!");
             setTimeout(() => {
-                const showtimeId = location.state?.showtimeId;
-                if(showtimeId) navigate(`/booking/${showtimeId}/select-seat`); // chuyển đến
-                else navigate('/'); // Chuyển đến trang chủ khi đăng nhập thành công
+                const redirectPath = location.state?.redirectTo || '/';
+                navigate(redirectPath);
             }, 800);
         }
-    }, [isLoggedIn,isRegister, navigate, location.state?.showtimeId]); // Kiểm tra thay đổi của cả isLoggedIn và isRegister
+    }, [isLoggedIn,isRegister, navigate, location.state]); // Kiểm tra thay đổi của cả isLoggedIn và isRegister
     
     useEffect(() => {
         if(isRegistered) {
