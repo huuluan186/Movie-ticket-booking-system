@@ -14,7 +14,7 @@ module.exports = {
           model: 'Showtimes',
           key: 'showtime_id'
         },
-        onDelete: 'CASCADE',
+        onDelete: 'SET NULL',
         allowNull: true
       },
       order_id: {
@@ -32,14 +32,49 @@ module.exports = {
           model: 'Seats',
           key: 'seat_id'
         },
-        onDelete: 'CASCADE',
+        onDelete: 'SET NULL',
         allowNull: true
       },
      ticket_status:{
         type: Sequelize.ENUM('Booked', 'Used', 'Canceled'),
         allowNull: false,
         defaultValue: 'Booked'
-     },  
+     },
+     
+       // Snapshot fields:
+      movie_title_snapshot: {
+        type: Sequelize.STRING
+      },
+      cinema_name_snapshot: {
+        type: Sequelize.STRING
+      },
+      cluster_name_snapshot: {
+        type: Sequelize.STRING
+      },
+      chain_name_snapshot: {
+        type: Sequelize.STRING
+      },
+      address_snapshot: {
+        type: Sequelize.STRING
+      },
+      row_snapshot: {
+        type: Sequelize.INTEGER
+      },
+      column_snapshot: {
+        type: Sequelize.INTEGER
+      },
+      showtime_date_snapshot: {
+        type: Sequelize.DATEONLY
+      },
+      showtime_starttime_snapshot: {
+        type: Sequelize.TIME
+      },
+      showtime_endtime_snapshot: {
+        type: Sequelize.TIME
+      },
+      price_snapshot: {
+        type: Sequelize.DECIMAL(10, 2)
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false

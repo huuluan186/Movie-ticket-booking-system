@@ -15,7 +15,6 @@ module.exports = {
           key: 'user_id'
         },
         onDelete: 'CASCADE',
-        allowNull: true
       },
       order_date:{
         type: Sequelize.DATE,
