@@ -20,7 +20,7 @@ const MyTicket = () => {
     }, [dispatch]);
    
     if (!orderHistory || orderHistory.length === 0) {
-        return <div className="text-center">Đang tải hoặc không có lịch sử giao dịch...</div>;
+        return <div className="text-center py-12 min-h-20">Đang tải hoặc không có lịch sử giao dịch...</div>;
     }
 
     // Sắp xếp orderHistory theo order_date mới nhất

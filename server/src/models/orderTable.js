@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         OrderTable.belongsTo(models.User, {
             foreignKey: 'user_id',
             as: 'user',
+            onDelete:"CASCADE"
         });
         OrderTable.hasMany(models.Ticket, {
             foreignKey: 'order_id',

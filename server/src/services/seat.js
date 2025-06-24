@@ -3,6 +3,15 @@ import { nanoid } from 'nanoid';
 
 export const createSeatsForCinemaService = (cinema_id) => new Promise(async (resolve, reject) => {
     try {
+        // Kiểm tra xem đã có ghế chưa
+        const existingSeats = await db.Seat.findOne({ where: { cinema_id } });
+        if (existingSeats) {
+            return resolve({
+                err: 0,
+                msg: 'Rạp đã có danh sách ghế. Không cần tạo lại.',
+            });
+        }
+        
         const cinema = await db.Cinema.findOne({
             where: { cinema_id },
             attributes: ['rowCount', 'columnCount'],
