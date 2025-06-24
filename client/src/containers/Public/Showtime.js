@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import icons from '../../utils/icon';
 import {getModalButtons} from '../../utils/modalBtnDatas';
 import { useRequireLogin } from '../../hooks';
+import { apiCreateSeatsForCinema } from '../../services/seat';
 
 const  {RiErrorWarningLine} = icons
 
@@ -77,10 +78,11 @@ const Showtime = () => {
 
     const handleShowtimeClick = (showtimeId, cinemaId) => {
         checkLoginBefore(
-            () => {
-                dispatch(actions.getShowtimeDetailById(showtimeId));
-                dispatch(actions.getSeatLayout(cinemaId));
-                navigate(`/booking/${showtimeId}/select-seat`);
+            async () => {
+                    dispatch(actions.getShowtimeDetailById(showtimeId));
+                    await apiCreateSeatsForCinema(cinemaId);
+                    dispatch(actions.getSeatLayout(cinemaId, showtimeId));
+                    navigate(`/booking/${showtimeId}/select-seat`);
                 },
                 `/booking/${showtimeId}/select-seat`,   // redirectTo
                 { showtimeId },                         // extraState (nếu cần)
