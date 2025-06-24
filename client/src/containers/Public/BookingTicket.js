@@ -8,8 +8,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Seat, Button, Modal} from '../../components';
 import { toast } from 'react-toastify';
 import icons from '../../utils/icon';
+import { apiCreateSeatsForCinema } from '../../services/seat';
+import { apiGetVipPriceIncrementConfig } from '../../services/getServerConfig'; 
 
-const VIP_PRICE_INCREMENT = 1.118; 
 const  {IoCheckmarkCircle, GoQuestion} = icons
 
 const BookingTicket = () => {
@@ -21,6 +22,22 @@ const BookingTicket = () => {
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [vipPriceIncrement, setVipPriceIncrement] = useState(1);
+
+    // Lấy cấu hình VIP price increment từ API
+    useEffect(() => {
+        const fetchVipPriceIncrement = async () => {
+            try {
+                const response = await apiGetVipPriceIncrementConfig();
+                // Giả sử response.data chứa giá trị vip_price_increment
+                setVipPriceIncrement(response.data.vipPriceIncrement || 1);
+            } catch (error) {
+                console.error('Error fetching VIP price increment:', error);
+                toast.error('Không thể lấy cấu hình giá VIP!');
+            }
+        };
+        fetchVipPriceIncrement();
+    }, []);
     
     useEffect(() => {
         if (showtime_id) dispatch(actions.getShowtimeDetailById(showtime_id));
@@ -32,6 +49,21 @@ const BookingTicket = () => {
         }
     }, [dispatch, showtimeDetail?.cinema_id, showtimeDetail?.showtime_id]);
 
+    useEffect(() => {
+        const fetchSeats = async () => {
+            if (showtimeDetail?.cinema_id && showtimeDetail?.showtime_id) {
+                try {
+                    await apiCreateSeatsForCinema(showtimeDetail.cinema_id); // tạo ghế trước
+                    dispatch(actions.getSeatLayout(showtimeDetail.cinema_id, showtimeDetail.showtime_id)); // rồi load layout
+                } catch (error) {
+                    console.error('Error fetching seats:', error);
+                }
+            }
+        };
+        fetchSeats();
+    }, [dispatch, showtimeDetail?.cinema_id, showtimeDetail?.showtime_id]);
+
+    
     const startTime = showtimeDetail?.showtime_starttime;
     const endTime = showtimeDetail?.showtime_endtime;
     const showDate = showtimeDetail?.showtime_date;
@@ -43,7 +75,7 @@ const BookingTicket = () => {
         selectedSeats.reduce((total, seat) => {
             return total + (seat.type === 'Normal' 
                 ? +showtimeDetail?.price 
-                : (showtimeDetail?.price * VIP_PRICE_INCREMENT));
+                : (showtimeDetail?.price * vipPriceIncrement));
         }, 0),
         1000 // Làm tròn đến hàng nghìn
     );
@@ -68,7 +100,7 @@ const BookingTicket = () => {
         else setShowConfirmModal(true);
     }
 
-    const handleConfirmPayment = () => {
+    const handleConfirmPayment = async () => {
         setShowConfirmModal(false);
         setTimeout(() => {
             setShowSuccessModal(true);        
@@ -82,7 +114,7 @@ const BookingTicket = () => {
             })),
             total_amount: totalPrice,
         };
-        dispatch(actions.createOrder(payload)); 
+        await dispatch(actions.createOrder(payload)); 
     };
 
     return (
@@ -217,7 +249,7 @@ const BookingTicket = () => {
                                         <span>
                                             {
                                             seat.type === 'Normal' ? (+showtimeDetail.price).toLocaleString() 
-                                                : roundToUnit(showtimeDetail.price * VIP_PRICE_INCREMENT, 1000).toLocaleString()
+                                                : roundToUnit(showtimeDetail.price * vipPriceIncrement, 1000).toLocaleString()
                                             }
                                         </span>
                                     </div>
