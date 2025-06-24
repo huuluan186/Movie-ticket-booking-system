@@ -2,9 +2,6 @@ import db from '../models'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import {v4} from 'uuid'
-import { Op } from 'sequelize';
-require('dotenv').config()
-
 
 if (!process.env.SECRET_KEY) {
     console.error('❌ Missing SECRET_KEY in .env');
@@ -13,22 +10,8 @@ if (!process.env.SECRET_KEY) {
 //hàm băm mật khẩu
 const hashPassword= password => bcrypt.hashSync(password,bcrypt.genSaltSync(12))
 
-export const registerService = ({ phone, password, username, email }) => new Promise(async (resolve, reject) => {
+export const registerService = ({ phone, password, username, email, user_role}) => new Promise(async (resolve, reject) => {
     try {
-        // // Kiểm tra trùng email hoặc phone trước
-        // const existedUser = await db.User.findOne({
-        //     where: {
-        //         [Op.or]: [{ phone }, { email }]
-        //     }
-        // });
-
-        // if (existedUser) {
-        //     const msg = existedUser.email === email
-        //         ? 'Email đã được sử dụng!'
-        //         : 'Số điện thoại đã được sử dụng!';
-        //     return resolve({ err: 1, msg, token: null });
-        // }
-
          // Kiểm tra trùng từng trường
         const [userByPhone, userByEmail, userByUsername] = await Promise.all([
             db.User.findOne({ where: { phone } }),
@@ -47,7 +30,8 @@ export const registerService = ({ phone, password, username, email }) => new Pro
             phone,
             username,
             email,
-            password: hashPassword(password)
+            password: hashPassword(password),
+            user_role
         });
 
         const token = jwt.sign(
@@ -62,7 +46,6 @@ export const registerService = ({ phone, password, username, email }) => new Pro
         reject(error);
     }
 });
-
 
 
 export const loginService = ({ phone, email, password }) => new Promise(async (resolve, reject) => {
@@ -85,8 +68,6 @@ export const loginService = ({ phone, email, password }) => new Promise(async (r
             { expiresIn: '2d' }
         );
         resolve({ err: 0, msg: 'Đăng nhập thành công!', token });
-        //resolve({ err: 0, msg: 'Đăng nhập thành công!', token ,username: response.username});
-
     } catch (error) {
         reject(error);
     }
