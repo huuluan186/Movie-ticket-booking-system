@@ -13,17 +13,32 @@ module.exports = (sequelize, DataTypes) => {
         // Định nghĩa quan hệ thuộc về Movie
       Showtime.belongsTo(models.Movie, {
         foreignKey: 'movie_id',
-        as: 'movie' // Tùy chọn alias nếu cần
+        as: 'movie',
+        onDelete: 'CASCADE'
       });
+
+      Showtime.belongsTo(models.Cinema, {
+        foreignKey: 'cinema_id',
+        as: 'cinema',
+        onDelete: 'CASCADE' 
+      });
+
+      Showtime.hasMany(models.Ticket, { foreignKey: 'showtime_id', as: 'tickets' });
+      
     }
   }
   Showtime.init({
+    showtime_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      primaryKey: true,
+    },
     showtime_date: DataTypes.DATEONLY,
     showtime_starttime: DataTypes.TIME,
     showtime_endtime: DataTypes.TIME,
-    showtime_price: DataTypes.DECIMAL,
+    price: DataTypes.DECIMAL,
     movie_id: DataTypes.STRING,
-    cinema_id: DataTypes.INTEGER,
+    cinema_id: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Showtime',

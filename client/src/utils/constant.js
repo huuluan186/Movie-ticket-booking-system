@@ -3,7 +3,9 @@ export const path={
     LOGIN:'/login',
     PROFILE:'user/profile',
     CHANGEPASSWORD:'user/change-password',
-    COMING_SOON: '/movies/coming-soon',
-    NOW_SHOWING: '/movies/now-showing',
-    MOVIE_DETAIL: '/movies/detail/:title',
+    MOVIES_BY_STATUS: '/movies/:statusSlug',
+    MOVIE_DETAIL: '/movies/detail/:id/:slug',
+    SHOWTIME: '/showtime',
+    BOOKING_TICKET:'/booking/:showtime_id/select-seat',
+    MY_TICKET:'/user/orders',
 }

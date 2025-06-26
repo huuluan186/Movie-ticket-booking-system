@@ -4,9 +4,8 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Showtimes', {
       showtime_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true
       },
       showtime_date: {
@@ -32,16 +31,16 @@ module.exports = {
           key: 'movie_id'
         },
         onDelete: 'CASCADE',
-        allowNull: true
+        allowNull: false
       },
       cinema_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         references: {
           model: 'Cinemas',
           key: 'cinema_id'
         },
         onDelete: 'CASCADE',
-        allowNull: true
+        allowNull: false
       },
       createdAt: {
         type: Sequelize.DATE,

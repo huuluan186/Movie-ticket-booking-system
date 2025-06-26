@@ -13,11 +13,12 @@ export const apiGetMovieStatuses = () => new Promise(async (resolve,reject)=>{
     }
 })
 
-export const apiGetMovieList = () => new Promise(async (resolve,reject)=>{
+export const apiGetMovieList = (query={}) => new Promise(async (resolve,reject)=>{
     try {
         const response = await axiosConfig({
             method:'get',
-            url: '/api/v1/movies/all',
+            url: '/api/v1/movies',
+            params: query,
         })
         console.log(response)
         resolve(response)

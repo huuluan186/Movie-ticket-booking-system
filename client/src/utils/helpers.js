@@ -1,3 +1,16 @@
+import dayjs from 'dayjs';
+
+export const computeShowtimeDateRange = (date, startTime, endTime) => {
+    const isOvernight = startTime?.slice(0, 5) > endTime?.slice(0, 5);
+
+    const startDate = date;
+    const endDate = isOvernight
+        ? dayjs(date).add(1, 'day').format('YYYY-MM-DD')
+        : date;
+
+    return { startDate, endDate };
+};
+
 // Kiểm tra trống một trường
 export const checkEmpty = (value, name, label) => {
     if (!value?.trim()) {
@@ -58,3 +71,27 @@ export const sortMoviesByReleaseDate = (movies, limit = null) => {
     }
     return [];
 };
+
+// Hàm chuyển đổi link YouTube sang dạng embed
+export const getYouTubeEmbedUrl = (url) => {
+    if (!url) return '';
+    // Extract video ID from various YouTube URL formats
+    const videoIdMatch = url.match(/(?:v=|\.be\/)([a-zA-Z0-9_-]{11})/);
+    const videoId = videoIdMatch ? videoIdMatch[1] : null;
+    return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=0` : '';
+};
+
+// Hàm chuyển đổi văn bản
+export const toCapitalize = (str) => {
+    return str
+      .toLowerCase() // Chuyển thành chữ thường
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Viết hoa chữ cái đầu
+      .join(' ');
+};
+
+export const convertRowToLetter = (rowNumber) => {
+    return String.fromCharCode(64 + rowNumber); // 1 -> A, 2 -> B, etc.
+};
+
+export const roundToUnit = (num, unit) => Math.round(num / unit) * unit;

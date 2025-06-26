@@ -14,7 +14,7 @@ export const normalizeVietnamese = (str) => {
       .replace(/đ/g, 'd').replace(/Đ/g, 'D') // Chuyển đ, Đ -> d
       .toLowerCase()
       .trim();
-  };
+};
   
   /**
    * Kiểm tra username tiếng Việt có trùng nhau không (bỏ qua dấu và khoảng trắng)
@@ -22,12 +22,18 @@ export const normalizeVietnamese = (str) => {
    * @param {string} str2 - Chuỗi thứ hai
    * @returns {boolean} Có trùng nhau hay không
    */
-  export const compareVietnameseUsername = (str1, str2) => {
+export const compareVietnameseUsername = (str1, str2) => {
     if (!str1 || !str2) return false;
     
     const normalized1 = normalizeVietnamese(str1).replace(/\s+/g, '');
     const normalized2 = normalizeVietnamese(str2).replace(/\s+/g, '');
     
     return normalized1 === normalized2;
-  };
+};
   
+const formatStatus = (rawStatus) => {
+  return rawStatus
+    .split('-')                       // ['coming', 'soon']
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // ['Coming', 'Soon']
+    .join(' ');                       // 'Coming Soon'
+};

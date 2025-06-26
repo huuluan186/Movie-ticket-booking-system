@@ -205,3 +205,22 @@ export const changePasswordService = (user_id, data) => new Promise(async (resol
         reject(error);
     }
 })
+
+export const getAllUsersService = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await db.User.findAndCountAll({
+            raw: true,
+            nested:true,
+            attributes: {
+                exclude: ['password']
+            }
+        })
+        resolve({
+            err: response ? 0 : 1,
+            msg: response ? 'OK' : 'Failed to get all users.',
+            response
+        })
+    } catch (error) {
+        reject(error)
+    }
+})

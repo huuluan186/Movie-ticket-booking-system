@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-
+        User.hasMany(models.OrderTable, {
+            foreignKey: 'user_id',
+            as: 'orders',
+            onDelete: 'CASCADE',  
+        });
     }
   }
   User.init({
@@ -18,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true,
+        charset: 'utf8mb4',
+        collate: 'utf8mb4_bin',
     },
     username: DataTypes.STRING,
     password: DataTypes.STRING,

@@ -4,9 +4,8 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('OrderTables', {
       order_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true
       },
       user_id: {
@@ -16,7 +15,6 @@ module.exports = {
           key: 'user_id'
         },
         onDelete: 'CASCADE',
-        allowNull: true
       },
       order_date:{
         type: Sequelize.DATE,
@@ -24,11 +22,13 @@ module.exports = {
       }, 
       total_amount:{
         type: Sequelize.DECIMAL(10, 2),
-        allowNull: false
+        allowNull: false,
+        defaultValue: 0.00
       },
       payment_status:{
         type: Sequelize.ENUM('Pending', 'Completed', 'Canceled'),
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'Completed'
       }, 
       createdAt: {
         type: Sequelize.DATE,
