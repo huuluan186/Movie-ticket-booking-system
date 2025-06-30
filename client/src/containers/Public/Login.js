@@ -15,7 +15,7 @@ const Login = () => {
     const dispatch = useDispatch()
     const location = useLocation()
     const navigate = useNavigate()
-    const {isLoggedIn,isRegistered,msg,update} =useSelector(state=>state.auth) // .auth do define trong rootReducer 
+    const {isLoggedIn, isRegistered, msg, update, user_role } =useSelector(state=>state.auth) // .auth do define trong rootReducer 
     const [payload,setPayLoad] = useState({
         phone:'',
         password:'',
@@ -48,11 +48,14 @@ const Login = () => {
         if (isLoggedIn) {
             toast.success("Đăng nhập thành công!");
             setTimeout(() => {
-                const redirectPath = location.state?.redirectTo || '/';
-                navigate(redirectPath);
+                if(user_role==='admin') navigate(`${path.ADMIN}/${path.DASHBOARD}`, { replace: true })
+                else{
+                    const redirectPath = location.state?.redirectTo || '/';
+                    navigate(redirectPath, { replace: true });
+                }
             }, 800);
         }
-    }, [isLoggedIn,isRegister, navigate, location.state]); // Kiểm tra thay đổi của cả isLoggedIn và isRegister
+    }, [isLoggedIn, isRegister, navigate, location.state, user_role]); // Kiểm tra thay đổi của cả isLoggedIn và isRegister
     
     useEffect(() => {
         if(isRegistered) {
