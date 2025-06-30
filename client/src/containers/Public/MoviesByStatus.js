@@ -9,6 +9,7 @@ import { toSlug } from '../../utils/toSlug';
 import { Banner, Button, Card} from '../../components'
 import smallBanner from '../../assets/small-banner.png'
 import icons from '../../utils/icon';
+import { path } from '../../utils/constant';
 
 const {RiTicket2Line} = icons
 
@@ -69,7 +70,11 @@ const MoviesByStatus = () => {
                                     title={movie?.title || "Untitled"}
                                     image={movie?.poster ? getImageUrl(movie?.poster) : placehoder}
                                     releaseDate={formatDate(movie?.release_date)}
-                                    navigateTo={`/movies/detail/${movie?.movie_id}/${toSlug(movie?.title)}`}
+                                    navigateTo={
+                                        path.MOVIE_DETAIL
+                                            .replace(':id', movie?.movie_id)
+                                            .replace(':slug', toSlug(movie?.title))
+                                    }
                                 />
                                 <Button 
                                     text={'ĐẶT VÉ'} 
@@ -77,7 +82,7 @@ const MoviesByStatus = () => {
                                     bgColor='bg-red-500' 
                                     hover='hover:bg-red-600'
                                     IcBefore={RiTicket2Line}
-                                    onClick={()=>navigate('/showtime')}
+                                    onClick={()=>navigate(path.SHOWTIME)}
                                 />
                             </div>
                             ))

@@ -8,6 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Seat, Button, Modal} from '../../components';
 import { toast } from 'react-toastify';
 import icons from '../../utils/icon';
+import { path } from '../../utils/constant';
 import { apiCreateSeatsForCinema } from '../../services/seat';
 import { apiGetVipPriceIncrementConfig } from '../../services/getServerConfig'; 
 
@@ -299,7 +300,7 @@ const BookingTicket = () => {
                             hover: 'hover:bg-orange-700',
                             onClick: () => {
                                 setShowSuccessModal(false);
-                                navigate('/user/orders');
+                                navigate(path.MY_TICKET);
                                 dispatch(actions.getOrderHistory());
                             },
                         },
