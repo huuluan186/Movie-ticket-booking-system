@@ -4,39 +4,30 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Seats', {
       seat_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true
       },
       cinema_id: {
-        type: Sequelize.INTEGER,
-        unique: true,
+        type: Sequelize.STRING,
         references: {
           model: 'Cinemas',
           key: 'cinema_id'
         },
         onDelete: 'CASCADE',
-        allowNull: true
+        allowNull: false
       },
-        seat_row: {
-            type: Sequelize.STRING(1),
-            allowNull: false,
-            unique:true
-        },
-        seat_column: {
+        row: {
             type: Sequelize.INTEGER,
             allowNull: false,
-            unique:true
         },
-        seat_type:{
+        column: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+        },
+        type:{
             type: Sequelize.ENUM('VIP', 'Normal'),
             allowNull: false
-        },
-        is_booked:{
-            type: Sequelize.BOOLEAN,
-            allowNull: false,
-            defaultValue: false
         },
       createdAt: {
         type: Sequelize.DATE,
@@ -46,6 +37,13 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false
       }
+    },
+    {
+        uniqueKeys: {
+            unique_seat: {
+            fields: ['cinema_id', 'row', 'column']
+            }
+        }
     });
   },
   down: async (queryInterface, Sequelize) => {

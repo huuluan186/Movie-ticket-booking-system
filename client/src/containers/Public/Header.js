@@ -1,8 +1,8 @@
-import React, {useCallback,useState,useRef,useEffect} from 'react'
+import {useCallback,useState,useRef,useEffect} from 'react'
 import logo from '../../assets/logo-dark-transparent.png'
 import {Button, DropdownMenu, SearchBox} from "../../components";
 import { path } from "../../utils/constant";
-import {Link,useNavigate} from 'react-router-dom';
+import {Link, useNavigate, NavLink, useLocation} from 'react-router-dom';
 import icons from '../../utils/icon'
 import { toSlug } from '../../utils/toSlug';
 import { useSelector, useDispatch } from "react-redux";
@@ -11,7 +11,8 @@ import { userMenuItems } from '../../utils/menuItems';
 import { apiGetMovieStatuses } from '../../services/movie';
 
 const {RiArrowDropDownLine, IoPersonCircle} = icons
-
+const active = "font-medium text-xl text-orange-700"
+const notActive = "font-medium text-xl text-gray-600 hover:text-black"
 const Header = () => {
     const {isLoggedIn}=useSelector(state=>state.auth)
     const { currentData } = useSelector(state => state.user)
@@ -19,8 +20,9 @@ const Header = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const location = useLocation();
 
-    const getUserMenuItems = userMenuItems(navigate, dispatch,currentData);
+    const getUserMenuItems = userMenuItems(navigate, dispatch);
 
     const goLogin = useCallback((flag)=>{
         navigate(path.LOGIN,
@@ -65,8 +67,11 @@ const Header = () => {
         fetchCategories()
     },[])
 
+    // Kiểm tra nếu URL hiện tại bắt đầu bằng "/movies" để làm "Phim" active
+    const isMoviesActive = location.pathname.startsWith('/movies');
+
     return (
-        <div className='container'>
+        <div className='container px-20'>
            <div className="w-full flex items-center justify-between">
                 <Link to={'/'} >
                     <img
@@ -75,13 +80,18 @@ const Header = () => {
                         className='w-[240px] h-[70px] object-contain'
                     />
                 </Link>
+                <NavLink to={path.SHOWTIME} end className={({isActive})=> isActive ?` ${active}` : `${notActive}`}>
+                    Lịch chiếu
+                </NavLink>
                 <div className="relative" ref={movieDropdownRef}>
                     <button
-                        className="text-black px-4 py-2 rounded-md hover:text-orange-700 flex items-center justify-center gap-1"
+                        className={`px-4 py-2 rounded-md flex items-center justify-center gap-1 
+                                    ${ isMoviesActive ? `${active}`: `${notActive}` } `}
                         onClick={toggleMovieDropdown}
-                    ><span className='font-medium text-xl'>Phim</span>
-                    <span className='text-xl'><RiArrowDropDownLine/></span>
-                </button>
+                    >
+                        <span className='font-medium text-xl'>Phim</span>
+                        <span className='text-xl'><RiArrowDropDownLine/></span>
+                    </button>
                 {isMovieDropdownOpen && (
                     <DropdownMenu
                         items={categories.map(item => ({
@@ -109,7 +119,8 @@ const Header = () => {
                 <>
                     <div className="relative" ref={userDropdownRef}>
                         <Button
-                        text={currentData?.username || 'Bạn chưa đăng nhập'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle} IcAfter={RiArrowDropDownLine}  />
+                            text={currentData?.username || 'Đang tải...'} textColor='text-black' bgColor='bg-white' outline='outline outline-2 outline-orange-500' onClick={toggleUserDropdown} IcBefore={IoPersonCircle} IcAfter={RiArrowDropDownLine}  
+                        />
                         {isUserDropdownOpen && (
                             <DropdownMenu
                                 items={getUserMenuItems}

@@ -1,2 +1,7 @@
 export * from './auth'
 export * from './user'
+export * from './movie'
+export * from './cinema'
+export * from './showtime'
+export * from './seat'
+export * from './order'

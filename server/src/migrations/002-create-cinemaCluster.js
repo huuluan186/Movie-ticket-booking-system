@@ -4,9 +4,8 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('CinemaClusters', {
       cluster_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true
       },
       cluster_name: {
@@ -18,7 +17,7 @@ module.exports = {
         allowNull: false
       },
       chain_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         references: {
           model: 'CinemaChains',
           key: 'chain_id'

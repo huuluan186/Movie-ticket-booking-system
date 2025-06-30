@@ -1,11 +1,16 @@
 import express from 'express'
 import verifyToken from '../middlewares/verifyToken'
 import * as userController from '../controllers/user.controller'
+import * as orderController from '../controllers/order.controller'
 
 const router = express.Router()
 
+router.get('/',userController.getAllUsersController)
 router.use(verifyToken)
-router.get('/get-current-user', userController.getUserInfo)
-router.put('/profile',userController.updateUserInfo)
-router.put('/change-password', userController.changePassword)
+router.get('/me', userController.getUserInfo)
+router.put('/me/profile',userController.updateUserInfo)
+router.put('/me/password', userController.changePassword)
+router.post('/me/orders', orderController.createOrderController);
+router.get('/me/orders', orderController.getOrderHistoryController) 
+
 export default router

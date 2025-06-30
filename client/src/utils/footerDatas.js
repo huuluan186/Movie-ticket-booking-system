@@ -5,17 +5,17 @@ const footerData = [
     {
       title: 'Điều Khoản Sử Dụng',
       items: [
-        { type: 'a', href: '#', label: 'Điều khoản chung' },
-        { type: 'a', href: '#', label: 'Điều khoản sử dụng' },
-        { type: 'a', href: '#', label: 'Chính sách thanh toán' },
-        { type: 'a', href: '#', label: 'Câu hỏi thường gặp' },
+        { type: 'a', href: '/', label: 'Điều khoản chung' },
+        { type: 'a', href: '/', label: 'Điều khoản sử dụng' },
+        { type: 'a', href: '/', label: 'Chính sách thanh toán' },
+        { type: 'a', href: '/', label: 'Câu hỏi thường gặp' },
       ]
     },
     {
       title: 'Danh Mục',
       items: [
-        { type: 'link', to: '/now-showing', label: 'Phim đang chiếu' },
-        { type: 'link', to: '/coming-soon', label: 'Phim sắp chiếu' },
+        { type: 'link', to: 'movies/now-showing', label: 'Phim đang chiếu' },
+        { type: 'link', to: 'movies/coming-soon', label: 'Phim sắp chiếu' },
       ]
     },
     {

@@ -1,23 +1,27 @@
 import icons from './icon'
-import * as actions from '../store/actions'  // Đảm bảo đường dẫn đúng trong thư mục `src`
+import * as actions from '../store/actions' 
+import {path} from './constant'
 
 const { IoInformationCircleOutline, AiOutlineHistory, IoLogOutOutline, MdOutlineChangeCircle } = icons
 
-export const userMenuItems = (navigate, dispatch, currentData) => [
+export const userMenuItems = (navigate, dispatch) => [
   {
     label: 'Thông tin tài khoản',
     icon: <IoInformationCircleOutline />,
-    onClick: () => navigate(`/profile/${currentData?.username || ''}`),
+    onClick: () => navigate(path.PROFILE),
   },
   {
     label: 'Đổi mật khẩu',
     icon: <MdOutlineChangeCircle/>,
-    onClick: () => navigate(`/change-password/${currentData?.username || ''}`),
+    onClick: () => navigate(path.CHANGEPASSWORD),
   },
   {
     label: 'Lịch sử giao dịch',
     icon: <AiOutlineHistory />,
-    onClick: () => navigate('/history-transaction'),
+    onClick: () => {
+        navigate('user/orders');
+        dispatch(actions.getOrderHistory());
+    }
   },
   {
     label: 'Đăng xuất',
