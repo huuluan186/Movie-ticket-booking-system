@@ -35,7 +35,12 @@ export const registerService = ({ phone, password, username, email, user_role}) 
         });
 
         const token = jwt.sign(
-            { user_id: response.user_id, phone: response.phone, email: response.email },
+            { 
+                user_id: response.user_id, 
+                phone: response.phone, 
+                email: response.email, 
+                role: response.user_role 
+            },
             process.env.SECRET_KEY,
             { expiresIn: '2d' }
         );
@@ -63,7 +68,12 @@ export const loginService = ({ phone, email, password }) => new Promise(async (r
         if (!isCorrectPassword) return resolve({ err: 2, msg: 'Mật khẩu không đúng!', token: null });
 
         const token = jwt.sign(
-            { user_id: response.user_id, phone: response.phone, email: response.email},
+            { 
+                user_id: response.user_id, 
+                phone: response.phone, 
+                email: response.email, 
+                role: response.user_role
+            },
             process.env.SECRET_KEY,
             { expiresIn: '2d' }
         );
