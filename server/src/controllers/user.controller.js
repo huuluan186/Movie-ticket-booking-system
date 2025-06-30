@@ -52,3 +52,38 @@ export const getAllUsersController = async (req, res) => {
         })
     }
 }
+
+export const adminUpdateUserController = async (req, res) => {
+    try {
+        const { user_id } = req.params;
+        const response = await services.adminUpdateUserService(user_id, req.body);
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({ err: -1, msg: 'Failed at admin update user info controller:' + error});
+    }
+};
+
+export const adminChangePasswordController = async (req, res) => {
+    try {
+        const { user_id } = req.params;
+        const response = await services.adminChangePasswordService(user_id, req.body);
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({ err: -1, msg: 'Failed at admin change password controller:' + error});
+    }
+};
+
+export const deleteUserController = async (req, res) => {
+  try {
+        const { user_id } = req.params;
+        const admin = req.user; // từ verifyToken
+
+        const response = await services.deleteUserService(admin, user_id);
+        return res.status(200).json(response);
+  } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Failed at deleteUser controller: ' + error,
+        });
+  }
+};
