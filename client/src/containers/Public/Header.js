@@ -14,7 +14,7 @@ const {RiArrowDropDownLine, IoPersonCircle} = icons
 const active = "font-medium text-xl text-orange-700"
 const notActive = "font-medium text-xl text-gray-600 hover:text-black"
 const Header = () => {
-    const {isLoggedIn}=useSelector(state=>state.auth)
+    const {isLoggedIn, user_role}=useSelector(state=>state.auth)
     const { currentData } = useSelector(state => state.user)
     const [categories, setCategories]=useState([])
 
@@ -22,7 +22,7 @@ const Header = () => {
     const navigate = useNavigate()
     const location = useLocation();
 
-    const getUserMenuItems = userMenuItems(navigate, dispatch);
+    const getUserMenuItems = userMenuItems(navigate, dispatch, user_role);
 
     const goLogin = useCallback((flag)=>{
         navigate(path.LOGIN,

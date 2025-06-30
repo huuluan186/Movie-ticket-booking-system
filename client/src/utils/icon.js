@@ -1,4 +1,4 @@
-import { RiArrowDropDownLine, RiTicket2Line, RiErrorWarningLine  } from "react-icons/ri";
+import { RiArrowDropDownLine, RiTicket2Line, RiErrorWarningLine, RiAdminLine } from "react-icons/ri";
 import { IoPersonCircle, IoCheckmarkCircle, IoInformationCircleOutline, IoLogOutOutline } from "react-icons/io5";
 import { AiOutlineHistory } from "react-icons/ai";
 import { FaRegHandPointRight } from "react-icons/fa6";
@@ -34,7 +34,8 @@ const icons = {
     GoQuestion,
     RiErrorWarningLine,
     CiCirclePlus,
-    GrSubtractCircle
+    GrSubtractCircle,
+    RiAdminLine 
 }
 
 export default icons;

@@ -3,6 +3,7 @@ import { path } from "./utils/constant";
 import { ToastContainer, Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { Home, Login, Homepage, Profile, ChangePassword, MoviesByStatus, MovieDetail, Showtime, BookingTicket, MyTicket, RequireAuth, Search} from "./containers/Public";
+import { AdminLayout, Dashboard } from "./containers/Admin";
 import * as actions from './store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
@@ -29,6 +30,7 @@ function App() {
   return (
     <div className="min-h-screen bg-primary">
         <Routes>
+            {/* Website routes */}
             <Route path={path.HOME} element={<Home />}>
                 <Route index element={<Homepage/>}/> 
                 <Route path={path.LOGIN} element={<Login />} />
@@ -45,6 +47,15 @@ function App() {
                 <Route path={path.SHOWTIME} element={<Showtime />} />
                 <Route path={path.SEARCH.split('?')[0]} element={<Search />} />
                 <Route path="*" element={<Navigate to={path.HOME} replace />} />
+            </Route>
+
+            {/* Admin routes */}
+            <Route element={<RequireAuth requiredRole="admin" />}>
+                <Route path={path.ADMIN} element={<AdminLayout />}>
+                    <Route index element={<Navigate to={path.DASHBOARD} replace />} />
+                    <Route path={path.DASHBOARD} element={<Dashboard />} />
+                    {/* Thêm các route admin khác ở đây */}
+                </Route>
             </Route>
         </Routes>
 
