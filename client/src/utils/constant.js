@@ -8,4 +8,6 @@ export const path={
     SHOWTIME: '/showtime',
     BOOKING_TICKET:'/booking/:showtime_id/select-seat',
     MY_TICKET:'/user/orders',
+    SEARCH: '/search?s=:keyword',
+
 }
