@@ -68,7 +68,7 @@ const Header = () => {
     },[])
 
     // Kiểm tra nếu URL hiện tại bắt đầu bằng "/movies" để làm "Phim" active
-    const isMoviesActive = location.pathname.startsWith('/movies');
+    const isMoviesActive = location.pathname.startsWith(path.MOVIES_BY_STATUS.split('/:')[0]);
 
     return (
         <div className='container px-20'>
@@ -80,6 +80,9 @@ const Header = () => {
                         className='w-[240px] h-[70px] object-contain'
                     />
                 </Link>
+                <NavLink to={'/'} end className={({isActive})=> isActive ?` ${active}` : `${notActive}`}>
+                    Trang chủ
+                </NavLink>
                 <NavLink to={path.SHOWTIME} end className={({isActive})=> isActive ?` ${active}` : `${notActive}`}>
                     Lịch chiếu
                 </NavLink>
@@ -97,7 +100,7 @@ const Header = () => {
                         items={categories.map(item => ({
                             label: item.vietnameseValue,
                             onClick: () => {
-                                navigate(`/movies/${toSlug(item.englishValue)}`)
+                                navigate(path.MOVIES_BY_STATUS.replace(':statusSlug', toSlug(item.englishValue)))
                                 setMovieDropdownOpen(false)
                             }
                         }))}

@@ -9,6 +9,7 @@ import icons from '../../utils/icon';
 import {getModalButtons} from '../../utils/modalBtnDatas';
 import { useRequireLogin } from '../../hooks';
 import { apiCreateSeatsForCinema } from '../../services/seat';
+import { path } from '../../utils/constant';
 
 const  {RiErrorWarningLine} = icons
 
@@ -17,14 +18,12 @@ const Showtime = () => {
     const navigate = useNavigate();
     const { cinemaChains, cinemaClusters } = useSelector(state => state.cinema);
     const { movies, showtimesByDate } = useSelector(state => state.showtime);
-    const {isLoggedIn} =useSelector(state=>state.auth)
 
     const [selectedChainName, setSelectedChainName] = useState(null); //để lưu tên chuỗi rạp chưa có cụm
     const [selectedClusterName, setSelectedClusterName] = useState(null); //để lưu tên cụm rạp chưa có lịch chiếu
     const [selectedMovieId, setSelectedMovieId] = useState(null);
     const [selectedClusterId, setSelectedClusterId] = useState(null);
     const [selectedChainId, setSelectedChainId] = useState(null);
-    const [selectedShowtimeId, setSelectedShowtimeId] = useState(null);
     const [clusterMovies, setClusterMovies] = useState([]);
     const [hasInitialized, setHasInitialized] = useState(false);
 
@@ -82,9 +81,9 @@ const Showtime = () => {
                     dispatch(actions.getShowtimeDetailById(showtimeId));
                     await apiCreateSeatsForCinema(cinemaId);
                     dispatch(actions.getSeatLayout(cinemaId, showtimeId));
-                    navigate(`/booking/${showtimeId}/select-seat`);
+                    navigate(path.BOOKING_TICKET.replace(':showtime_id', showtimeId));
                 },
-                `/booking/${showtimeId}/select-seat`,   // redirectTo
+                path.BOOKING_TICKET.replace(':showtime_id', showtimeId),   // redirectTo
                 { showtimeId },                         // extraState (nếu cần)
                 { showModal: true }                     // có thể bỏ – mặc định true
         );
