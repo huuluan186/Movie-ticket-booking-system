@@ -26,7 +26,6 @@ const authReducer = (state=initState,action)=>{
                 token: action.data.token,
                 user_role: action.data.user_role,
                 msg: "",
-                //currentUser: action.user
             };
 
         case actionTypes.REGISTER_FAIL:
@@ -36,6 +35,7 @@ const authReducer = (state=initState,action)=>{
                 isLoggedIn: false,
                 msg: action.data,
                 token:null,
+                user_role:null,
                 update:!state.update
             };
 
@@ -50,6 +50,7 @@ const authReducer = (state=initState,action)=>{
                 ...state,
                 isLoggedIn:false,
                 msg:'',
+                user_role:null,
                 token:null
             }
         default:

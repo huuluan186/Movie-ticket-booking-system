@@ -13,9 +13,7 @@ function App() {
     const { isLoggedIn } = useSelector(state => state.auth)
 
     useEffect(() => {
-        setTimeout(() => {
-            isLoggedIn && dispatch(actions.getCurrent())
-        }, 500)
+        isLoggedIn && dispatch(actions.getCurrent())
     }, [isLoggedIn])
 
     const { pathname } = useLocation();
