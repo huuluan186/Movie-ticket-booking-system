@@ -35,6 +35,7 @@ export const login = (payload) => async (dispatch) => {
         console.log("response action login: ",response);
         if(response?.data.err===0){
             const token = response.data.token;
+            localStorage.setItem('token', token);
             dispatch({
                 type: actionTypes.LOGIN_SUCCESS,
                 data: {
@@ -56,6 +57,9 @@ export const login = (payload) => async (dispatch) => {
     }
 }
 
-export const logout = () => ({
-    type: actionTypes.LOGOUT
-})
+export const logout = () => {
+    localStorage.removeItem('token'); //xóa token khi logout
+    return {
+        type: actionTypes.LOGOUT
+    };
+};
