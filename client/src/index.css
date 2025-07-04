@@ -4,6 +4,8 @@
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import 'react-date-range/dist/styles.css';        /* CSS mặc định */
+@import 'react-date-range/dist/theme/default.css'; /* Theme mặc định */
 
 .custom-toast-container {
   top: 80px !important; /* Mặc định là 1rem (~16px), đổi thành thấp xuống xíu */
