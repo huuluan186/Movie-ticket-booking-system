@@ -10,7 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'rec
 import { TitleHeader, ContainerBox, Button, SelectBox, Tab, CountBoxList} from '../../components';
 import { apiGetRevenueByMovie, apiGetRevenueByCluster } from '../../services/statistic'; // Import API
 
-const Statistics = () => {
+const Statistic = () => {
     const { cinemaChains, cinemaClusters } = useSelector(state => state.cinema);
     const { moviesData } = useSelector(state => state.movie);
     const dispatch = useDispatch();
@@ -421,4 +421,4 @@ const Statistics = () => {
     )
 }
 
-export default Statistics
+export default Statistic
