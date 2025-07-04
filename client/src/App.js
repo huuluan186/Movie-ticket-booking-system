@@ -2,8 +2,9 @@ import { Routes, Route, Navigate, useLocation  } from "react-router-dom";
 import { path } from "./utils/constant";
 import { ToastContainer, Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { Home, Login, Homepage, Profile, ChangePassword, MoviesByStatus, MovieDetail, Showtime, BookingTicket, MyTicket, RequireAuth, Search} from "./containers/Public";
+import { Home, Login, Homepage, Profile, ChangePassword, MoviesByStatus, MovieDetail, Showtime, BookingTicket, MyTicket, Search} from "./containers/Public";
 import { AdminLayout, Dashboard } from "./containers/Admin";
+import {RequireAuth} from "./components";
 import * as actions from './store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
