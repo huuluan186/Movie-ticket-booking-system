@@ -40,9 +40,9 @@ export const updateUserService = (user_id, {username, email, phone}) => new Prom
         if (!user) {
             console.log('User not found for user_id:', user_id);
             return resolve({
-            err: 1,
-            msg: 'Người dùng không tồn tại!',
-            response: null,
+                err: 1,
+                msg: 'Người dùng không tồn tại!',
+                response: null,
             });
         }
   
@@ -84,9 +84,9 @@ export const updateUserService = (user_id, {username, email, phone}) => new Prom
             }
             updateData.phone = trimmedData.phone;
         }
-         // Log dữ liệu sẽ cập nhật
-         console.log('Update data:', updateData);
-       // Kiểm tra trùng lặp từng trường
+        // Log dữ liệu sẽ cập nhật
+        console.log('Update data:', updateData);
+        // Kiểm tra trùng lặp từng trường
         if (Object.keys(updateData).length > 0) {
             const conditions = [];
             if (trimmedData.email) conditions.push({ email: trimmedData.email });
@@ -95,11 +95,11 @@ export const updateUserService = (user_id, {username, email, phone}) => new Prom
             console.log('Duplicate check conditions:', conditions);
             if (conditions.length > 0) {
                 const existingUser = await db.User.findOne({
-                where: {
-                    [Op.or]: conditions,
-                    user_id: { [Op.ne]: user_id }, // Loại trừ user hiện tại
-                },
-                raw: true,
+                    where: {
+                        [Op.or]: conditions,
+                        user_id: { [Op.ne]: user_id }, // Loại trừ user hiện tại
+                    },
+                    raw: true,
                 });
     
                 if (existingUser) {
@@ -161,17 +161,17 @@ export const changePasswordService = (user_id, data) => new Promise(async (resol
         //Kiểm tra input
         if (!currentPassword || !newPassword || !confirmNewPassword) {
             return resolve({
-              err: 1,
-              msg: 'Vui lòng nhập đầy đủ thông tin.',
-              response: null,
+                err: 1,
+                msg: 'Vui lòng nhập đầy đủ thông tin.',
+                response: null,
             });
           }
 
           if (newPassword !== confirmNewPassword) {
             return resolve({
-              err: 1,
-              msg: 'Mật khẩu mới và xác nhận mật khẩu không khớp.',
-              response: null,
+                err: 1,
+                msg: 'Mật khẩu mới và xác nhận mật khẩu không khớp.',
+                response: null,
             });
           }
 
@@ -185,9 +185,9 @@ export const changePasswordService = (user_id, data) => new Promise(async (resol
         const isMatch = bcrypt.compareSync(currentPassword, user.password);
         if (!isMatch) {
             return resolve({
-            err: 1,
-            msg: 'Mật khẩu hiện tại không đúng.',
-            response: null,
+                err: 1,
+                msg: 'Mật khẩu hiện tại không đúng.',
+                response: null,
             });
         }
         // Cập nhật mật khẩu
@@ -199,7 +199,7 @@ export const changePasswordService = (user_id, data) => new Promise(async (resol
         resolve({
             err: 0,
             msg: 'Đổi mật khẩu thành công.',
-          });
+        });
 
     } catch (error) {
         reject(error);
