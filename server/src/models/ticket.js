@@ -27,11 +27,14 @@ module.exports = (sequelize, DataTypes) => {
     ticket_status: DataTypes.ENUM(['Booked', 'Used', 'Canceled']),
 
     // snapshot fields
+    movie_id_snapshot: DataTypes.STRING,    
     movie_title_snapshot: DataTypes.STRING,
-    cinema_name_snapshot: DataTypes.STRING,
-    cluster_name_snapshot: DataTypes.STRING,
+    chain_id_snapshot: DataTypes.STRING,
     chain_name_snapshot: DataTypes.STRING,
+    cluster_id_snapshot: DataTypes.STRING,
+    cluster_name_snapshot: DataTypes.STRING,
     address_snapshot: DataTypes.STRING,
+    cinema_name_snapshot: DataTypes.STRING,
     row_snapshot: DataTypes.INTEGER,
     column_snapshot: DataTypes.INTEGER,
     showtime_date_snapshot: DataTypes.DATEONLY,
