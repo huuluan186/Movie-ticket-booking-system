@@ -3,6 +3,7 @@ import icons from '../../utils/icon'
 import { useDispatch, useSelector } from 'react-redux'
 import * as action from '../../store/actions'
 import { convertRowToLetter, computeShowtimeDateRange, formatDate} from '../../utils/helpers';
+import { TitleHeader } from '../../components';
 
 const {GrSubtractCircle, CiCirclePlus} = icons
 
@@ -19,9 +20,6 @@ const MyTicket = () => {
         dispatch(action.getOrderHistory());
     }, [dispatch]);
    
-    if (!orderHistory || orderHistory.length === 0) {
-        return <div className="text-center py-12 min-h-20">Đang tải hoặc không có lịch sử giao dịch...</div>;
-    }
 
     // Sắp xếp orderHistory theo order_date mới nhất
     const sortedOrderHistory = [...orderHistory].sort((a, b) => 
@@ -30,14 +28,7 @@ const MyTicket = () => {
 
     return (
         <div className='container mx-auto my-6 px-20'>
-            <div className='text-center'>
-                <h1 className="text-orange-700 text-3xl font-bold text-center mb-6 inline-block mx-auto">
-                    LỊCH SỬ GIAO DỊCH 
-                    <div className="relative w-full h-0.5 bg-black mt-3">
-                        <div className="absolute inset-0 w-20 h-1.5 bg-orange-400 m-auto z-10"></div>
-                    </div>
-                </h1>
-            </div>
+            <TitleHeader title={'lịch sử giao dịch'} variant="underline"/>
             <table className="w-full text-left border-collapse">
                 <thead>
                     <tr className="bg-gray-800 text-white">
