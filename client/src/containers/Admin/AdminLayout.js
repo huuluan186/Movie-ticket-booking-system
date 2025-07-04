@@ -1,21 +1,20 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { path } from "../../utils/constant";
 import { logout } from "../../store/actions";
 import clsx from "clsx";
+import logo from '../../assets/logo-icon-dark-transparent-removebg.png'
+import icons from "../../utils/icon";
+import { adminSidebarItems } from "../../utils/menuItems";
+
+const {IoLogOutOutline} = icons
 
 const AdminLayout = () => {
     const { currentData } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const menuItems = [
-        { label: "Thống kê", to: path.DASHBOARD },
-        { label: "Quản lý phim", to: "/admin/movies" },
-        { label: "Quản lý suất chiếu", to: "/admin/showtimes" },
-        { label: "Quản lý khách hàng", to: "/admin/users" },
-        { label: "Đăng xuất", action: () => dispatch(logout()) },
-    ];
+    const menuItems = adminSidebarItems;
 
     const handleClick = (item) => {
         if (item.action) item.action();
@@ -23,58 +22,68 @@ const AdminLayout = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex min-h-screen bg-gray-200">
             {/* Sidebar */}
-            <aside className="w-[240px] bg-white shadow-lg px-4 py-6 space-y-4">
-                <div className="text-2xl font-bold text-orange-500 text-center mb-6">
-                Cine<span className="text-yellow-400">Plus</span>
+            <aside className="w-60 bg-white shadow-lg sticky top-0 h-screen">
+                <div className="w-full mx-auto py-2">
+                    {logo && <img src={logo} alt="Logo" className="w-full h-40 object-contain"/>}
                 </div>
-                {menuItems.map((item, i) => (
-                <button
-                    key={i}
-                    onClick={() => handleClick(item)}
-                    className={clsx(
-                    "w-full text-left px-3 py-2 rounded hover:bg-orange-100",
-                    window.location.pathname === item.to && "bg-orange-200 font-bold"
-                    )}
-                >
-                    {item.label}
-                </button>
-                ))}
+                {menuItems.map((item, i) => {
+                    const isActive = window.location.pathname === item.to;
+                    return (
+                         <button
+                            key={i}
+                            onClick={() => handleClick(item)}
+                            className={clsx(
+                                "w-full h-14 border-t border-gray-400 text-left px-3 py-2 flex items-center gap-2",
+                                isActive ? "text-white font-bold bg-secondary" : "hover:bg-orange-400"
+                            )}
+                        >
+                            {item.icon} {item.label}
+                        </button>
+                    )
+                })}
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 p-6">
+            <main className="flex-1">
                 {/* Header */}
-                <header className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-semibold text-gray-700">Trang quản trị</h1>
-                <div className="text-gray-600 text-sm">
-                    Welcome, <span className="font-semibold">{currentData?.username}</span> |{" "}
-                    <button
-                    className="hover:underline"
-                    onClick={() => navigate(path.HOME)}
-                    >
-                    View site
-                    </button>{" "}
-                    |{" "}
-                    <button
-                    className="text-blue-500 hover:underline"
-                    onClick={() => navigate(path.CHANGEPASSWORD)}
-                    >
-                    Đổi mật khẩu
-                    </button>{" "}
-                    |{" "}
-                    <button
-                    className="text-red-500 hover:underline"
-                    onClick={() => dispatch(logout())}
-                    >
-                    Đăng xuất
-                    </button>
-                </div>
+                <header className="bg-secondary shadow">
+                    <div className="w-full px-4 py-2 mb-4 flex justify-between items-center">
+                        <h1 className="text-xl font-bold text-white">
+                            Trang quản trị - <span className="text-orange-500">CinePlus</span>
+                        </h1>
+                        <div className="text-white text-sm">
+                            Welcome, <span className="font-bold">{currentData?.username}</span> |{" "}
+                            <button
+                                className="hover:underline"
+                                onClick={() => navigate(path.HOME)}
+                            >
+                                View site
+                            </button>
+                            {" "}|{" "}
+                            <button
+                                className="hover:underline"
+                                onClick={() => navigate(path.CHANGEPASSWORD)}
+                            >
+                                CHANGE PASSWORD
+                            </button>
+                            {" "}|{" "}
+                            <button
+                                className="hover:underline inline-flex items-center gap-1"
+                                onClick={() => dispatch(logout())}
+                            >
+                                LOG OUT
+                                {IoLogOutOutline && <IoLogOutOutline/>}
+                            </button>
+                        </div>
+                    </div>
                 </header>
 
                 {/* Nội dung */}
-                <Outlet />
+                <div className="px-6 pb-10">
+                    <Outlet />
+                </div>
             </main>
         </div>
   );

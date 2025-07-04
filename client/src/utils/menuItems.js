@@ -2,7 +2,9 @@ import icons from './icon'
 import * as actions from '../store/actions' 
 import {path} from './constant'
 
-const { IoInformationCircleOutline, AiOutlineHistory, IoLogOutOutline, MdOutlineChangeCircle, RiAdminLine } = icons
+const { 
+    IoInformationCircleOutline, AiOutlineHistory, IoLogOutOutline, MdOutlineChangeCircle, RiAdminLine, GrAnalytics, FaUser, MdLocalMovies, FaCalendarAlt, SiChainlink, AiOutlineCluster, GiTheater 
+} = icons
 
 export const userMenuItems = (navigate, dispatch, user_role) => [
     // Nếu là admin thì thêm mục này
@@ -42,3 +44,13 @@ export const userMenuItems = (navigate, dispatch, user_role) => [
         }    
     }
 ]
+
+export const adminSidebarItems = [
+    { label: "Thống kê", to: `${path.ADMIN}/${path.DASHBOARD}`, icon: <GrAnalytics/>},
+    { label: "Quản lý khách hàng", to: "/admin/movies", icon: <FaUser/>},
+    { label: "Quản lý hệ thống rạp", to: "/admin/movies", icon: <SiChainlink/>},
+    { label: "Quản lý cụm rạp", to: "/admin/movies", icon: <AiOutlineCluster/>},
+    { label: "Quản lý rạp", to: "/admin/movies", icon: <GiTheater/> },
+    { label: "Quản lý phim", to: "/admin/showtimes", icon: <MdLocalMovies/> },
+    { label: "Quản lý suất chiếu", to: "/admin/users", icon: <FaCalendarAlt/> },
+];
