@@ -152,7 +152,7 @@ export const deleteCinemaChainService = (chain_id) => new Promise(async (resolve
 });
 
 //api cluster
-export const createCinemaClusterService = ({cluster_name, address, city, chain_id}) => new Promise(async (resolve, reject) => {  
+export const createCinemaClusterService = ({cluster_name, address, chain_id}) => new Promise(async (resolve, reject) => {  
     try {
         // Kiểm tra xem chuỗi rạp có tồn tại không
         const chain = await db.CinemaChain.findOne({ where: { chain_id } });
@@ -183,7 +183,6 @@ export const createCinemaClusterService = ({cluster_name, address, city, chain_i
             cluster_id: nanoid(),
             cluster_name,
             address,
-            city,
             chain_id
         });
         
