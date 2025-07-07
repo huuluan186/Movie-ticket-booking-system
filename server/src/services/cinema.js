@@ -3,7 +3,6 @@ import {nanoid} from 'nanoid'
 import {compareVietnameseUsername} from '../utils/generateCode'
 import { Op } from 'sequelize';
 
-
 //api chains
 export const createCinemaChainService = ({chain_name, logo}) => new Promise(async (resolve, reject) => {  
     try {
@@ -39,7 +38,7 @@ export const createCinemaChainService = ({chain_name, logo}) => new Promise(asyn
 export const getAllCinemaChainsService = () => new Promise(async (resolve, reject) => {
     try {
         const chains = await db.CinemaChain.findAndCountAll({
-            attributes: ['chain_id', 'chain_name', 'logo'],
+            attributes: { exclude: [] }, //lấy tất cả
             raw: true,
             nest: true,
         });
@@ -144,7 +143,7 @@ export const deleteCinemaChainService = (chain_id) => new Promise(async (resolve
         const response = await db.CinemaChain.destroy({ where: { chain_id } });
         resolve({
             err: response ? 0 : 1,
-            msg: response ? `Xóa chuỗi rạp (id: ${chain_id}) thành công!` : 'Xóa chuỗi rạp thất bại!',
+            msg: response ? `Xóa chuỗi rạp thành công!` : 'Xóa chuỗi rạp thất bại!',
         });
     } catch (error) {
         reject(error);
@@ -201,7 +200,7 @@ export const getAllCinemaClustersService = (chain_id) => new Promise(async (reso
         const response = await db.CinemaCluster.findAndCountAll({
             raw: true,
             nest: true,
-            attributes: ['cluster_id', 'cluster_name', 'address'],
+            attributes: { exclude: [] },
             where: chain_id && { chain_id },
             include: [{
                 model: db.CinemaChain,
@@ -226,7 +225,7 @@ export const getCinemaClusterByIdService = (cluster_id) => new Promise(async (re
             where: { cluster_id },
             raw: true,
             nested: true,
-            attributes: ['cluster_id','cluster_name', 'address'],
+            attributes: ['cluster_id','cluster_name', 'address','createdAt','updatedAt'],
             include: [{
                 model: db.CinemaChain,
                 as: 'cinema_chain',
@@ -326,7 +325,7 @@ export const deleteCinemaClusterService = (cluster_id) => new Promise(async (res
         const response = await db.CinemaCluster.destroy({ where: { cluster_id } });
         resolve({
             err: response ? 0 : 1,
-            msg: response ? `Xóa cụm rạp (id: ${cluster_id}) thành công!` : 'Xóa cụm rạp thất bại!',
+            msg: response ? `Xóa cụm rạp thành công!` : 'Xóa cụm rạp thất bại!',
         });
     } catch (error) {
         reject(error);
@@ -392,7 +391,7 @@ export const getAllCinemasService = (cluster_id) => new Promise(async (resolve, 
         const response = await db.Cinema.findAndCountAll({
             raw: true,
             nest: true,
-            attributes: ['cinema_id', 'cinema_name', 'rowCount', 'columnCount'],
+            attributes: ['cinema_id', 'cinema_name', 'rowCount', 'columnCount', 'createdAt','updatedAt'],
             where: cluster_id && {cluster_id},
             include: [{
                 model: db.CinemaCluster,
@@ -404,6 +403,19 @@ export const getAllCinemasService = (cluster_id) => new Promise(async (resolve, 
                     attributes: ['chain_id','chain_name']
                 }]
             }],
+            order: [
+                [
+                    { model: db.CinemaCluster, as: 'cinema_cluster' }, 
+                    { model: db.CinemaChain, as: 'cinema_chain' }, 
+                    'chain_name', 
+                    'ASC'
+                ],
+                [ 
+                    { model: db.CinemaCluster, as: 'cinema_cluster' }, 
+                    'cluster_name', 
+                    'ASC' 
+                ]
+            ]
         })
 
         resolve({
@@ -544,7 +556,6 @@ export const updateCinemaService = (cinema_id, { cinema_name, cluster_id, rowCou
     }
 });
 
-
 export const deleteCinemaService = (cinema_id) => new Promise(async (resolve, reject) => {
     try {
         const cinema = await db.Cinema.findOne({ where: { cinema_id }, raw: true });
@@ -557,7 +568,7 @@ export const deleteCinemaService = (cinema_id) => new Promise(async (resolve, re
         const response = await db.Cinema.destroy({ where: { cinema_id } });
         resolve({
             err: response ? 0 : 1,
-            msg: response ? `Xóa rạp (id: ${cinema_id}) thành công!` : 'Xóa rạp thất bại!',
+            msg: response ? `Xóa rạp thành công!` : 'Xóa rạp thất bại!',
         });
     } catch (error) {
         reject(error);

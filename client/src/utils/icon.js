@@ -2,16 +2,8 @@ import { RiArrowDropDownLine, RiTicket2Line, RiErrorWarningLine, RiAdminLine } f
 import { IoPersonCircle, IoCheckmarkCircle, IoInformationCircleOutline, IoLogOutOutline } from "react-icons/io5";
 import { AiOutlineHistory, AiOutlineCluster } from "react-icons/ai";
 import { FaRegHandPointRight } from "react-icons/fa6";
-import { 
-    FaPhone, 
-    FaEnvelope, 
-    FaMapMarkerAlt,
-    FaGithub, 
-    FaFacebook,
-    FaUser,
-    FaCalendarAlt 
-  } from 'react-icons/fa';
-import { FiSearch } from 'react-icons/fi';
+import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaGithub, FaFacebook, FaUser,FaCalendarAlt,FaRegFrownOpen} from 'react-icons/fa';
+import { FiSearch, FiEye, FiEyeOff} from 'react-icons/fi';
 import { MdOutlineChangeCircle, MdLocalMovies  } from "react-icons/md";
 import { GoQuestion } from "react-icons/go";
 import { GrSubtractCircle, GrAnalytics  } from "react-icons/gr";
@@ -46,7 +38,10 @@ const icons = {
     FaCalendarAlt,
     SiChainlink,
     AiOutlineCluster,
-    GiTheater
+    GiTheater,
+    FiEye,
+    FiEyeOff,
+    FaRegFrownOpen
 }
 
 export default icons;

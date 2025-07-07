@@ -1,9 +1,13 @@
 import { useState } from "react";
+import icons from '../utils/icon';
+
+const { FiEye, FiEyeOff } = icons;
 
 const InputForm = ({ label,type,value,setValue,keyPayload, invalidFields = [], setInvalidFields, onKeyDown}) => {
 
     const [isFocused, setIsFocused] = useState(false);
     const [showText, setShowText] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
 
     const shouldFloat = isFocused || value;
 
@@ -27,7 +31,7 @@ const InputForm = ({ label,type,value,setValue,keyPayload, invalidFields = [], s
                 {label}
             </label>
             <input
-                type={type || 'text'}
+                type={type === 'password' ? (showPassword ? 'text' : 'password') : type}
                 value={value}
                 onChange={(e)=>setValue(prev => ({...prev,[keyPayload]:e.target.value}))}                
                 onFocus={() => {
@@ -42,6 +46,14 @@ const InputForm = ({ label,type,value,setValue,keyPayload, invalidFields = [], s
                 }
                 onKeyDown={onKeyDown}
             />
+            {type === 'password' && (
+                <div
+                    onClick={() => setShowPassword(prev => !prev)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                >
+                    {showPassword ? <FiEyeOff /> : <FiEye />}
+                </div>
+            )}
             {errorMessage && (
                 <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
             )}
