@@ -60,6 +60,10 @@ export const formatDate = (dateString) => {
     return date.toLocaleDateString('en-GB'); // Định dạng ngày theo kiểu dd/mm/yyyy
 };
 
+export const formatDateTime = (isoString) => {
+    return dayjs(isoString).format('DD-MM-YYYY HH:mm:ss');
+};
+
 // Helper để sắp xếp và phân trang dữ liệu
 export const sortMoviesByReleaseDate = (movies, limit = null) => {
     if (movies && movies.length > 0) {

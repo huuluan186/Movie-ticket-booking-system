@@ -3,7 +3,7 @@ import { path } from "./utils/constant";
 import { ToastContainer, Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { Home, Login, Homepage, Profile, ChangePassword, MoviesByStatus, MovieDetail, Showtime, BookingTicket, MyTicket, Search} from "./containers/Public";
-import { AdminLayout, Statistic } from "./containers/Admin";
+import { AdminLayout, Statistic, UserManager, AddUser, UpdateUser} from "./containers/Admin";
 import {RequireAuth} from "./components";
 import * as actions from './store/actions'
 import { useDispatch, useSelector } from 'react-redux'
@@ -53,7 +53,10 @@ function App() {
                 <Route path={path.ADMIN} element={<AdminLayout />}>
                     <Route index element={<Navigate to={path.DASHBOARD} replace />} />
                     <Route path={path.DASHBOARD} element={<Statistic />} />
-                    {/* Thêm các route admin khác ở đây */}
+                    <Route path={path.USER_MANAGER} element={<UserManager />}>
+                        <Route path={path.ADD} element={<AddUser />} />
+                        <Route path={path.UPDATE} element={<UpdateUser />} />
+                    </Route>
                 </Route>
             </Route>
         </Routes>

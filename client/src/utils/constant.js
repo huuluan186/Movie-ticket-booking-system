@@ -13,4 +13,7 @@ export const path={
     //system paths:
     ADMIN: '/admin',
     DASHBOARD: 'dashboard',
+    USER_MANAGER: 'user-manager',
+    ADD: 'add',
+    UPDATE: 'update/:id'
 }

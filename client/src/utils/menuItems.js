@@ -47,7 +47,7 @@ export const userMenuItems = (navigate, dispatch, user_role) => [
 
 export const adminSidebarItems = [
     { label: "Thống kê", to: `${path.ADMIN}/${path.DASHBOARD}`, icon: <GrAnalytics/>},
-    { label: "Quản lý khách hàng", to: "/admin/movies", icon: <FaUser/>},
+    { label: "Quản lý người dùng", to: `${path.ADMIN}/${path.USER_MANAGER}`, icon: <FaUser/>},
     { label: "Quản lý hệ thống rạp", to: "/admin/movies", icon: <SiChainlink/>},
     { label: "Quản lý cụm rạp", to: "/admin/movies", icon: <AiOutlineCluster/>},
     { label: "Quản lý rạp", to: "/admin/movies", icon: <GiTheater/> },
