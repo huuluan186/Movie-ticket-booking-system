@@ -6,6 +6,23 @@ import {
     checkPhoneNumber
 } from './helpers';
 
+/**
+ * 
+ * @param {object} fields - Object payload
+ * @param {Array<{name: string, label: string}>} rules - Danh sách trường cần kiểm tra
+ * @returns {Array<{name: string, message: string}>} - Danh sách lỗi
+ */
+export const validateFields = (fields, rules = []) => {
+    const errors = [];
+
+    rules.forEach(({ name, label, type = 'input' }) => {
+        const error = checkEmpty(fields[name], name, label, type);
+        if (error) errors.push(error);
+    });
+
+    return errors;
+};
+
 // ----- validateLogin.js -----
 export const validateLogin = (fields) => {
     const errors = [];

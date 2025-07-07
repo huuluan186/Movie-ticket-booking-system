@@ -47,10 +47,10 @@ export const userMenuItems = (navigate, dispatch, user_role) => [
 
 export const adminSidebarItems = [
     { label: "Thống kê", to: `${path.ADMIN}/${path.DASHBOARD}`, icon: <GrAnalytics/>},
-    { label: "Quản lý khách hàng", to: "/admin/movies", icon: <FaUser/>},
-    { label: "Quản lý hệ thống rạp", to: "/admin/movies", icon: <SiChainlink/>},
-    { label: "Quản lý cụm rạp", to: "/admin/movies", icon: <AiOutlineCluster/>},
-    { label: "Quản lý rạp", to: "/admin/movies", icon: <GiTheater/> },
-    { label: "Quản lý phim", to: "/admin/showtimes", icon: <MdLocalMovies/> },
-    { label: "Quản lý suất chiếu", to: "/admin/users", icon: <FaCalendarAlt/> },
+    { label: "Quản lý người dùng", to: `${path.ADMIN}/${path.USER_MANAGER}`, icon: <FaUser/>},
+    { label: "Quản lý hệ thống rạp", to: `${path.ADMIN}/${path.CINEMA_CHAIN_MANAGER}`, icon: <SiChainlink/>},
+    { label: "Quản lý cụm rạp", to: `${path.ADMIN}/${path.CINEMA_CLUSTER_MANAGER}`, icon: <AiOutlineCluster/>},
+    { label: "Quản lý rạp", to: `${path.ADMIN}/${path.CINEMA_MANAGER}`, icon: <GiTheater/> },
+    { label: "Quản lý phim", to: "/b", icon: <MdLocalMovies/> },
+    { label: "Quản lý suất chiếu", to: "/c", icon: <FaCalendarAlt/> },
 ];
