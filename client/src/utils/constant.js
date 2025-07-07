@@ -16,6 +16,7 @@ export const path={
     USER_MANAGER: 'user-manager',
     CINEMA_CHAIN_MANAGER: 'cinema-chain-manager',
     CINEMA_CLUSTER_MANAGER: 'cinema-cluster-manager',
+    CINEMA_MANAGER: 'cinema-manager',
     ADD: 'add',
     UPDATE: 'update/:id'
 }
