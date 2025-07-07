@@ -76,7 +76,7 @@ export const deleteCinemaChainController = async (req, res) => {
 //cluster controller
 export const createCinemaClusterController = async (req, res)=>{
     try {
-        const { cluster_name, address, city, chain_id } = req.body;
+        const { cluster_name, address, chain_id } = req.body;
         if(!cluster_name || !chain_id){
             return res.status(400).json({
                 err: 1,
@@ -84,7 +84,7 @@ export const createCinemaClusterController = async (req, res)=>{
             });
         }
 
-        const response = await service.createCinemaClusterService({  cluster_name, address, city, chain_id });
+        const response = await service.createCinemaClusterService({ cluster_name, address, chain_id });
         return res.status(200).json(response);
     } catch (error) {
         return res.status(500).json({

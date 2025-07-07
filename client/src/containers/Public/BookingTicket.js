@@ -5,9 +5,10 @@ import { getConfirmPaymentButtons } from '../../utils/modalBtnDatas';
 import { useEffect, useState } from 'react';
 import * as actions from '../../store/actions';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Seat, Button, Modal} from '../../components';
+import { Seat, Button, Modal, TitleHeader} from '../../components';
 import { toast } from 'react-toastify';
 import icons from '../../utils/icon';
+import { path } from '../../utils/constant';
 import { apiCreateSeatsForCinema } from '../../services/seat';
 import { apiGetVipPriceIncrementConfig } from '../../services/getServerConfig'; 
 
@@ -161,13 +162,14 @@ const BookingTicket = () => {
                     </div>
                 </div>
                 <div className="mt-6 bg-gray-600 shadow-xl rounded-lg py-8 px-10">
-                    <div className="text-white text-3xl font-bold text-center mb-8 block mx-auto">
-                        CHỌN GHẾ
-                        <div className="relative w-[23%] h-0.5 bg-white mt-3 text-center m-auto">
-                            <div className="absolute inset-0 w-20 h-1.5 bg-orange-400 m-auto z-10"></div>
-                        </div>
-                    </div>
-    
+                    <TitleHeader 
+                        title='Chọn ghế'
+                        textColor='text-white'
+                        underlineBg=' bg-white'
+                        underlineColor='bg-orange-400'
+                        variant='underline'
+                    />
+
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Seat Grid and Legend */}
                         <div className="lg:w-2/3">
@@ -299,7 +301,7 @@ const BookingTicket = () => {
                             hover: 'hover:bg-orange-700',
                             onClick: () => {
                                 setShowSuccessModal(false);
-                                navigate('/user/orders');
+                                navigate(path.MY_TICKET);
                                 dispatch(actions.getOrderHistory());
                             },
                         },

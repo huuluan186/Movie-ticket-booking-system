@@ -11,7 +11,7 @@ import event1 from '../../assets/event1.jpg'
 import event2 from '../../assets/event2.jpg'
 import event3 from '../../assets/event3.png'
 import event4 from '../../assets/event4.png'
-
+import { path } from '../../utils/constant';
 
 const events = [
   { image: event1, title: 'Event 1' },
@@ -49,7 +49,11 @@ const Homepage = () => {
                                     title={movie?.title || "Untitled"}
                                     image={movie?.poster ? getImageUrl(movie?.poster) : placehoder}
                                     releaseDate={formatDate(movie?.release_date)}
-                                    navigateTo={`movies/detail/${movie?.movie_id}/${toSlug(movie?.title)}`}
+                                    navigateTo={
+                                        path.MOVIE_DETAIL
+                                        .replace(':id', movie?.movie_id)
+                                        .replace(':slug', toSlug(movie?.title))
+                                    }
                                 />
                             ))
                         ) : (

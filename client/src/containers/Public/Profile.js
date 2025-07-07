@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Button, InputField } from '../../components';
+import { useState, useEffect } from 'react';
+import { Button, InputField, TitleHeader } from '../../components';
 import { validateUpdateInfo } from "../../utils/validation";
 import * as actions from '../../store/actions';
 import { useDispatch, useSelector } from "react-redux";
@@ -85,15 +85,7 @@ const Profile = () => {
 
     return (
         <div className="w-full m-auto max-w-md py-10">
-            <div className='text-center'>
-                <h1 className="text-orange-700 text-3xl font-bold text-center mb-6 inline-block mx-auto">
-                    THÔNG TIN CÁ NHÂN
-                    <div className="relative w-full h-0.5 bg-black mt-3">
-                        <div className="absolute inset-0 w-20 h-1.5 bg-orange-400 m-auto z-10"></div>
-                    </div>
-                </h1>
-            </div>
-
+            <TitleHeader title={'thông tin cá nhân'} variant="underline"/>
             <div className="space-y-4">
                 {fields.map(({ name, label, readOnly }) => (
                     <InputField

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-const InputForm = ({ label,type,value,setValue,keyPayload, invalidFields = [], setInvalidFields}) => {
+const InputForm = ({ label,type,value,setValue,keyPayload, invalidFields = [], setInvalidFields, onKeyDown}) => {
 
     const [isFocused, setIsFocused] = useState(false);
     const [showText, setShowText] = useState(true);
@@ -38,9 +38,11 @@ const InputForm = ({ label,type,value,setValue,keyPayload, invalidFields = [], s
                 onBlur={handleBlur}
                 placeholder=""
                 className={`w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-orange-500 transition-colors duration-200
-                    ${!showText ? "text-transparent" : "text-black"}`}
+                    ${!showText ? "text-transparent" : "text-black"}`
+                }
+                onKeyDown={onKeyDown}
             />
-             {errorMessage && (
+            {errorMessage && (
                 <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
             )}
         </div>

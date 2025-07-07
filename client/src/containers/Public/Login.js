@@ -15,7 +15,7 @@ const Login = () => {
     const dispatch = useDispatch()
     const location = useLocation()
     const navigate = useNavigate()
-    const {isLoggedIn,isRegistered,msg,update} =useSelector(state=>state.auth) // .auth do define trong rootReducer 
+    const {isLoggedIn, isRegistered, msg, update, user_role } =useSelector(state=>state.auth) // .auth do define trong rootReducer 
     const [payload,setPayLoad] = useState({
         phone:'',
         password:'',
@@ -48,11 +48,14 @@ const Login = () => {
         if (isLoggedIn) {
             toast.success("Đăng nhập thành công!");
             setTimeout(() => {
-                const redirectPath = location.state?.redirectTo || '/';
-                navigate(redirectPath);
+                if(user_role==='admin') navigate(`${path.ADMIN}/${path.DASHBOARD}`, { replace: true })
+                else{
+                    const redirectPath = location.state?.redirectTo || '/';
+                    navigate(redirectPath, { replace: true });
+                }
             }, 800);
         }
-    }, [isLoggedIn,isRegister, navigate, location.state]); // Kiểm tra thay đổi của cả isLoggedIn và isRegister
+    }, [isLoggedIn, isRegister, navigate, location.state, user_role]); // Kiểm tra thay đổi của cả isLoggedIn và isRegister
     
     useEffect(() => {
         if(isRegistered) {
@@ -96,6 +99,11 @@ const Login = () => {
         await dispatch(isRegister ? actions.register(payload) : actions.login(finalPayload));
     };
 
+    // Hàm xử lý khi nhấn Enter để submit form
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' || e.keyCode === 13) handleSubmit();
+    };
+
     return(
         <div className="w-full flex items-center justify-center my-3">
             <div className="w-full bg-white max-w-500 p-[30px] pb-[70px] rounded-md shadow-md ">
@@ -110,16 +118,16 @@ const Login = () => {
                 <div className="w-full flex flex-col gap-6">
                 {isRegister ? (
                     <>
-                    <InputForm label="Tên tài khoản" value={payload.username} setValue={setPayLoad} keyPayload={'username'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
-                    <InputForm label="Số điện thoại" value={payload.phone} setValue={setPayLoad} keyPayload={'phone'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
-                    <InputForm label="Email" type='email' value={payload.email} setValue={setPayLoad} keyPayload={'email'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
-                    <InputForm label="Mật khẩu" type='password' value={payload.password} setValue={setPayLoad} keyPayload={'password'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
-                    <InputForm label="Nhập lại mật khẩu" type='password' value={payload.confirmPassword} setValue={setPayLoad} keyPayload={'confirmPassword'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
+                    <InputForm label="Tên tài khoản" value={payload.username} setValue={setPayLoad} keyPayload={'username'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} onKeyDown={handleKeyDown}/>
+                    <InputForm label="Số điện thoại" value={payload.phone} setValue={setPayLoad} keyPayload={'phone'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} onKeyDown={handleKeyDown}/>
+                    <InputForm label="Email" type='email' value={payload.email} setValue={setPayLoad} keyPayload={'email'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} onKeyDown={handleKeyDown}/>
+                    <InputForm label="Mật khẩu" type='password' value={payload.password} setValue={setPayLoad} keyPayload={'password'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} onKeyDown={handleKeyDown}/>
+                    <InputForm label="Nhập lại mật khẩu" type='password' value={payload.confirmPassword} setValue={setPayLoad} keyPayload={'confirmPassword'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} onKeyDown={handleKeyDown}/>
                     </>
                 ) : (
                     <>
-                        <InputForm label="Số điện thoại hoặc Email" value={payload.email} setValue={setPayLoad} keyPayload={'email'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
-                        <InputForm label="Mật khẩu" type='password' value={payload.password} setValue={setPayLoad} keyPayload={'password'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} />
+                        <InputForm label="Số điện thoại hoặc Email" value={payload.email} setValue={setPayLoad} keyPayload={'email'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} onKeyDown={handleKeyDown}/>
+                        <InputForm label="Mật khẩu" type='password' value={payload.password} setValue={setPayLoad} keyPayload={'password'} invalidFields={invalidFields} setInvalidFields={setInvalidFields} onKeyDown={handleKeyDown}/>
                     </>
                 )}
                     

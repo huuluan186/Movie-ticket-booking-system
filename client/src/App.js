@@ -2,7 +2,9 @@ import { Routes, Route, Navigate, useLocation  } from "react-router-dom";
 import { path } from "./utils/constant";
 import { ToastContainer, Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { Home, Login, Homepage, Profile, ChangePassword, MoviesByStatus, MovieDetail, Showtime, BookingTicket, MyTicket, RequireAuth} from "./containers/Public";
+import { Home, Login, Homepage, Profile, ChangePassword, MoviesByStatus, MovieDetail, Showtime, BookingTicket, MyTicket, Search} from "./containers/Public";
+import { AdminLayout, Statistic } from "./containers/Admin";
+import {RequireAuth} from "./components";
 import * as actions from './store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
@@ -12,9 +14,7 @@ function App() {
     const { isLoggedIn } = useSelector(state => state.auth)
 
     useEffect(() => {
-        setTimeout(() => {
-            isLoggedIn && dispatch(actions.getCurrent())
-        }, 500)
+        isLoggedIn && dispatch(actions.getCurrent())
     }, [isLoggedIn])
 
     const { pathname } = useLocation();
@@ -29,6 +29,7 @@ function App() {
   return (
     <div className="min-h-screen bg-primary">
         <Routes>
+            {/* Website routes */}
             <Route path={path.HOME} element={<Home />}>
                 <Route index element={<Homepage/>}/> 
                 <Route path={path.LOGIN} element={<Login />} />
@@ -43,7 +44,17 @@ function App() {
                 <Route path={path.MOVIES_BY_STATUS} element={<MoviesByStatus />} />
                 <Route path={path.MOVIE_DETAIL} element={<MovieDetail />} />
                 <Route path={path.SHOWTIME} element={<Showtime />} />
+                <Route path={path.SEARCH.split('?')[0]} element={<Search />} />
                 <Route path="*" element={<Navigate to={path.HOME} replace />} />
+            </Route>
+
+            {/* Admin routes */}
+            <Route element={<RequireAuth requiredRole="admin" />}>
+                <Route path={path.ADMIN} element={<AdminLayout />}>
+                    <Route index element={<Navigate to={path.DASHBOARD} replace />} />
+                    <Route path={path.DASHBOARD} element={<Statistic />} />
+                    {/* Thêm các route admin khác ở đây */}
+                </Route>
             </Route>
         </Routes>
 

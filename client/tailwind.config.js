@@ -14,7 +14,7 @@ export default {
         },
         backgroundColor: {
             primary: '#F9FBFD',
-            secondary1: '#1266dd',
+            secondary: '#4682B4',
             secondary2: '#D61117',
             'overlay-30': 'rgba(0,0,0,0.3)',
             'overlay-70': 'rgba(0,0,0,0.7)',
@@ -48,11 +48,21 @@ export default {
                     transform: 'scale(1) rotate(360deg)',
                 },
             },
+            'slide-down': {
+                from: {opacity: '0'},
+                to: { opacity: '1',},
+            },
+            'slide-up': {
+                from: {opacity: '1'},
+                to: { opacity: '0',},
+            },
         },
         animation: {
             'icon-appear': 'icon-appear 0.6s ease-out forwards',
+            'slide-down': 'slide-down 0.2s ease-out forwards',
+            'slide-up': 'slide-up 0.2s ease-out forwards',
         },
       },
     },
     plugins: [],
-  }
+}

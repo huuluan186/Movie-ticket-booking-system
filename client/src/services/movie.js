@@ -39,3 +39,13 @@ export const apiGetMovieDetail = (movieId) => new Promise(async (resolve,reject)
         reject(error)
     }
 })
+
+export const apiSearchMovies = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await apiGetMovieList(); // Lấy tất cả phim
+        console.log('Search movies:', response);
+        resolve(response);
+    } catch (error) {
+        reject(error);
+    }
+});

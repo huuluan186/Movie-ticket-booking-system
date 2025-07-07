@@ -7,10 +7,11 @@ if (!process.env.SECRET_KEY) {
     console.error('❌ Missing SECRET_KEY in .env');
     process.exit(1);
 }
+
 //hàm băm mật khẩu
 const hashPassword= password => bcrypt.hashSync(password,bcrypt.genSaltSync(12))
 
-export const registerService = ({ phone, password, username, email, user_role}) => new Promise(async (resolve, reject) => {
+export const registerService = ({ phone, password, username, email, user_role}, isSelfRegister = true) => new Promise(async (resolve, reject) => {
     try {
          // Kiểm tra trùng từng trường
         const [userByPhone, userByEmail, userByUsername] = await Promise.all([
@@ -34,13 +35,19 @@ export const registerService = ({ phone, password, username, email, user_role}) 
             user_role
         });
 
-        const token = jwt.sign(
-            { user_id: response.user_id, phone: response.phone, email: response.email },
-            process.env.SECRET_KEY,
-            { expiresIn: '2d' }
-        );
+        if (isSelfRegister) {
+            const token = jwt.sign(
+                {
+                    user_id: response.user_id,
+                    phone: response.phone,
+                    email: response.email,
+                    role: response.user_role
+                }, process.env.SECRET_KEY, { expiresIn: '2d' }
+            );
+            return resolve({ err: 0, msg: 'Đăng ký thành công!', token });
+        }
 
-        resolve({ err: 0, msg: 'Đăng ký thành công!', token });
+        return resolve({ err: 0, msg: 'Tạo tài khoản thành công!', token: null });
 
     } catch (error) {
         reject(error);
@@ -63,7 +70,12 @@ export const loginService = ({ phone, email, password }) => new Promise(async (r
         if (!isCorrectPassword) return resolve({ err: 2, msg: 'Mật khẩu không đúng!', token: null });
 
         const token = jwt.sign(
-            { user_id: response.user_id, phone: response.phone, email: response.email},
+            { 
+                user_id: response.user_id, 
+                phone: response.phone, 
+                email: response.email, 
+                role: response.user_role
+            },
             process.env.SECRET_KEY,
             { expiresIn: '2d' }
         );

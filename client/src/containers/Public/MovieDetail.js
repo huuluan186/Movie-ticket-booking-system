@@ -6,6 +6,7 @@ import * as actions from '../../store/actions'
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate} from 'react-router-dom';
 import icons from '../../utils/icon';
+import { path } from '../../utils/constant';
 
 const {RiTicket2Line, FaRegHandPointRight} = icons
 
@@ -55,7 +56,7 @@ const MovieDetail = () => {
                             bgColor='bg-red-500' 
                             hover='hover:bg-red-600'
                             IcBefore={RiTicket2Line}
-                            onClick={()=>navigate('/showtime')}
+                            onClick={()=>navigate(path.SHOWTIME)}
                         />
                     </div>
                 </div>

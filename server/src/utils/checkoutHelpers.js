@@ -48,7 +48,11 @@ export const createTickets = async ({ order_id, showtime_id, basePrice, seats })
      // Lấy thông tin showtime kèm liên kết (movie + cinema)
     const showtime = await db.Showtime.findByPk(showtime_id, {
         include: [
-            { model: db.Movie, as: 'movie', attributes: ['title'] },
+            { 
+                model: db.Movie, 
+                as: 'movie', 
+                attributes: ['movie_id', 'title'] 
+            },
             {
                 model: db.Cinema,
                 as: 'cinema',
@@ -56,11 +60,11 @@ export const createTickets = async ({ order_id, showtime_id, basePrice, seats })
                 include: [{
                     model: db.CinemaCluster,
                     as: 'cinema_cluster',
-                    attributes: ['cluster_name', 'address'],
+                    attributes: ['cluster_id' ,'cluster_name', 'address'],
                     include: [{
                         model: db.CinemaChain,
                         as: 'cinema_chain',
-                        attributes: ['chain_name']
+                        attributes: ['chain_id', 'chain_name']
                     }]
                 }]
             }
@@ -82,12 +86,14 @@ export const createTickets = async ({ order_id, showtime_id, basePrice, seats })
                 price: finalPrice,
 
                 // Snapshot datas
+                movie_id_snapshot: showtime?.movie?.movie_id || null,
                 movie_title_snapshot: showtime?.movie?.title || null,
-                cinema_name_snapshot: showtime?.cinema?.cinema_name || null,
-                cluster_name_snapshot: showtime?.cinema?.cinema_cluster?.cluster_name || null,
+                chain_id_snapshot: showtime?.cinema?.cinema_cluster?.cinema_chain?.chain_id || null,
                 chain_name_snapshot: showtime?.cinema?.cinema_cluster?.cinema_chain?.chain_name || null,
+                cluster_id_snapshot: showtime?.cinema?.cinema_cluster?.cluster_id || null,
+                cluster_name_snapshot: showtime?.cinema?.cinema_cluster?.cluster_name || null,
                 address_snapshot: showtime?.cinema?.cinema_cluster?.address || null,
-
+                cinema_name_snapshot: showtime?.cinema?.cinema_name || null,
                 row_snapshot: seatInfo?.row || null,
                 column_snapshot: seatInfo?.column || null,
                 showtime_date_snapshot: showtime?.showtime_date || null,
