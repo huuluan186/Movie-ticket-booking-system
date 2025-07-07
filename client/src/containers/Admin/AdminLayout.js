@@ -1,4 +1,4 @@
-import { Outlet, useNavigate} from "react-router-dom";
+import { Outlet, useNavigate, useLocation} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { path } from "../../utils/constant";
 import { logout } from "../../store/actions";
@@ -13,6 +13,8 @@ const AdminLayout = () => {
     const { currentData } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
+    const pathname = location.pathname;
 
     const menuItems = adminSidebarItems;
 
@@ -26,10 +28,10 @@ const AdminLayout = () => {
             {/* Sidebar */}
             <aside className="w-60 bg-white shadow-lg sticky top-0 h-screen">
                 <div className="w-full mx-auto py-2">
-                    {logo && <img src={logo} alt="Logo" className="w-full h-40 object-contain"/>}
+                    <a href="/">{logo && <img src={logo} alt="Logo" className="w-full h-40 object-contain"/>}</a>
                 </div>
                 {menuItems.map((item, i) => {
-                    const isActive = window.location.pathname === item.to;
+                    const isActive = pathname.startsWith(item.to);
                     return (
                          <button
                             key={i}
@@ -81,7 +83,7 @@ const AdminLayout = () => {
                 </header>
 
                 {/* Nội dung */}
-                <div className="px-6 pb-10">
+                <div className="px-6 pb-5">
                     <Outlet />
                 </div>
             </main>
