@@ -1,4 +1,5 @@
 import * as services from '../services/user'
+import * as authService from '../services/auth'
 
 export const getUserInfo = async (req, res) => {
     const { user_id } = req.user
@@ -53,6 +54,27 @@ export const getAllUsersController = async (req, res) => {
     }
 }
 
+export const createUserController = async (req,res)=>{
+    const {username, phone, password, email, user_role} = req.body
+    try{
+        if (!username || !phone || !password || !email) {
+            return res.status(400).json({
+                err:1,
+                msg:"Missing input!"
+            })
+        }
+            
+        const response = await authService.registerService(req.body, false)
+        return res.status(200).json(response)
+
+    }catch(error){
+        return res.status(500).json({
+            err:-1,
+            msg:'Failed at createUserController controller: '+ error
+        })
+    }
+}
+
 export const adminUpdateUserController = async (req, res) => {
     try {
         const { user_id } = req.params;
@@ -87,3 +109,15 @@ export const deleteUserController = async (req, res) => {
         });
   }
 };
+
+export const getUserRoleListController = async (req, res) => {
+    try {
+        const response = await services.getUserRolesListService();
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Failed at getUserRoleList controller: ' + error,
+        });
+    }
+}
