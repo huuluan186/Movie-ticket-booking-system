@@ -23,9 +23,9 @@ const Statistic = () => {
     const [selectedCluster, setSelectedCluster] = useState({ id: '', name: '' });
     const [selectedMovie, setSelectedMovie] = useState({ id: '', title: '' });
     const [openDropdown, setOpenDropdown] = useState(null);
-    const [showAbove, setShowAbove] = useState(false);
     const [chartData, setChartData] = useState(null);
     const [hasStatistic, setHasStatistic] = useState(false);
+    const [showDateAbove, setShowDateAbove] = useState(false);
 
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [dateRange, setDateRange] = useState([
@@ -41,12 +41,10 @@ const Statistic = () => {
     const movieRef = useRef();
     const dateRef = useRef();
 
-    useClickMouseOutside( [chainRef, clusterRef, movieRef, dateRef],
-        () => {
-            setOpenDropdown(null);
-            setShowDatePicker(false); //đóng lịch luôn
-        }
-    );
+    useClickMouseOutside([dateRef, chainRef, clusterRef, movieRef], () => {
+        setOpenDropdown(null);
+        setShowDatePicker(false); // Đóng lịch
+    });
 
     useEffect(() => {
         dispatch(actions.getAllCinemaChains());
@@ -100,40 +98,26 @@ const Statistic = () => {
         setOpenDropdown(null);
     };
 
-    const handleOpenDropdownWithAutoPosition = (dropdownKey, ref) => {
-        const rect = ref.current.getBoundingClientRect();
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const estimatedDropdownHeight = 300; // Có thể tuỳ chỉnh theo độ dài menu
-        const shouldShowAbove = spaceBelow < estimatedDropdownHeight;
+    const handleOpenDropdownForDate = () => {
+        const isCurrentlyOpen = openDropdown === 'date' && showDatePicker;
 
-        setShowAbove(shouldShowAbove);
-        if (dropdownKey === 'date') {
-            const isCurrentlyOpen = openDropdown === 'date' && showDatePicker;
-            if (isCurrentlyOpen) {
-                // 🔁 Nếu lịch đang mở → đóng lại, KHÔNG reset ngày
-                setOpenDropdown(null);
-                setShowDatePicker(false);
-            } else {
-                // ✅ Nếu đang đóng → kiểm tra xem có cần reset ngày
-                if (!isDefaultDate) {
-                    const today = new Date();
-                    setDateRange([{
-                        startDate: today,
-                        endDate: today,
-                        key: 'selection',
-                    }]);
-                }
-                setOpenDropdown('date');
-                setShowDatePicker(true);
-            }
-            return;
+        if (isCurrentlyOpen) {
+            setOpenDropdown(null);
+            setShowDatePicker(false);
+        } else {
+            // Tính toán khoảng trống để quyết định hiển thị lên hay xuống
+            const rect = dateRef.current.getBoundingClientRect();
+            const estimatedHeight = 380;
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const spaceAbove = rect.top;
+            const shouldShowAbove = spaceBelow < estimatedHeight && spaceAbove > spaceBelow;
+
+            setShowDateAbove(shouldShowAbove);
+            setOpenDropdown('date');
+            setShowDatePicker(true);
         }
-        // Ngược lại thì mở dropdown như bình thường
-        setShowDatePicker(false);
-        setOpenDropdown(prev => (prev === dropdownKey ? null : dropdownKey));
     };
 
-    
     const handleStatisticBtnClick = async () => {
         try {
             const filters = {};
@@ -249,13 +233,10 @@ const Statistic = () => {
                                             }))}
                                             dropdownKey="chain"
                                             openDropdown={openDropdown}
-                                            showAbove={showAbove}
                                             setOpenDropdown={setOpenDropdown}
-                                            onClick={() => {
-                                                setShowDatePicker(false);
-                                                handleOpenDropdownWithAutoPosition('chain', chainRef);
-                                            }}
+                                            setShowDatePicker={setShowDatePicker}
                                             emptyMessage="Chưa có chuỗi rạp trong hệ thống"
+                                            offsetY={'translate-y-5'}
                                         />
                                     </div>
                                     <div className="col-span-3 text-left relative" ref={clusterRef}>
@@ -269,14 +250,11 @@ const Statistic = () => {
                                             }))}
                                             dropdownKey="cluster"
                                             openDropdown={openDropdown}
-                                            showAbove={showAbove}
                                             setOpenDropdown={setOpenDropdown}
-                                            onClick={() => {
-                                                setShowDatePicker(false);
-                                                handleOpenDropdownWithAutoPosition('cluster', clusterRef);
-                                            }}
                                             emptyMessage="Chưa có cụm rạp cho chuỗi này"
+                                            setShowDatePicker={setShowDatePicker}
                                             disabled={!selectedChain.id}
+                                            offsetY={'translate-y-5'}
                                         />
                                     </div>
                                 </>
@@ -293,20 +271,17 @@ const Statistic = () => {
                                         }))}
                                         dropdownKey="movie"
                                         openDropdown={openDropdown}
-                                        showAbove={showAbove}
                                         setOpenDropdown={setOpenDropdown}
-                                        onClick={() => {
-                                            setShowDatePicker(false);
-                                            handleOpenDropdownWithAutoPosition('movie', movieRef);
-                                        }}
+                                        setShowDatePicker={setShowDatePicker}
                                         emptyMessage="Không có phim nào"
+                                        offsetY={'translate-y-5'}
                                     />
                                 </div>
                             )}
                             <div className="col-span-4 text-left relative" ref={dateRef}>
                                 <label className="block text-sm font-medium text-gray-700">Khoảng thời gian</label>
                                 <div
-                                    onClick={() => handleOpenDropdownWithAutoPosition('date', dateRef)}
+                                    onClick={() => handleOpenDropdownForDate()}
                                     className="flex justify-between items-center border border-gray-300 px-4 py-2 rounded-md cursor-pointer bg-white shadow-sm mt-1"
                                 >
                                     <div className={`flex justify-between items-center gap-1 w-full ${isDefaultDate ? 'text-gray-400' : 'text-gray-800'}`}>
@@ -354,7 +329,7 @@ const Statistic = () => {
                                 </div>
 
                                 {showDatePicker && (
-                                    <div className={`absolute z-50 bg-white rounded-md border border-gray-300 shadow-xl transition-all duration-200 ease-in-out ${showAbove ? 'bottom-full translate-y-5' : 'top-full mt-2'}`}>
+                                    <div className={`absolute z-50 bg-white rounded-md border border-gray-300 shadow-xl transition-all duration-200 ease-in-out ${showDateAbove ? 'bottom-full translate-y-5' : 'top-full mt-1'}`}>
                                         <DateRange
                                             editableDateInputs={true}
                                             onChange={item => setDateRange([item.selection])}
