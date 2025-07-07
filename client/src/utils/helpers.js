@@ -12,9 +12,11 @@ export const computeShowtimeDateRange = (date, startTime, endTime) => {
 };
 
 // Kiểm tra trống một trường
-export const checkEmpty = (value, name, label) => {
-    if (!value?.trim()) {
-        return { name, message: `Vui lòng nhập ${label}.` };
+export const checkEmpty = (value, name, label, type = 'input') => {
+    const isEmpty = !value?.toString().trim();
+    if (isEmpty) {
+        const verb = type === 'select' ? 'chọn' : 'nhập';
+        return { name, message: `Vui lòng ${verb} ${label}.` };
     }
     return null;
 };
@@ -99,3 +101,23 @@ export const convertRowToLetter = (rowNumber) => {
 };
 
 export const roundToUnit = (num, unit) => Math.round(num / unit) * unit;
+
+export const isImageUrl = (value) => {
+    if (typeof value !== 'string') return false;
+
+    const isHttpImagePath = value.startsWith('http') && value.includes('/images/');
+    const isImageExtension = /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(value);
+    const isBase64Image = value.startsWith('data:image/');
+
+    return isHttpImagePath || isImageExtension || isBase64Image;
+}
+
+export const objectToFormData = (object) => {
+    const formData = new FormData();
+    for (const key in object) {
+        if (object[key] !== undefined && object[key] !== null) {
+            formData.append(key, object[key]);
+        }
+    }
+    return formData;
+};

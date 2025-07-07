@@ -14,6 +14,7 @@ export const path={
     ADMIN: '/admin',
     DASHBOARD: 'dashboard',
     USER_MANAGER: 'user-manager',
+    CINEMA_CHAIN_MANAGER: 'cinema-chain-manager',
     ADD: 'add',
     UPDATE: 'update/:id'
 }
