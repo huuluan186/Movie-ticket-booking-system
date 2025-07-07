@@ -1,21 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 
 const DropdownMenu = ({
-    items = [],
-    onClose,
+    items = [], // Danh sách item để hiển thị trong dropdown (mỗi item có label + onClick)
+    onClose,  // Hàm callback khi dropdown đóng (khi click chọn hoặc click ngoài)
     textColor = "",
-    fullWidth = false,
+    fullWidth = false, // Nếu true thì dropdown rộng 100% theo SelectBox cha
     emptyMessage = null,
-    showAbove = null,        // điều khiển mở lên trên/dưới
-    align = "left",           // điều khiển vị trí ngang
+    showAbove = null,// true = hiển thị lên trên, false = xuống dưới, null = tự động/mặc định
+    align = "left", // Căn trái, phải hoặc giữa ("left", "right", "center")
+    offsetY=null // để tuỳ chỉnh khoảng cách giữa dropdown và nút trigger (SelectBox).
 }) => {
     const menuRef = useRef(null);
     const [animationClass, setAnimationClass] = useState("animate-slide-down");
 
     // ======== XỬ LÝ VỊ TRÍ DỌC ========
     let verticalClass = "";
-    if (showAbove === true) verticalClass = " bottom-full translate-y-5";
-    else if (showAbove === false) verticalClass = "top-full translate-y-1";
+    if (showAbove === true) verticalClass = `bottom-full ${offsetY ? offsetY : 'mb-1'}`;
+    else if (showAbove === false) verticalClass = "top-full mt-1";
     else verticalClass = "top-full translate-y-2"; // Mặc định: lệch nhẹ xuống dưới
 
 
@@ -36,7 +37,6 @@ const DropdownMenu = ({
         }, 200);
     };
 
-
     useEffect(() => {
         setAnimationClass("animate-slide-down");
     }, [items]);
@@ -49,7 +49,6 @@ const DropdownMenu = ({
         >
             <ul
                 className={`flex flex-col border border-gray-500 shadow-sm rounded-md max-h-60 overflow-y-auto ${animationClass}`}
-                onClick={handleClose}
             >
                 {items.length > 0 ? (
                     items.map((item, index) => (
@@ -58,7 +57,11 @@ const DropdownMenu = ({
                             className={`px-4 py-2 hover:text-orange-700 cursor-pointer ${
                                 index !== items.length - 1 ? "border-b border-gray-300" : ""
                             }`}
-                            onClick={item.onClick}
+                            onMouseDown={(e)=>{
+                                e.stopPropagation();
+                                item.onClick(); 
+                                handleClose(); // Đóng dropdown sau khi chọn
+                            }}
                         >
                             <span className="flex items-center gap-2 whitespace-nowrap">
                                 {item.icon}

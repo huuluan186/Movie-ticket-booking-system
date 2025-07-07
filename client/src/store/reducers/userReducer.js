@@ -2,6 +2,7 @@ import actionTypes from "../actions/actionTypes";
 
 const initState = {
     currentData: {},
+    usersListData: [],
     msg:'',
     update:false
 }
@@ -22,6 +23,17 @@ const userReducer = (state = initState, action) => {
                 msg: action.msg || '',
                 update: !state.update
             }
+        case actionTypes.ADMIN_UPDATE_USER:
+            return {
+                ...state,
+                msg: action.msg || '',
+            };
+        case actionTypes.GET_ALL_USERS:  
+            return {
+                ...state,
+                usersListData: action.usersListData || [],
+                msg: action.msg || '',
+            };
         case actionTypes.LOGOUT:
             return {
                 ...state,
@@ -29,8 +41,6 @@ const userReducer = (state = initState, action) => {
                 msg:'',
                 update:false,
             }
-
-
         default:
             return state;
     }

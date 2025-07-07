@@ -333,3 +333,37 @@ export const deleteUserService = (admin, user_id) =>
         reject(error);
     }
 });
+
+const roleTranslations = {
+  'admin': 'Quản trị viên',
+  'user': 'Người dùng thường'
+};
+
+export const getUserRolesListService = () => new Promise(async (resolve, reject) => {
+    try {
+        // Lấy danh sách giá trị ENUM của trường status từ model Movie
+        const roleEnumValues = db.User.rawAttributes.user_role.values;
+
+        if (!roleEnumValues || roleEnumValues.length === 0) {
+            return resolve({
+                err: 1,
+                msg: 'Trường user_role không có giá trị ENUM được định nghĩa',
+                response: null
+            });
+        }
+
+        // Map sang tiếng Việt
+        const roles = roleEnumValues.map(englishValue => ({
+            englishValue,
+            vietnameseValue: roleTranslations[englishValue] || englishValue
+        }));
+
+        resolve({
+            err: roles ? 0 : 1,
+            msg: roles ? 'OK' : 'Failed to get roles of user',
+            response: roles   
+        });
+    } catch (error) {
+        reject(error);
+    }
+});
