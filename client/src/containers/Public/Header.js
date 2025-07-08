@@ -98,7 +98,7 @@ const Header = () => {
                 {isMovieDropdownOpen && (
                     <DropdownMenu
                         items={categories.map(item => ({
-                            label: item.vietnameseValue,
+                            label: `Phim ${item.vietnameseValue}`,
                             onClick: () => {
                                 navigate(path.MOVIES_BY_STATUS.replace(':statusSlug', toSlug(item.englishValue)))
                                 setMovieDropdownOpen(false)
