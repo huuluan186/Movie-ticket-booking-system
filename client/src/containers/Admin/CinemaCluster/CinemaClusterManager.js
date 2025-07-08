@@ -65,7 +65,7 @@ const CinemaClusterManager = () => {
             setResultModal({isOpen:true,msg:response?.msg || 'Xóa thành công!',success:response?.err===0,})
         } catch (error) {
             const errMsg = error?.response?.data?.msg || 'Đã xảy ra lỗi khi xóa';
-            setConfirmModal({ isOpen: false, chain_id: null });
+            setConfirmModal({ isOpen: false, cluster_id: null });
             setResultModal({ isOpen: true, msg: errMsg, success: false, });
         }
     };
