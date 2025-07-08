@@ -51,6 +51,6 @@ export const adminSidebarItems = [
     { label: "Quản lý hệ thống rạp", to: `${path.ADMIN}/${path.CINEMA_CHAIN_MANAGER}`, icon: <SiChainlink/>},
     { label: "Quản lý cụm rạp", to: `${path.ADMIN}/${path.CINEMA_CLUSTER_MANAGER}`, icon: <AiOutlineCluster/>},
     { label: "Quản lý rạp", to: `${path.ADMIN}/${path.CINEMA_MANAGER}`, icon: <GiTheater/> },
-    { label: "Quản lý phim", to: "/b", icon: <MdLocalMovies/> },
+    { label: "Quản lý phim", to: `${path.ADMIN}/${path.MOVIE_MANAGER}`, icon: <MdLocalMovies/> },
     { label: "Quản lý suất chiếu", to: "/c", icon: <FaCalendarAlt/> },
 ];

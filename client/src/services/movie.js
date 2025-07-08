@@ -49,3 +49,16 @@ export const apiSearchMovies = () => new Promise(async (resolve, reject) => {
         reject(error);
     }
 });
+
+export const apiDeleteMovie= (movie) => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'delete',
+            url: `/api/v1/movies/${movie}`,
+            params: {movie}
+        });
+        resolve(response.data);
+    } catch (error) {
+        reject(error || error.response?.data);
+    }
+});

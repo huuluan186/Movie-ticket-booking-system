@@ -3,7 +3,7 @@ import { path } from "./utils/constant";
 import { ToastContainer, Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { Home, Login, Homepage, Profile, ChangePassword, MoviesByStatus, MovieDetail, Showtime, BookingTicket, MyTicket, Search} from "./containers/Public";
-import { AdminLayout, Statistic, UserManager, AddUser, UpdateUser, CinemaChainManager, AddCinemaChain, UpdateCinemaChain, CinemaClusterManager, AddCinemaCluster, UpdateCinemaCluster, CinemaManager, AddCinema, UpdateCinema} from "./containers/Admin";
+import { AdminLayout, Statistic, UserManager, AddUser, UpdateUser, CinemaChainManager, AddCinemaChain, UpdateCinemaChain, CinemaClusterManager, AddCinemaCluster, UpdateCinemaCluster, CinemaManager, AddCinema, UpdateCinema, MovieManager} from "./containers/Admin";
 import {RequireAuth} from "./components";
 import * as actions from './store/actions'
 import { useDispatch, useSelector } from 'react-redux'
@@ -68,6 +68,8 @@ function App() {
                     <Route path={path.CINEMA_MANAGER} element={<CinemaManager />}>
                         <Route path={path.ADD} element={<AddCinema />} />
                         <Route path={path.UPDATE} element={<UpdateCinema />} />
+                    </Route>
+                    <Route path={path.MOVIE_MANAGER} element={<MovieManager />}>
                     </Route>
                 </Route>
             </Route>
