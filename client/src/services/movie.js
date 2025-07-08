@@ -62,3 +62,17 @@ export const apiDeleteMovie= (movie) => new Promise(async (resolve, reject) => {
         reject(error || error.response?.data);
     }
 });
+
+export const apiCreateMovie = (payload) => new Promise(async (resolve, reject) => {
+    try {
+        const formData = objectToFormData(payload);
+        const response = await axiosConfig({
+            method: 'post',
+            url: '/api/v1/movies',
+            data: formData
+        });
+        return resolve(response.data);
+    } catch (error) {
+        reject(error);
+    }
+});
