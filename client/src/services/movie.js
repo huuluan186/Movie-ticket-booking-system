@@ -1,4 +1,5 @@
 import axiosConfig from "../axios.config";
+import { objectToFormData } from "../utils/helpers";
 
 export const apiGetMovieStatuses = () => new Promise(async (resolve,reject)=>{
     try {
@@ -69,6 +70,21 @@ export const apiCreateMovie = (payload) => new Promise(async (resolve, reject) =
         const response = await axiosConfig({
             method: 'post',
             url: '/api/v1/movies',
+            data: formData
+        });
+        return resolve(response.data);
+    } catch (error) {
+        reject(error);
+    }
+});
+
+export const apiUpdateMovie = (movie_id, payload) => new Promise(async (resolve, reject) => {
+    try {
+        const formData = objectToFormData(payload);
+        const response = await axiosConfig({
+            method: 'put',
+            url: `/api/v1/movies/${movie_id}`,
+            params: {movie_id},
             data: formData
         });
         return resolve(response.data);
