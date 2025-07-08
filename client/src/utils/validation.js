@@ -12,16 +12,31 @@ import {
  * @param {Array<{name: string, label: string}>} rules - Danh sách trường cần kiểm tra
  * @returns {Array<{name: string, message: string}>} - Danh sách lỗi
  */
-export const validateFields = (fields, rules = []) => {
+export const validateFields = (payload, fields) => {
     const errors = [];
 
-    rules.forEach(({ name, label, type = 'input' }) => {
-        const error = checkEmpty(fields[name], name, label, type);
-        if (error) errors.push(error);
+    fields.forEach(field => {
+        const value = payload[field.name];
+
+        if (field.type === 'select') {
+            if (typeof value === 'object' && field.keyCheck) {
+                // Kiểm tra theo keyCheck được chỉ định
+                if (!value[field.keyCheck] || value[field.keyCheck].toString().trim() === '') {
+                    errors.push({ name: field.name, message: `Vui lòng chọn ${field.label}` });
+                }
+            } else if (!value || value.toString().trim() === '') {
+                errors.push({ name: field.name, message: `Vui lòng chọn ${field.label}` });
+            }
+        } else {
+            if (!value || (typeof value === 'string' && value.trim() === '')) {
+                errors.push({ name: field.name, message: `Vui lòng nhập ${field.label}` });
+            }
+        }
     });
 
     return errors;
 };
+
 
 // ----- validateLogin.js -----
 export const validateLogin = (fields) => {
