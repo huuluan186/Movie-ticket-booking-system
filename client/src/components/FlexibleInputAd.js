@@ -122,6 +122,22 @@ const FlexibleInput = ({
         );
     }
 
+    if (type === 'time') {
+        return (
+            <>
+                <input
+                    type="time"
+                    className={`${inputBaseClass} ${errorClass} max-w-[240px] appearance-none`}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    onFocus={handleFocus}
+                />
+                {errorMessage}
+            </>
+        );
+    }
+
     return (
         <>
             <input
