@@ -5,12 +5,12 @@ const { FiEye, FiEyeOff } = icons;
 
 const FlexibleInput = ({
     type = 'text', // 'text' | 'textarea' | 'file' | 'password'
-    value,
-    onChange,
-    placeholder = '',
-    error = '',
-    keyPayload = '',
-    setInvalidFields = null,
+    value, // Giá trị hiện tại của input
+    onChange, // Hàm xử lý khi giá trị thay đổi
+    placeholder = '', // Placeholder cho input
+    error = '', // Thông báo lỗi (nếu có)
+    keyPayload = '', // Tên khóa để dùng xóa lỗi theo tên
+    setInvalidFields = null, // Hàm dùng để cập nhật danh sách lỗi
 }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [fileName, setFileName] = useState('');
@@ -18,8 +18,10 @@ const FlexibleInput = ({
     const inputBaseClass = "w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-300";
 
     const errorClass = error ? 'border-red-500 ring-red-300' : '';
-    const errorMessage = error && (
-        <div className="text-red-500 text-sm mt-1">{error}</div>
+    const errorMessage = (
+        <div className={`text-sm min-h-[1rem] ${error ? 'text-red-500' : 'invisible'}`}>
+            {error} {/* hoặc để một dấu chấm hoặc ký tự placeholder */}
+        </div>
     );
     const handleFocus = () => {
         if (setInvalidFields && keyPayload) {
@@ -115,6 +117,22 @@ const FlexibleInput = ({
                         {showPassword ? <FiEyeOff /> : <FiEye />}
                     </div>
                 </div>
+                {errorMessage}
+            </>
+        );
+    }
+
+    if (type === 'time') {
+        return (
+            <>
+                <input
+                    type="time"
+                    className={`${inputBaseClass} ${errorClass} max-w-[240px] appearance-none`}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    onFocus={handleFocus}
+                />
                 {errorMessage}
             </>
         );

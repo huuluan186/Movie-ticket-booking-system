@@ -1,5 +1,8 @@
 import { useRef, useState } from 'react';
 import { DropdownMenu } from '../components';
+import icons from '../utils/icon'
+
+const {TiArrowUnsorted}=icons
 
 const SelectBox = ({
     label,  // Nhãn hiển thị phía trên (vd: "Chọn cụm rạp")
@@ -15,8 +18,9 @@ const SelectBox = ({
     width = 'w-full', // Chiều rộng SelectBox
     offsetY = null, //Prop truyền xuống DropdownMenu để điều chỉnh khoảng cách theo chiều dọc
     error = '', //lỗi khi validation
-    keyPayload = '',
+    keyPayload = '', 
     setInvalidFields = null,
+    marginAboveLabel='' // Prop để tùy chỉnh khoảng cách với label phía trên (mặc định rỗng)
 }) => {
     const containerRef = useRef();
     const [showAbove, setShowAbove] = useState(false);
@@ -49,18 +53,16 @@ const SelectBox = ({
             {<label className="block text-sm font-medium text-gray-700">{label}</label>}
             <div
                 onClick={handleClick}
-                className={`flex justify-between items-center mt-1 border px-4 py-2 rounded-md cursor-pointer bg-white shadow-sm ${width} ${disabled && 'opacity-50 cursor-not-allowed'}  ${error ? 'border-red-500 focus:ring-1 focus:ring-red-300' : openDropdown === dropdownKey ? 'border-blue-400' : 'border-gray-300'}
+                className={`flex justify-between items-center border ${marginAboveLabel} px-4 py-2 rounded-md cursor-pointer bg-white shadow-sm ${width} ${disabled && 'opacity-50 cursor-not-allowed'}  ${error ? 'border-red-500 focus:ring-1 focus:ring-red-300' : openDropdown === dropdownKey ? 'border-blue-400' : 'border-gray-300'}
                 `}
             >
-                <span className={value ? 'text-black' : 'text-gray-400'}>{value || placeholder}</span>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-4 h-4 text-gray-600"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
+                <span 
+                    title={value || placeholder} 
+                    className={`${value ? 'text-black' : 'text-gray-400'} truncate max-w-[85%]`}
                 >
-                    <path d="M7 10l5-5 5 5H7zM17 14l-5 5-5-5h10z" />
-                </svg>
+                    {value || placeholder}
+                </span>
+                <TiArrowUnsorted/>
             </div>
         {openDropdown === dropdownKey && (
             <DropdownMenu

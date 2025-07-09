@@ -12,3 +12,10 @@ export {default as UpdateCinemaCluster} from './CinemaCluster/UpdateCinemaCluste
 export {default as CinemaManager} from './Cinema/CinemaManager'
 export {default as AddCinema} from './Cinema/AddCinema'
 export {default as UpdateCinema} from './Cinema/UpdateCinema'
+export {default as MovieManager} from './Movie/MovieManager'
+export {default as AddMovie} from './Movie/AddMovie'
+export {default as UpdateMovie} from './Movie/UpdateMovie'
+export {default as ShowtimeManager} from './Showtime/ShowtimeManager'
+export {default as AddShowtime} from './Showtime/AddShowtime'
+export {default as UpdateShowtime} from './Showtime/UpdateShowtime'
+

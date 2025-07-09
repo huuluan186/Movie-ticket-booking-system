@@ -77,17 +77,29 @@ export const apiGetAllCinemas = () => new Promise(async (resolve, reject) => {
 });
 
 export const apiGetCinemaClustersByChainId = (chain_id) => new Promise(async (resolve, reject) => {
-  try {
-    const response = await axiosConfig({
-      method: 'get',
-      url: '/api/v1/cinemaclusters',
-      params: { chain_id },
-    });
-    //console.log('apiGetCinemaChainById response: ', response)
-    resolve(response);
-  } catch (error) {
-    reject(error);
-  }
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/cinemaclusters',
+            params: { chain_id },
+        });
+        resolve(response);
+    } catch (error) {
+        reject(error);
+    }
+});
+
+export const apiGetCinemasByClusterId = (cluster_id) => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/cinemas',
+            params: { cluster_id },
+        });
+        resolve(response);
+    } catch (error) {
+        reject(error);
+    }
 });
 
 export const apiCreateCinemaChain = (payload) => new Promise(async (resolve, reject) => {

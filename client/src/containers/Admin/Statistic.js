@@ -9,6 +9,9 @@ import { toast } from "react-toastify";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'; // Sử dụng BarChart
 import { TitleHeader, ContainerBox, Button, SelectBox, Tab, CountBoxList} from '../../components';
 import { apiGetRevenueByMovie, apiGetRevenueByCluster } from '../../services/statistic'; // Import API
+import icons from '../../utils/icon'
+
+const {FaCalendarAlt, AiOutlineCloseCircle} = icons
 
 const Statistic = () => {
     const { cinemaChains, cinemaClusters } = useSelector(state => state.cinema);
@@ -181,6 +184,8 @@ const Statistic = () => {
             endDate: today,
             key: 'selection',
         }]);
+        //setShowDatePicker(false);      // tắt lịch
+        //setOpenDropdown(null);
     };
 
     const today = new Date();
@@ -237,6 +242,7 @@ const Statistic = () => {
                                             setShowDatePicker={setShowDatePicker}
                                             emptyMessage="Chưa có chuỗi rạp trong hệ thống"
                                             offsetY={'translate-y-5'}
+                                            marginAboveLabel='mt-1'
                                         />
                                     </div>
                                     <div className="col-span-3 text-left relative" ref={clusterRef}>
@@ -255,6 +261,7 @@ const Statistic = () => {
                                             setShowDatePicker={setShowDatePicker}
                                             disabled={!selectedChain.id}
                                             offsetY={'translate-y-5'}
+                                            marginAboveLabel='mt-1'
                                         />
                                     </div>
                                 </>
@@ -275,11 +282,12 @@ const Statistic = () => {
                                         setShowDatePicker={setShowDatePicker}
                                         emptyMessage="Không có phim nào"
                                         offsetY={'translate-y-5'}
+                                        marginAboveLabel='mt-1'
                                     />
                                 </div>
                             )}
                             <div className="col-span-4 text-left relative" ref={dateRef}>
-                                <label className="block text-sm font-medium text-gray-700">Khoảng thời gian</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Khoảng thời gian</label>
                                 <div
                                     onClick={() => handleOpenDropdownForDate()}
                                     className="flex justify-between items-center border border-gray-300 px-4 py-2 rounded-md cursor-pointer bg-white shadow-sm mt-1"
@@ -294,36 +302,13 @@ const Statistic = () => {
                                         </span>
                                     </div>
                                     {showDatePicker ? (
-                                    // Hiện icon "X" để reset ngày
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        onClick={handleResetDate}
-                                        className="w-5 h-5 text-red-500 hover:text-red-700 cursor-pointer"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={2}
-                                        stroke="currentColor"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
+                                    //Hiện icon "X" để reset ngày
+                                    <div className='text-xl text-red-600' onClick={handleResetDate}>
+                                        <AiOutlineCloseCircle/>
+                                    </div>
                                 ) : (
                                     // Icon lịch như bình thường
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="w-5 h-5 text-gray-600"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M8 7V3m8 4V3m-9 8h10M5.25 21h13.5A2.25 2.25 0 0021 18.75V6.75A2.25 
-                                                2.25 0 0018.75 4.5H5.25A2.25 2.25 0 003 6.75v12A2.25 
-                                                2.25 0 005.25 21z"
-                                        />
-                                    </svg>
+                                    <FaCalendarAlt />
                                 )}
 
                                 </div>

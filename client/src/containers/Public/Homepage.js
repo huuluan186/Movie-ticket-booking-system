@@ -31,7 +31,7 @@ const Homepage = () => {
     const latestMovies = sortMoviesByReleaseDate(moviesData, 5);
     
     return (
-        <div className="w-full mx-auto border border-red-500">
+        <div className="w-full mx-auto">
             <SliderBanner slides={slides} />
             <div className='container mx-auto my-6 px-20'>
                 <section className="mt-10">
