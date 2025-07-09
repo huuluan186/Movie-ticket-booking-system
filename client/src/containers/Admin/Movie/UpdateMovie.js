@@ -14,8 +14,7 @@ const UpdateUser = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const { moviesData, movieDetail } = useSelector(state => state.movie);
-    const [selectedMovie, setSelectedMovie] = useState({ movie_id: '', title: '' });
+    const { movieDetail } = useSelector(state => state.movie);
     const [statuses, setStatuses] = useState([]);
     const [invalidFields, setInvalidFields] = useState([]);
     const [openDropdown, setOpenDropdown] = useState(null);
