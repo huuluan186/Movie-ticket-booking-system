@@ -17,18 +17,20 @@ const Showtime = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { cinemaChains, cinemaClusters } = useSelector(state => state.cinema);
-    const { movies, showtimesByDate } = useSelector(state => state.showtime);
+    const { showtimesByDate } = useSelector(state => state.showtime);
 
-    const [selectedChainName, setSelectedChainName] = useState(null); //để lưu tên chuỗi rạp chưa có cụm
-    const [selectedClusterName, setSelectedClusterName] = useState(null); //để lưu tên cụm rạp chưa có lịch chiếu
+    // State lưu chuỗi và cụm rạp đã chọn, gồm id (để gọi API) và name 
+    const [selectedChain, setSelectedChain] = useState({ id: null, name: null });
+    const [selectedCluster, setSelectedCluster] = useState({ id: null, name: null });
+    // ID phim được chọn trong cụm rạp (dùng để lọc lịch chiếu theo phim)
     const [selectedMovieId, setSelectedMovieId] = useState(null);
-    const [selectedClusterId, setSelectedClusterId] = useState(null);
-    const [selectedChainId, setSelectedChainId] = useState(null);
+    // Danh sách phim có suất chiếu trong cụm rạp đã chọn
     const [clusterMovies, setClusterMovies] = useState([]);
+    // Biến cờ để đảm bảo chỉ chạy khởi tạo chain lần đầu khi component mount
     const [hasInitialized, setHasInitialized] = useState(false);
 
+    // Custom hook kiểm tra login, điều khiển modal
     const { checkLoginBefore, modalOpen, setModalOpen, pendingAction} = useRequireLogin();
-    // Lấy danh sách button cho modal
     const modalButtons = getModalButtons(setModalOpen, pendingAction);
 
     useEffect(() => {
@@ -36,43 +38,37 @@ const Showtime = () => {
     }, [dispatch]);
 
     const handleChainClick = (chainId) => {
-        dispatch(actions.resetShowtimes());
+        dispatch(actions.resetShowtimes()); // Reset dữ liệu suất chiếu
         dispatch(actions.getCinemaClustersByChainId(chainId));
-        const selectedChain = cinemaChains.find(chain => chain.chain_id === chainId);
-        setSelectedChainName(selectedChain ? selectedChain.chain_name : null);
-
-        setSelectedChainId(chainId);
-        setSelectedClusterId(null);
+        // Tìm tên chuỗi rạp để lưu hiển thị sau nếu không có cụm
+        const selected = cinemaChains.find(c => c.chain_id === chainId);
+        setSelectedChain({ id: chainId, name: selected?.chain_name || null });
+        // Reset cụm, phim, lịch chiếu nếu đổi chuỗi rạp
+        setSelectedCluster({ id: null, name: null });
         setSelectedMovieId(null);
         setClusterMovies([]);
     };
 
     const handleClusterClick = async (clusterId) => {
-        const selectedCluster = cinemaClusters.find(cluster => cluster.cluster_id === clusterId);
-        setSelectedClusterName(selectedCluster ? selectedCluster.cluster_name : null);
-        setSelectedClusterId(clusterId);
+        const selected = cinemaClusters.find(c => c.cluster_id === clusterId);
+        setSelectedCluster({ id: clusterId, name: selected?.cluster_name || null });
 
         // Gọi API lấy suất chiếu của cụm
         const res = await dispatch(actions.getShowtime(clusterId,null));
         // Lấy danh sách phim từ kết quả trả về
         const moviesInCluster  = res?.movies || [];
         setClusterMovies(moviesInCluster);
-        if (moviesInCluster.length > 0) {
+        if (moviesInCluster.length > 0) {// Nếu cụm có phim, chọn phim đầu tiên mặc định và gọi lịch chiếu theo phim
             const firstMovieId = moviesInCluster[0].movie_id;
             setSelectedMovieId(firstMovieId);
-
             // Gọi lại action để lấy suất chiếu cho phim đầu tiên
             dispatch(actions.getShowtime(clusterId, firstMovieId));
-        } else {
-            setSelectedMovieId(null);
-        }
+        } else setSelectedMovieId(null);
     };
 
     const handleMovieClick = (movieId) => {
         setSelectedMovieId(movieId);
-        if (selectedClusterId) {
-            dispatch(actions.getShowtime(selectedClusterId, movieId)); // truyền cả movie và cluster
-        }
+        if (selectedCluster.id) dispatch(actions.getShowtime(selectedCluster.id, movieId)); // truyền cả movie và cluster
     }
 
     const handleShowtimeClick = (showtimeId, cinemaId) => {
@@ -89,6 +85,7 @@ const Showtime = () => {
         );
     };
 
+    // Khởi tạo chọn chuỗi rạp đầu tiên khi trang vừa tải
     useEffect(() => {
         if (cinemaChains?.length > 0 && !hasInitialized) {
             handleChainClick(cinemaChains[0].chain_id);
@@ -96,11 +93,27 @@ const Showtime = () => {
         }
     }, [cinemaChains, hasInitialized]);
 
+    // Tự động chọn cụm đầu tiên nếu có cụm hợp lệ khi đã chọn chuỗi
     useEffect(() => {
-        if (cinemaClusters?.length > 0) {
-            handleClusterClick(cinemaClusters[0].cluster_id);
+        if (cinemaClusters?.length > 0 && selectedChain.id) {
+            // Kiểm tra xem cinemaClusters có thuộc chuỗi rạp được chọn không
+            const hasValidClusters = cinemaClusters.some(cluster => 
+                cluster.cinema_chain.chain_id === selectedChain.id
+            );
+            if (hasValidClusters) handleClusterClick(cinemaClusters[0].cluster_id);
+            else {
+                setSelectedCluster({ id: null, name: null });
+                setSelectedMovieId(null);
+                setClusterMovies([]);
+                dispatch(actions.resetShowtimes()); // Reset nếu không có cụm hợp lệ
+            }
+        } else if (cinemaClusters?.length === 0 && selectedChain.id) {
+            setSelectedCluster({ id: null, name: null });
+            setSelectedMovieId(null);
+            setClusterMovies([]);
+            dispatch(actions.resetShowtimes()); // Reset khi không có cụm
         }
-    }, [cinemaClusters]);
+    }, [cinemaClusters, selectedChain.id]);
     
     return (
         <>
@@ -119,7 +132,7 @@ const Showtime = () => {
                                 src={getImageUrl(item.logo)}
                                 alt={item.chain_name}
                                 className={`w-16 h-16 rounded-full object-contain transition-all cursor-pointer border-[2px] ${
-                                    selectedChainId === item.chain_id
+                                    selectedChain.id === item.chain_id
                                         ? 'border-orange-600 scale-110'
                                         : 'border-gray-400 hover:border-orange-400 hover:scale-110'
                                 }`}
@@ -136,7 +149,7 @@ const Showtime = () => {
                                 <div
                                     key={cinema.cluster_id}
                                     className={`mb-4 border-b border-gray-600 pb-2 cursor-pointer transition-all rounded-md p-2 ${
-                                        selectedClusterId === cinema.cluster_id
+                                        selectedCluster.id === cinema.cluster_id
                                         ? 'bg-gray-600 text-white'
                                         : 'hover:bg-gray-700'
                                     }`}
@@ -149,13 +162,13 @@ const Showtime = () => {
                                 </div>
                             ))
                         ) : (
-                            <p className="text-gray-400 italic">Hệ thống rạp {selectedChainName} chưa được cập nhật cụm rạp!</p>
+                            <p className="text-gray-400 italic">Hệ thống rạp {selectedChain.name} chưa được cập nhật cụm rạp!</p>
                         )}
                     </div>
 
                     {/* Cột phải: chọn phim và lịch chiếu */}
                     <div className="col-span-2 bg-[#0f172a] text-white rounded-lg p-4 h-fit max-h-[75vh] overflow-y-auto">
-                        {clusterMovies.length > 0 ? (
+                        {clusterMovies.length > 0 || (cinemaClusters?.length > 0 && showtimesByDate.length === 0) ? (
                             <>
                                 {/* Danh sách phim trong cụm rạp */}
                                 <div className='mb-10'>
@@ -206,11 +219,11 @@ const Showtime = () => {
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="text-gray-400 italic">{selectedClusterName} chưa có lịch chiếu!</p>
+                                    <p className="text-gray-400 italic">{selectedCluster.name} chưa có lịch chiếu!</p>
                                 )}
                             </>
                         ) : (
-                            <p className="text-gray-400 italic">{selectedClusterName} chưa có lịch chiếu!</p>
+                            <p className="text-gray-400 italic">Hệ thống rạp {selectedChain.name} chưa có cụm hoặc lịch chiếu!</p>
                         )}
                     </div>
                 </div>
