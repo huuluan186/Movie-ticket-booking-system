@@ -17,3 +17,5 @@ export {default as AddMovie} from './Movie/AddMovie'
 export {default as UpdateMovie} from './Movie/UpdateMovie'
 export {default as ShowtimeManager} from './Showtime/ShowtimeManager'
 export {default as AddShowtime} from './Showtime/AddShowtime'
+export {default as UpdateShowtime} from './Showtime/UpdateShowtime'
+
