@@ -3,6 +3,7 @@ import actionTypes from '../actions/actionTypes';
 const initialState = {
     cinemaChains: [], //all cinema chains
     cinemaClusters: [], //clusters of a chain
+    cinemas: [], //cinemas of a cluster
     allCinemaClusters: [], //all cinema clusters
     allCinemas: [], //all cinemas
     cinemaChainDetail: null,
@@ -47,6 +48,12 @@ const cinemaReducer = (state = initialState, action) => {
             return {
                 ...state,
                 cinemaClusterDetail: action.cinemaClusterDetail || null,
+                msg: action.msg,
+            };
+        case actionTypes.GET_CINEMA:
+            return {
+                ...state,
+                cinemas: action.cinemasData || [],
                 msg: action.msg,
             };
         case actionTypes.GET_CINEMA_DETAIL:
