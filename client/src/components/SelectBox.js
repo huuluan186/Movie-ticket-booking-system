@@ -56,7 +56,12 @@ const SelectBox = ({
                 className={`flex justify-between items-center border ${marginAboveLabel} px-4 py-2 rounded-md cursor-pointer bg-white shadow-sm ${width} ${disabled && 'opacity-50 cursor-not-allowed'}  ${error ? 'border-red-500 focus:ring-1 focus:ring-red-300' : openDropdown === dropdownKey ? 'border-blue-400' : 'border-gray-300'}
                 `}
             >
-                <span className={value ? 'text-black' : 'text-gray-400'}>{value || placeholder}</span>
+                <span 
+                    title={value || placeholder} 
+                    className={`${value ? 'text-black' : 'text-gray-400'} truncate max-w-[85%]`}
+                >
+                    {value || placeholder}
+                </span>
                 <TiArrowUnsorted/>
             </div>
         {openDropdown === dropdownKey && (
