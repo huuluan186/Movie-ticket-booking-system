@@ -18,6 +18,7 @@ export const path={
     CINEMA_CLUSTER_MANAGER: 'cinema-cluster-manager',
     CINEMA_MANAGER: 'cinema-manager',
     MOVIE_MANAGER: 'movie-manager',
+    SHOWTIME_MANAGER: 'showtime-manager',
     ADD: 'add',
     UPDATE: 'update/:id'
 }
