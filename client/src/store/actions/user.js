@@ -12,11 +12,7 @@ export const getCurrent = () => async (dispatch) => {
                 currentData: response.response
             })
         } else {
-            dispatch({
-                type: actionTypes.GET_CURRENT,
-                msg: response.data.msg,
-                currentData: null
-            })
+            dispatch(logout())
         }
     } catch (error) {
         dispatch({
