@@ -1,4 +1,4 @@
-import * as service from '../services/seat';
+import * as service from '../services/seat.js';
 
 export const createSeatsForCinemaController = async (req, res) => {
     const { cinema_id } = req.params;

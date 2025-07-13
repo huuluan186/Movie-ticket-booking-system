@@ -1,8 +1,10 @@
 import express from 'express';
-import initRoutes from './src/routes/index.routes';
+import initRoutes from './src/routes/index.routes.js';
 import cors from 'cors'
-import connectDatabase from './src/config/connectDB';
-require('dotenv').config()
+import connectDatabase from './src/config/connectDB.js';
+import dotenv from 'dotenv';
+dotenv.config();
+
 const app = express()
 
 app.use(cors({
@@ -18,9 +20,10 @@ app.use('/images', express.static('src/public/images'));
 initRoutes(app)
 connectDatabase()
 
-require('./cron')
-
 const port=process.env.PORT || 5000
 app.listen(port,()=>{
     console.log(`Website listening on port ${port}`)
 })
+
+//Import file cron (chạy job định kỳ)
+import './cron.js';

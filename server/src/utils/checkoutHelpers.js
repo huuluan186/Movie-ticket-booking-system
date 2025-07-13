@@ -1,4 +1,4 @@
-import db from '../models';
+import db from '../models/index.js';
 import {v4} from 'uuid'
 
 // Tạo đơn hàng

@@ -1,6 +1,6 @@
-import moment, { duration } from 'moment-timezone';
+import moment from 'moment-timezone';
 import { Op } from 'sequelize';
-import db from '../models';
+import db from '../models/index.js';
 
 /**
  * Kiểm tra thời gian bắt đầu, thời gian kết thúc và định dạng hợp lệ

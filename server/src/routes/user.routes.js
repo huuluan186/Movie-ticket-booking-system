@@ -1,8 +1,8 @@
-import express from 'express'
-import verifyToken from '../middlewares/verifyToken'
-import { isAdmin } from '../middlewares/userAuthentication'
-import * as userController from '../controllers/user.controller'
-import * as orderController from '../controllers/order.controller'
+import express from 'express';
+import verifyToken from '../middlewares/verifyToken.js';
+import { isAdmin } from '../middlewares/userAuthentication.js';
+import * as userController from '../controllers/user.controller.js';
+import * as orderController from '../controllers/order.controller.js';
 
 const router = express.Router()
 

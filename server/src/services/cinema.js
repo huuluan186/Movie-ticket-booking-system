@@ -1,6 +1,6 @@
-import db from '../models'
+import db from '../models/index.js'
 import {nanoid} from 'nanoid'
-import {compareVietnameseUsername} from '../utils/generateCode'
+import {compareVietnameseUsername} from '../utils/generateCode.js'
 import { Op } from 'sequelize';
 
 //api chains

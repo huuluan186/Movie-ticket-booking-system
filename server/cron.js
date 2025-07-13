@@ -1,5 +1,5 @@
-const cron = require('node-cron');
-const { autoDeleteShowtimesService } = require('./src/services/showtime');
+import cron from 'node-cron';
+import { autoDeleteShowtimesService } from './src/services/showtime.js';
 
 // Chạy mỗi 5 phút
 cron.schedule('*/5 * * * *', async () => {

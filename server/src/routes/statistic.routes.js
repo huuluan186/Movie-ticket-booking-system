@@ -1,7 +1,8 @@
 import express from 'express';
-import * as statisticsController from '../controllers/statistic.controller';
-import verifyToken from '../middlewares/verifyToken';
-import { isAdmin } from '../middlewares/userAuthentication';
+import * as statisticsController from '../controllers/statistic.controller.js';
+import verifyToken from '../middlewares/verifyToken.js';
+import { isAdmin } from '../middlewares/userAuthentication.js';
+
 
 const router = express.Router();
 

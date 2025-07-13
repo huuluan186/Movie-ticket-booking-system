@@ -1,7 +1,7 @@
 import express from 'express';
-import * as showtimeController from  '../controllers/showtime.controller';
-import verifyToken from '../middlewares/verifyToken';
-import { isAdmin } from '../middlewares/userAuthentication';
+import * as showtimeController from '../controllers/showtime.controller.js';
+import verifyToken from '../middlewares/verifyToken.js';
+import { isAdmin } from '../middlewares/userAuthentication.js';
 
 const router = express.Router();
 

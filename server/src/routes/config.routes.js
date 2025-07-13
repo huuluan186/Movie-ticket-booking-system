@@ -1,5 +1,5 @@
-import express from "express"
-import * as configController from '../controllers/config.controller'
+import express from "express";
+import * as configController from '../controllers/config.controller.js';
 
 const router = express.Router()
 

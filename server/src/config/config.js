@@ -1,10 +1,15 @@
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = {
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+export default {
   development: {
-    username: process.env.DB_USERNAME || 'root',
+    username: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || null,
     database: process.env.DB_NAME || 'cinemadb',
     host: process.env.DB_HOST || '127.0.0.1',
@@ -13,7 +18,7 @@ module.exports = {
     logging: false
   },
   test: {
-    username: process.env.DB_USERNAME || 'root',
+    username: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || null,
     database: 'database_test',
     host: process.env.DB_HOST || '127.0.0.1',
@@ -21,7 +26,7 @@ module.exports = {
     dialect: process.env.DB_DIALECT || 'mysql'
   },
   production: {
-    username: process.env.DB_USERNAME || 'root',
+    username: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || null,
     database: 'database_production',
     host: process.env.DB_HOST || '127.0.0.1',

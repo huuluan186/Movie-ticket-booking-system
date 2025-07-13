@@ -1,7 +1,7 @@
-import express from "express"
-import * as cinemaController from '../controllers/cinema.controller'
-import verifyToken from "../middlewares/verifyToken"
-import { isAdmin } from "../middlewares/userAuthentication"
+import express from "express";
+import * as cinemaController from '../controllers/cinema.controller.js';
+import verifyToken from "../middlewares/verifyToken.js";
+import { isAdmin } from "../middlewares/userAuthentication.js";
 
 const router = express.Router()
 

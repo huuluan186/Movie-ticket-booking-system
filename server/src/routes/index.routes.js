@@ -1,13 +1,13 @@
-import configRouter from './config.routes'
-import authRouter from './auth.routes'
-import userRouter from './user.routes'
-import movieRouter from './movie.routes'
-import cinemaChainRouter from './cinemaChain.routes'
-import cinemaClusterRouter from './cinemaCluster.routes'
-import cinemaRouter from './cinema.routes'
-import showtimeRouter from './showtime.routes'
-import seatRouter from './seat.routes'
-import statisticRouter from './statistic.routes'
+import configRouter from './config.routes.js'
+import authRouter from './auth.routes.js'
+import userRouter from './user.routes.js'
+import movieRouter from './movie.routes.js'
+import cinemaChainRouter from './cinemaChain.routes.js'
+import cinemaClusterRouter from './cinemaCluster.routes.js'
+import cinemaRouter from './cinema.routes.js'
+import showtimeRouter from './showtime.routes.js'
+import seatRouter from './seat.routes.js'
+import statisticRouter from './statistic.routes.js'
 
 const initRoutes=(app)=>{
     app.use('/api/v1/configs', configRouter)

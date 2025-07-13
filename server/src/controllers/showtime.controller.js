@@ -1,4 +1,4 @@
-import * as service from '../services/showtime';
+import * as service from '../services/showtime.js';
 
 export const createShowtime = async (req, res) => {
     try {

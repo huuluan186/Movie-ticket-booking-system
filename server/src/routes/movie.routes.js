@@ -1,8 +1,8 @@
 import express from 'express';
-import * as movieController from '../controllers/movie.controller';
-import { uploadImages, attachImagePaths } from '../middlewares/upload';
-import verifyToken from '../middlewares/verifyToken';
-import { isAdmin } from '../middlewares/userAuthentication';
+import * as movieController from '../controllers/movie.controller.js';
+import { uploadImages, attachImagePaths } from '../middlewares/upload.js';
+import verifyToken from '../middlewares/verifyToken.js';
+import { isAdmin } from '../middlewares/userAuthentication.js';
 
 const router = express.Router();
 

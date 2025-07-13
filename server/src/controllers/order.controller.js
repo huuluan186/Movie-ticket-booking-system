@@ -1,4 +1,4 @@
-import * as service from '../services/order';
+import * as service from '../services/order.js';
 
 export const createOrderController = async (req, res) => {
     const { user_id } = req.user;
