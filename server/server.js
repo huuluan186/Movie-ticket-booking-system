@@ -2,6 +2,7 @@ import express from 'express';
 import initRoutes from './src/routes/index.routes.js';
 import cors from 'cors'
 import connectDatabase from './src/config/connectDB.js';
+import { swaggerSpec, swaggerUi } from './src/config/swagger.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -17,6 +18,8 @@ app.use(express.urlencoded({extended:true}))
 
 app.use('/images', express.static('src/public/images'));
 
+// Swagger API Docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 initRoutes(app)
 connectDatabase()
 
