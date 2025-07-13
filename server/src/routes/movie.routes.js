@@ -150,9 +150,6 @@ router.get('/:movieId', movieController.getMovieDetail);
  *                 type: string
  *               linkTrailer:
  *                 type: string
- *               thumbnail:
- *                 type: string
- *                 format: binary
  *               poster:
  *                 type: string
  *                 format: binary
@@ -230,9 +227,6 @@ router.post('/', uploadImages(), attachImagePaths(), movieController.createMovie
  *                 type: string
  *               linkTrailer:
  *                 type: string
- *               thumbnail:
- *                 type: string
- *                 format: binary
  *               poster:
  *                 type: string
  *                 format: binary
