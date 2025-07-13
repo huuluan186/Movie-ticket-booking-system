@@ -1,0 +1,36 @@
+# ========== Node.js dependencies ==========
+node_modules/
+client/node_modules/
+server/node_modules/
+.pnp
+.pnp.js
+
+# ========== Build & Coverage ==========
+build/
+coverage/
+client/build/
+server/build/
+
+# ========== Environment files ==========
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ========== Logs ==========
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ========== Miscellaneous ==========
+.DS_Store
+client/.DS_Store
+server/.DS_Store
+
+# ========== Public (generated or uploaded files) ==========
+server/src/public
+
+# ========== IDE & Editor ==========
+.vscode/
+.idea/
