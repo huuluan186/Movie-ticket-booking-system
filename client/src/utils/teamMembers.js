@@ -17,8 +17,8 @@ const teamMembers = [
     {
       name: 'Nguyễn Hữu Anh',
       links: {
-        github: '#',
-        facebook: '#'
+        github: 'https://github.com/huuanh2512',
+        facebook: 'https://www.facebook.com/hnauuh24'
       },
       linkIcons: {
         github: <FaGithub className="w-7 h-7" />,
