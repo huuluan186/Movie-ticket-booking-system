@@ -6,8 +6,8 @@ const teamMembers = [
     {
       name: 'Phạm Hữu Luân',    
       links: {
-        github: '#',
-        facebook: '#'
+        github: 'https://github.com/huuluan186',
+        facebook: 'https://www.facebook.com/huu.luan.791758'
       },
       linkIcons: {
         github: <FaGithub className="w-7 h-7" />,
@@ -28,8 +28,8 @@ const teamMembers = [
     {
       name: 'Lâm Thanh Đỉnh',
       links: {
-        github: '#',
-        facebook: '#'
+        github: 'https://github.com/LamThanhDinh',
+        facebook: 'https://www.facebook.com/nottdd/'
       },
       linkIcons: {
         github: <FaGithub className="w-7 h-7" />,

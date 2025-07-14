@@ -1,4 +1,5 @@
 import icons from './icon'
+import { path } from './constant';
 const { FaPhone, FaEnvelope, FaMapMarkerAlt } = icons;
 
 const footerData = [
@@ -14,8 +15,8 @@ const footerData = [
     {
       title: 'Danh Mục',
       items: [
-        { type: 'link', to: 'movies/now-showing', label: 'Phim đang chiếu' },
-        { type: 'link', to: 'movies/coming-soon', label: 'Phim sắp chiếu' },
+        { type: 'link', to: path.MOVIES_BY_STATUS.replace(':statusSlug', 'now-showing'), label: 'Phim đang chiếu' },
+        { type: 'link', to: path.MOVIES_BY_STATUS.replace(':statusSlug', 'coming-soon'), label: 'Phim sắp chiếu' },
       ]
     },
     {

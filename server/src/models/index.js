@@ -1,12 +1,18 @@
-'use strict';
+import fs from 'fs';
+import path from 'path';
+import Sequelize from 'sequelize';
+import process from 'process';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import configObj from '../config/config.js';
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const process = require('process');
+// Lấy __dirname kiểu ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = configObj[env];
 const db = {};
 
 let sequelize;
@@ -16,28 +22,32 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
-fs
+// Load tất cả các model trong thư mục
+const files = fs
   .readdirSync(__dirname)
-  .filter(file => {
+  .filter((file) => {
     return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
+        file.indexOf('.') !== 0 &&
+        file !== basename &&
+        file.slice(-3) === '.js' &&
+        file.indexOf('.test.js') === -1
     );
-  })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
   });
 
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
+for (const file of files) {
+    const { default: modelDefiner } = await import(path.join(__dirname, file));
+    const model = modelDefiner(sequelize, Sequelize.DataTypes);
+    db[model.name] = model;
+}
+
+// Gọi associate nếu có
+Object.keys(db).forEach((modelName) => {
+    if (db[modelName].associate) {
+        db[modelName].associate(db);
+    }
 });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+export default db;

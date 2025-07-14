@@ -6,21 +6,11 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     function (config) {
-        const raw = window.localStorage.getItem('persist:auth');
-        let token = null;
-        if (raw) {
-            const parsed = JSON.parse(raw);
-            if (parsed?.token) {
-                token = JSON.parse(parsed.token); // ✅ tránh slice
-            }
-        }
-
-        if (token) {
-            config.headers.authorization = `Bearer ${token}`;
-        } else {
-            console.warn("🚫 No token attached in headers.");
-        }
-
+        const token = localStorage.getItem('token');
+        if (token) config.headers.authorization = `Bearer ${token}`;
+        else console.warn("🚫 No token attached in headers.");
+        // Chỉ set nếu data là FormData
+        if (config.data instanceof FormData) config.headers['Content-Type'] = 'multipart/form-data';
         return config;
     },
     function (error) {

@@ -1,8 +1,7 @@
-import db from '../models'
+import db from '../models/index.js'
 import {nanoid} from 'nanoid'
-import {compareVietnameseUsername} from '../utils/generateCode'
+import {compareVietnameseUsername} from '../utils/generateCode.js'
 import { Op } from 'sequelize';
-
 
 //api chains
 export const createCinemaChainService = ({chain_name, logo}) => new Promise(async (resolve, reject) => {  
@@ -39,7 +38,7 @@ export const createCinemaChainService = ({chain_name, logo}) => new Promise(asyn
 export const getAllCinemaChainsService = () => new Promise(async (resolve, reject) => {
     try {
         const chains = await db.CinemaChain.findAndCountAll({
-            attributes: ['chain_id', 'chain_name', 'logo'],
+            attributes: { exclude: [] }, //lấy tất cả
             raw: true,
             nest: true,
         });
@@ -144,7 +143,7 @@ export const deleteCinemaChainService = (chain_id) => new Promise(async (resolve
         const response = await db.CinemaChain.destroy({ where: { chain_id } });
         resolve({
             err: response ? 0 : 1,
-            msg: response ? `Xóa chuỗi rạp (id: ${chain_id}) thành công!` : 'Xóa chuỗi rạp thất bại!',
+            msg: response ? `Xóa chuỗi rạp thành công!` : 'Xóa chuỗi rạp thất bại!',
         });
     } catch (error) {
         reject(error);
@@ -152,7 +151,7 @@ export const deleteCinemaChainService = (chain_id) => new Promise(async (resolve
 });
 
 //api cluster
-export const createCinemaClusterService = ({cluster_name, address, city, chain_id}) => new Promise(async (resolve, reject) => {  
+export const createCinemaClusterService = ({cluster_name, address, chain_id}) => new Promise(async (resolve, reject) => {  
     try {
         // Kiểm tra xem chuỗi rạp có tồn tại không
         const chain = await db.CinemaChain.findOne({ where: { chain_id } });
@@ -183,7 +182,6 @@ export const createCinemaClusterService = ({cluster_name, address, city, chain_i
             cluster_id: nanoid(),
             cluster_name,
             address,
-            city,
             chain_id
         });
         
@@ -202,7 +200,7 @@ export const getAllCinemaClustersService = (chain_id) => new Promise(async (reso
         const response = await db.CinemaCluster.findAndCountAll({
             raw: true,
             nest: true,
-            attributes: ['cluster_id', 'cluster_name', 'address'],
+            attributes: { exclude: [] },
             where: chain_id && { chain_id },
             include: [{
                 model: db.CinemaChain,
@@ -227,7 +225,7 @@ export const getCinemaClusterByIdService = (cluster_id) => new Promise(async (re
             where: { cluster_id },
             raw: true,
             nested: true,
-            attributes: ['cluster_id','cluster_name', 'address'],
+            attributes: ['cluster_id','cluster_name', 'address','createdAt','updatedAt'],
             include: [{
                 model: db.CinemaChain,
                 as: 'cinema_chain',
@@ -327,7 +325,7 @@ export const deleteCinemaClusterService = (cluster_id) => new Promise(async (res
         const response = await db.CinemaCluster.destroy({ where: { cluster_id } });
         resolve({
             err: response ? 0 : 1,
-            msg: response ? `Xóa cụm rạp (id: ${cluster_id}) thành công!` : 'Xóa cụm rạp thất bại!',
+            msg: response ? `Xóa cụm rạp thành công!` : 'Xóa cụm rạp thất bại!',
         });
     } catch (error) {
         reject(error);
@@ -335,7 +333,7 @@ export const deleteCinemaClusterService = (cluster_id) => new Promise(async (res
 });
 
 //api cinema
-export const createCinemaService = ({cinema_name, cluster_id}) => new Promise(async (resolve, reject) => {  
+export const createCinemaService = ({cinema_name, cluster_id, rowCount, columnCount}) => new Promise(async (resolve, reject) => {  
     try {
         // Kiểm tra xem cụm rạp có tồn tại không
         const cluster = await db.CinemaCluster.findOne({ where: { cluster_id } });
@@ -361,11 +359,21 @@ export const createCinemaService = ({cinema_name, cluster_id}) => new Promise(as
             });
         }
 
+        // Kiểm tra dữ liệu hợp lệ
+        if (!rowCount || !columnCount || rowCount < 1 || columnCount < 1) {
+            return resolve({
+                err: 1,
+                msg: 'rowCount và columnCount phải > 0',
+            });
+        }
+
         // Tạo rạp mới
         const newCinema = await db.Cinema.create({
             cinema_id: nanoid(),
             cinema_name,
-            cluster_id
+            cluster_id,
+            rowCount,
+            columnCount,
         });
         
         resolve({
@@ -383,7 +391,7 @@ export const getAllCinemasService = (cluster_id) => new Promise(async (resolve, 
         const response = await db.Cinema.findAndCountAll({
             raw: true,
             nest: true,
-            attributes: ['cinema_id', 'cinema_name'],
+            attributes: ['cinema_id', 'cinema_name', 'rowCount', 'columnCount', 'createdAt','updatedAt'],
             where: cluster_id && {cluster_id},
             include: [{
                 model: db.CinemaCluster,
@@ -395,6 +403,19 @@ export const getAllCinemasService = (cluster_id) => new Promise(async (resolve, 
                     attributes: ['chain_id','chain_name']
                 }]
             }],
+            order: [
+                [
+                    { model: db.CinemaCluster, as: 'cinema_cluster' }, 
+                    { model: db.CinemaChain, as: 'cinema_chain' }, 
+                    'chain_name', 
+                    'ASC'
+                ],
+                [ 
+                    { model: db.CinemaCluster, as: 'cinema_cluster' }, 
+                    'cluster_name', 
+                    'ASC' 
+                ]
+            ]
         })
 
         resolve({
@@ -407,14 +428,13 @@ export const getAllCinemasService = (cluster_id) => new Promise(async (resolve, 
     }
 })
 
-
 export const getCinemaByIdService = (cinema_id) => new Promise(async (resolve, reject) => {
     try {
         const cinema = await db.Cinema.findOne({
             where: { cinema_id },
             raw: true,
             nested: true,
-            attributes: ['cinema_id','cinema_name'],
+            attributes: ['cinema_id','cinema_name', 'rowCount', 'columnCount'],
             include: [{
                 model: db.CinemaCluster,
                 as: 'cinema_cluster',
@@ -437,7 +457,7 @@ export const getCinemaByIdService = (cinema_id) => new Promise(async (resolve, r
     }
 });
 
-export const updateCinemaService = (cinema_id, { cinema_name, cluster_id }) => new Promise(async (resolve, reject) => {
+export const updateCinemaService = (cinema_id, { cinema_name, cluster_id, rowCount, columnCount }) => new Promise(async (resolve, reject) => {
     try {
         // Lấy dữ liệu rạp hiện tại
         const oldCinema = await db.Cinema.findOne({ where: { cinema_id }, raw: true });
@@ -451,7 +471,7 @@ export const updateCinemaService = (cinema_id, { cinema_name, cluster_id }) => n
         const updatedFields = {};
 
         // Kiểm tra thay đổi tên rạp
-        if (cinema_name && cinema_name !== oldCinema.cinema_name) {
+        if (cinema_name && cinema_name.trim() !== '' && cinema_name.trim() !== oldCinema.cinema_name.trim()) {
             // Xác định cluster đang xét (dùng cluster_id mới nếu có, còn không thì dùng cũ)
             const clusterCheck = cluster_id || oldCinema.cluster_id;
 
@@ -493,6 +513,28 @@ export const updateCinemaService = (cinema_id, { cinema_name, cluster_id }) => n
             updatedFields.cluster_id = cluster_id;
         }
 
+       if (rowCount && rowCount !== oldCinema.rowCount) {
+            if (rowCount > 0) {
+                updatedFields.rowCount = rowCount;
+            } else {
+                return resolve({
+                    err: 1,
+                    msg: 'Số hàng phải là số nguyên dương và >0.',
+                });
+            }
+        }
+            
+        if (columnCount && columnCount !== oldCinema.columnCount) {
+            if (columnCount > 0) {
+                updatedFields.columnCount = columnCount;
+            } else {
+                return resolve({
+                    err: 1,
+                    msg: 'Số cột phải là số nguyên dương và >0.',
+                });
+            }
+        }
+
         // Nếu không có trường nào thay đổi
         if (Object.keys(updatedFields).length === 0) {
             return resolve({
@@ -514,7 +556,6 @@ export const updateCinemaService = (cinema_id, { cinema_name, cluster_id }) => n
     }
 });
 
-
 export const deleteCinemaService = (cinema_id) => new Promise(async (resolve, reject) => {
     try {
         const cinema = await db.Cinema.findOne({ where: { cinema_id }, raw: true });
@@ -527,7 +568,7 @@ export const deleteCinemaService = (cinema_id) => new Promise(async (resolve, re
         const response = await db.Cinema.destroy({ where: { cinema_id } });
         resolve({
             err: response ? 0 : 1,
-            msg: response ? `Xóa rạp (id: ${cinema_id}) thành công!` : 'Xóa rạp thất bại!',
+            msg: response ? `Xóa rạp thành công!` : 'Xóa rạp thất bại!',
         });
     } catch (error) {
         reject(error);

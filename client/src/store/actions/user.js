@@ -1,5 +1,5 @@
 import actionTypes from './actionTypes'
-import {apiGetCurrentUser, apiUpdateInfoCurrentUser } from '../../services/user'
+import {apiGetCurrentUser, apiUpdateInfoCurrentUser, apiGetUsersList, apiAdminUpdateInfoUser } from '../../services/user'
 import { logout } from './auth';
 
 export const getCurrent = () => async (dispatch) => {
@@ -12,11 +12,7 @@ export const getCurrent = () => async (dispatch) => {
                 currentData: response.response
             })
         } else {
-            dispatch({
-                type: actionTypes.GET_CURRENT,
-                msg: response.data.msg,
-                currentData: null
-            })
+            dispatch(logout())
         }
     } catch (error) {
         dispatch({
@@ -61,3 +57,49 @@ export const updateProfile = (payload) => async (dispatch) => {
     }
 }
 
+export const getUsersList = () => async (dispatch) => {
+    try {
+        const response = await apiGetUsersList();
+        if (response?.err === 0) {
+            dispatch({
+                type: actionTypes.GET_ALL_USERS,
+                usersListData: response.response,
+                msg: response.msg 
+            });
+        } else {
+            dispatch({
+                type: actionTypes.GET_ALL_USERS,
+                usersListData: [],
+                msg: response.msg
+            });
+        }
+    } catch (error) {
+        dispatch({
+            type: actionTypes.GET_ALL_USERS,
+            usersListData: [],
+            msg: error?.message || 'Lỗi khi lấy danh sách người dùng'
+        });
+    }
+};
+
+export const adminUpdateUser = (user_id, payload) => async (dispatch) => {
+    try {
+        const response = await apiAdminUpdateInfoUser(user_id, payload);
+        console.log("Response adminUpdateUser:", response);
+        if (response?.err === 0) {
+            dispatch({
+                type: actionTypes.ADMIN_UPDATE_USER,
+                msg: response.msg
+            });
+            return { success: true, message: response.msg };
+        } else {
+            return { success: false, message: response.msg };
+        }
+    } catch (error) {
+        console.error("Error adminUpdateUser:", error);
+        return {
+            success: false,
+            message: error?.message || "Cập nhật thất bại"
+        };
+    }
+};

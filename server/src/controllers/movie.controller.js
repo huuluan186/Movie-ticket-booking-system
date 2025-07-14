@@ -1,4 +1,4 @@
-import * as service from '../services/movie'
+import * as service from '../services/movie.js'
 
 export const getMovieStatuses = async (req,res) => {
     try {

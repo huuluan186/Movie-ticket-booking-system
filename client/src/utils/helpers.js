@@ -1,7 +1,22 @@
+import dayjs from 'dayjs';
+
+export const computeShowtimeDateRange = (date, startTime, endTime) => {
+    const isOvernight = startTime?.slice(0, 5) > endTime?.slice(0, 5);
+
+    const startDate = date;
+    const endDate = isOvernight
+        ? dayjs(date).add(1, 'day').format('YYYY-MM-DD')
+        : date;
+
+    return { startDate, endDate };
+};
+
 // Kiểm tra trống một trường
-export const checkEmpty = (value, name, label) => {
-    if (!value?.trim()) {
-        return { name, message: `Vui lòng nhập ${label}.` };
+export const checkEmpty = (value, name, label, type = 'input') => {
+    const isEmpty = !value?.toString().trim();
+    if (isEmpty) {
+        const verb = type === 'select' ? 'chọn' : 'nhập';
+        return { name, message: `Vui lòng ${verb} ${label}.` };
     }
     return null;
 };
@@ -47,6 +62,10 @@ export const formatDate = (dateString) => {
     return date.toLocaleDateString('en-GB'); // Định dạng ngày theo kiểu dd/mm/yyyy
 };
 
+export const formatDateTime = (isoString) => {
+    return dayjs(isoString).format('DD-MM-YYYY HH:mm:ss');
+};
+
 // Helper để sắp xếp và phân trang dữ liệu
 export const sortMoviesByReleaseDate = (movies, limit = null) => {
     if (movies && movies.length > 0) {
@@ -75,4 +94,30 @@ export const toCapitalize = (str) => {
       .split(' ')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Viết hoa chữ cái đầu
       .join(' ');
+};
+
+export const convertRowToLetter = (rowNumber) => {
+    return String.fromCharCode(64 + rowNumber); // 1 -> A, 2 -> B, etc.
+};
+
+export const roundToUnit = (num, unit) => Math.round(num / unit) * unit;
+
+export const isImageUrl = (value) => {
+    if (typeof value !== 'string') return false;
+
+    const isHttpImagePath = value.startsWith('http') && value.includes('/images/');
+    const isImageExtension = /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(value);
+    const isBase64Image = value.startsWith('data:image/');
+
+    return isHttpImagePath || isImageExtension || isBase64Image;
+}
+
+export const objectToFormData = (object) => {
+    const formData = new FormData();
+    for (const key in object) {
+        if (object[key] !== undefined && object[key] !== null) {
+            formData.append(key, object[key]);
+        }
+    }
+    return formData;
 };

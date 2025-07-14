@@ -6,7 +6,7 @@ const initState = {
     token:null,
     msg:'',
     update:false,
-    //currentUser:null
+    user_role: null,
 }
 
 const authReducer = (state=initState,action)=>{
@@ -15,7 +15,7 @@ const authReducer = (state=initState,action)=>{
             return {
                 ...state,
                 isRegistered: true, // Chỉ đăng ký thành công mới là true
-                token: action.data,
+                token: action.data.token,
                 msg: "",
             };
 
@@ -23,9 +23,9 @@ const authReducer = (state=initState,action)=>{
             return {
                 ...state,
                 isLoggedIn: true,  // Chỉ đăng nhập thành công mới là true
-                token: action.data,
+                token: action.data.token,
+                user_role: action.data.user_role,
                 msg: "",
-                //currentUser: action.user
             };
 
         case actionTypes.REGISTER_FAIL:
@@ -35,6 +35,7 @@ const authReducer = (state=initState,action)=>{
                 isLoggedIn: false,
                 msg: action.data,
                 token:null,
+                user_role:null,
                 update:!state.update
             };
 
@@ -49,6 +50,7 @@ const authReducer = (state=initState,action)=>{
                 ...state,
                 isLoggedIn:false,
                 msg:'',
+                user_role:null,
                 token:null
             }
         default:

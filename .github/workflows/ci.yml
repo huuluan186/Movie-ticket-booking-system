@@ -1,0 +1,73 @@
+name: CI – Build & Smoke‑test Docker stack
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-smoke-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Lấy mã nguồn
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      # 2) Thiết lập Docker Buildx (để build multi‑stage)
+      - name: ⚙️ Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3) Tạo file .env tạm (nếu repo đã có .env rồi thì có thể bỏ bước này)
+      - name: 📄 Create .env for CI
+        run: |
+          cat <<EOF > .env
+          MYSQL_DATABASE=cinemadb
+          MYSQL_ROOT_PASSWORD=root
+          NODE_ENV=test
+          PORT=5000
+          CLIENT_PORT=3000
+          DB_NAME=cinemadb
+          DB_USER=root
+          DB_PASSWORD=root
+          DB_HOST=db
+          DB_PORT=3306
+          DB_DIALECT=mysql
+          CLIENT_URL=http://localhost:3000
+          SECRET_KEY=test_secret
+          REACT_APP_SERVER_URL=http://localhost:5000
+          EOF
+      
+      # 🧩 Cài docker-compose (do GitHub runner không có sẵn)
+      - name: 🧩 Install docker-compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
+            -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      # 4) Build toàn bộ image
+      - name: 🐳 docker‑compose build
+        run: docker-compose build
+
+      # 5) Chạy stack
+      - name: 🚀 docker‑compose up (detached)
+        run: docker-compose up -d
+
+      # 6) Đợi server lên & ping endpoint
+      - name: ⏳ Wait & health‑check
+        run: |
+          echo "⏳ Waiting for server..."
+          for i in {1..15}; do
+            if curl -fs http://localhost:5000/api-docs > /dev/null; then
+              echo "✅ Server responded OK"; exit 0
+            fi
+            echo "⌛ Still waiting ($i/15)"; sleep 5
+          done
+          echo "❌ Server not ready in time"; docker-compose logs; exit 1
+
+      # 7) Dọn dẹp
+      - name: 🧹 Clean up
+        if: always()
+        run: docker-compose down -v

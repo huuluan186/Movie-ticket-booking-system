@@ -1,14 +1,20 @@
 import { useEffect } from 'react';
-import {useParams } from 'react-router-dom';
+import {useParams, useNavigate } from 'react-router-dom';
 import { toCapitalize } from "../../utils/helpers"
 import * as actions from '../../store/actions'
 import { useDispatch, useSelector } from 'react-redux';
-import { Card } from '../../components/index'
 import { getImageUrl, formatDate } from '../../utils/helpers';
 import placehoder from '../../assets/placeholder.png'
 import { toSlug } from '../../utils/toSlug';
+import { Banner, Button, Card} from '../../components'
+import smallBanner from '../../assets/small-banner.png'
+import icons from '../../utils/icon';
+import { path } from '../../utils/constant';
+
+const {RiTicket2Line} = icons
 
 const MoviesByStatus = () => {
+    const navigate = useNavigate();
     const { statusSlug } = useParams();
     const { moviesData } = useSelector(state => state.movie);
     const dispatch = useDispatch();
@@ -23,11 +29,22 @@ const MoviesByStatus = () => {
     };
 
     const movieStatusMap = {
-        'coming-soon': 'Phim sắp chiếu',
-        'now-showing': 'Phim đang chiếu',
+        'now-showing': {
+            title: 'Phim đang chiếu',
+            description: 'Danh sách các phim hiện đang chiếu rạp trên toàn quốc!'
+        },
+        'coming-soon': {
+            title: 'Phim sắp chiếu',
+            description: 'Danh sách các phim dự kiến sẽ khởi chiếu tại các hệ thống rạp trên toàn quốc.'
+        }
     };
 
-    const title = movieStatusMap[statusSlug] || 'Danh sách phim';
+
+    const pageInfo = movieStatusMap[statusSlug] || {
+        title: 'Danh sách phim',
+        description: ''
+    };
+
 
      useEffect(() => {
         const status = convertSlugToStatus(statusSlug);
@@ -36,32 +53,47 @@ const MoviesByStatus = () => {
     }, [dispatch, statusSlug]);
 
     return (
-        <div className="container mx-auto my-6 px-4">
-            <div>
-                <span className='text-[40px] font-semibold text-gray-800'>
-                    {toCapitalize(title)}
-                </span>
-            </div>
-            <hr className='w-full border-gray-800 border-t-2 my-6'/>
-            <div className="my-10">
-                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6'>
-                    {moviesData && moviesData.length > 0 ? (
-                        moviesData.map((movie) => (
-                            <Card
-                                key={movie?.movie_id}
-                                title={movie?.title || "Untitled"}
-                                image={movie?.poster ? getImageUrl(movie?.poster) : placehoder}
-                                releaseDate={formatDate(movie?.release_date)}
-                                navigateTo={`/movies/detail/${movie?.movie_id}/${toSlug(movie?.title)}`}
-                            />
-                        ))
-                    ) : (
-                        <p className="text-center text-gray-500">Không có phim nào trong danh sách này.</p>
-                    )}
-                    
+        <>
+            <Banner 
+                backgroundImg={smallBanner}
+                title={toCapitalize(pageInfo.title)}
+                description={pageInfo.description}
+            />
+            <div className="container mx-auto my-6 px-20">
+                <div className="my-14">
+                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12'>
+                        {moviesData && moviesData.length > 0 ? (
+                            moviesData.map((movie) => (
+                            <div className='flex flex-col gap-2'>
+                                <Card
+                                    key={movie?.movie_id}
+                                    title={movie?.title || "Untitled"}
+                                    image={movie?.poster ? getImageUrl(movie?.poster) : placehoder}
+                                    releaseDate={formatDate(movie?.release_date)}
+                                    navigateTo={
+                                        path.MOVIE_DETAIL
+                                            .replace(':id', movie?.movie_id)
+                                            .replace(':slug', toSlug(movie?.title))
+                                    }
+                                />
+                                <Button 
+                                    text={'ĐẶT VÉ'} 
+                                    textColor='text-white' 
+                                    bgColor='bg-red-500' 
+                                    hover='hover:bg-red-600'
+                                    IcBefore={RiTicket2Line}
+                                    onClick={()=>navigate(path.SHOWTIME)}
+                                />
+                            </div>
+                            ))
+                        ) : (
+                            <p className="text-center text-gray-500">Không có phim nào trong danh sách này.</p>
+                        )}
+
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

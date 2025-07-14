@@ -4,8 +4,9 @@ import placehoder from '../../assets/placeholder.png'
 import { getImageUrl, formatDate, getYouTubeEmbedUrl } from '../../utils/helpers';
 import * as actions from '../../store/actions'
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate} from 'react-router-dom';
 import icons from '../../utils/icon';
+import { path } from '../../utils/constant';
 
 const {RiTicket2Line, FaRegHandPointRight} = icons
 
@@ -14,6 +15,7 @@ const isNotActive = 'flex items-center space-x-2 text-lg'
 
 const MovieDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { movieDetail } = useSelector(state => state.movie);
     const [activeTab, setActiveTab] = useState('details');
@@ -26,7 +28,7 @@ const MovieDetail = () => {
     }, [id, dispatch]);
 
     return (
-        <div className='container mx-auto my-6 px-4'>
+        <div className='container mx-auto my-6 px-20'>
             {movieDetail ? (
             <>
             <div className='flex gap-[50px]'>
@@ -54,6 +56,7 @@ const MovieDetail = () => {
                             bgColor='bg-red-500' 
                             hover='hover:bg-red-600'
                             IcBefore={RiTicket2Line}
+                            onClick={()=>navigate(path.SHOWTIME)}
                         />
                     </div>
                 </div>

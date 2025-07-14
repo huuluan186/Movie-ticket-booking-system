@@ -1,8 +1,6 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+
+export default (sequelize, DataTypes) => {
   class Showtime extends Model {
     /**
      * Helper method for defining associations.
@@ -13,13 +11,17 @@ module.exports = (sequelize, DataTypes) => {
         // Định nghĩa quan hệ thuộc về Movie
       Showtime.belongsTo(models.Movie, {
         foreignKey: 'movie_id',
-        as: 'movie' // Tùy chọn alias nếu cần
+        as: 'movie',
+        onDelete: 'CASCADE'
       });
 
-      Showtime.belongsTo(models.Movie, {
+      Showtime.belongsTo(models.Cinema, {
         foreignKey: 'cinema_id',
-        as: 'cinema' 
+        as: 'cinema',
+        onDelete: 'CASCADE' 
       });
+
+      Showtime.hasMany(models.Ticket, { foreignKey: 'showtime_id', as: 'tickets' });
       
     }
   }
@@ -32,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     showtime_date: DataTypes.DATEONLY,
     showtime_starttime: DataTypes.TIME,
     showtime_endtime: DataTypes.TIME,
-    showtime_price: DataTypes.DECIMAL,
+    price: DataTypes.DECIMAL,
     movie_id: DataTypes.STRING,
     cinema_id: DataTypes.STRING,
   }, {

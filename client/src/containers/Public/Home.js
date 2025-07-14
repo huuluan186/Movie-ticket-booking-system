@@ -1,9 +1,9 @@
-import React from "react";
+import {path} from '../../utils/constant'
 import {Footer, Header} from './index'
 import { Outlet, useLocation} from "react-router-dom";
 const Home = () => {
     const location = useLocation();
-    const isLoginPage = location.pathname === "/login";
+    const isLoginPage = location.pathname === path.LOGIN;
 
     return (
         <div className="min-h-screen flex flex-col wrapper">

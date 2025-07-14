@@ -1,8 +1,6 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+
+export default (sequelize, DataTypes) => {
   class Cinema extends Model {
     /**
      * Helper method for defining associations.
@@ -13,12 +11,18 @@ module.exports = (sequelize, DataTypes) => {
         Cinema.belongsTo(models.CinemaCluster, {
             foreignKey: 'cluster_id',
             as: 'cinema_cluster',
+            onDelete: 'CASCADE'
         });
 
         Cinema.hasMany(models.Showtime, {
             foreignKey: 'cinema_id',
             onDelete: 'CASCADE', 
             as:'cinema',
+        });
+
+        Cinema.hasMany(models.Seat, {
+            foreignKey: 'cinema_id',
+            as: 'seats',
         });
     }
   }
@@ -30,6 +34,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     cinema_name: DataTypes.STRING,
     cluster_id: DataTypes.STRING,
+    rowCount: DataTypes.INTEGER,
+    columnCount: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Cinema',

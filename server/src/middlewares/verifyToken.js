@@ -1,9 +1,10 @@
-import jwt from 'jsonwebtoken'
-require('dotenv').config()
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
+
 const verifyToken = (req, res, next) => {
 
     let accessToken = req.headers.authorization?.split(' ')[1]
-    //console.log('accessToken', accessToken)
     if (!accessToken) return res.status(401).json({
         err: 1,
         msg: 'Missing access token'
