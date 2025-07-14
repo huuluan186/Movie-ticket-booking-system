@@ -1,5 +1,5 @@
-import * as services from '../services/user'
-import * as authService from '../services/auth'
+import * as services from '../services/user.js'
+import * as authService from '../services/auth.js'
 
 export const getUserInfo = async (req, res) => {
     const { user_id } = req.user

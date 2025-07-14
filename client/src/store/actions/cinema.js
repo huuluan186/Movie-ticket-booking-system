@@ -1,5 +1,5 @@
 import actionTypes from './actionTypes';
-import { apiGetAllCinemaChains, apiGetCinemaClustersByChainId, apiGetACinemaChainById, apiGetAllCinemaClusters, apiGetACinemaClusterById, apiGetAllCinemas, apiGetACinemaById} from '../../services/cinema';
+import { apiGetAllCinemaChains, apiGetCinemaClustersByChainId, apiGetACinemaChainById, apiGetAllCinemaClusters, apiGetACinemaClusterById, apiGetAllCinemas, apiGetACinemaById, apiGetCinemasByClusterId} from '../../services/cinema';
 
 export const getAllCinemaChains = () => async (dispatch) => {
     try {
@@ -169,6 +169,30 @@ export const getCinemaClustersByChainId = (chain_id) => async (dispatch) => {
             type: actionTypes.GET_CINEMA_CLUSTER,
             cinemaClustersData: [],
             msg: error || "Lỗi khi lấy thông tin cụm rạp!",
+        });
+    }
+};
+
+export const getCinemasByClusterId = (cluster_id) => async (dispatch) => {
+    try {
+        const response = await apiGetCinemasByClusterId(cluster_id);
+        if (response?.data.err === 0) {
+        dispatch({
+            type: actionTypes.GET_CINEMA,
+            cinemasData: response.data.response.rows || [],
+        });
+        } else {
+            dispatch({
+                type: actionTypes.GET_CINEMA,
+                msg: response.data.msg,
+                cinemasData: [],
+            });
+        }
+    } catch (error) {
+        dispatch({
+            type: actionTypes.GET_CINEMA,
+            cinemaClustersData: [],
+            msg: error || "Lỗi khi lấy thông tin rạp!",
         });
     }
 };

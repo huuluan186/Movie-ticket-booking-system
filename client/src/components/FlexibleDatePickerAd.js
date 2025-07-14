@@ -1,83 +1,105 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { format } from 'date-fns';
+import icons from '../utils/icon';
+import { useClickMouseOutside } from '../hooks'; // em cần hook giống bên Statistic
 
-const FlexibleDatePicker = ({
+const { FaCalendarAlt, AiOutlineCloseCircle } = icons;
+
+const FlexibleDatePickerAd = ({
     label,
-    type = 'date', // 'date' | 'multi-date'
     value,
     onChange,
+    placeholder = 'dd/MM/yyyy',
+    error = '',
+    keyPayload = '',
+    setInvalidFields = null,
 }) => {
-    const [newDate, setNewDate] = useState(new Date());
-    const [newTime, setNewTime] = useState('');
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showAbove, setShowAbove] = useState(false);
+    const dateRef = useRef(null);
 
-    const handleAddShowtime = () => {
-        if (!newDate || !newTime) return;
+    useClickMouseOutside([dateRef], () => setShowDatePicker(false));
 
-        const formatted = `${format(newDate, 'yyyy-MM-dd')} ${newTime}`;
-        if (!value.includes(formatted)) {
-        onChange([...value, formatted]);
+    const hasError = !!error;
+
+    const handleFocus = () => {
+        if (setInvalidFields && keyPayload) {
+            setInvalidFields((prev) => prev.filter((err) => err.name !== keyPayload));
         }
     };
 
-    const handleRemove = (val) => {
-        onChange(value.filter((v) => v !== val));
+    const handleToggleDatePicker = () => {
+        if (showDatePicker) {
+            setShowDatePicker(false);
+            return;
+        }
+
+        const rect = dateRef.current.getBoundingClientRect();
+        const estimatedHeight = 360;
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+
+        setShowAbove(spaceBelow < estimatedHeight && spaceAbove > spaceBelow);
+        setShowDatePicker(true);
     };
 
+    const handleResetDate = (e) => {
+        e.stopPropagation();
+        onChange(null);
+        setShowDatePicker(false);
+    };
+
+    const inputBaseClass =
+        'w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-1 transition-all duration-150 pr-10';
+    const errorClass = hasError
+        ? 'border-red-500 ring-red-300 placeholder-red-400'
+        : 'border-gray-300 ring-blue-300';
+
     return (
-        <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">{label}</label>
-            {type === 'date' ? (
-                <DatePicker
-                    selected={value}
-                    onChange={(date) => onChange(date)}
-                    dateFormat="yyyy-MM-dd"
-                    className="w-full border border-gray-300 rounded-md px-4 py-2"
-                />
-            ) : (
-                <>
-                    <div className="flex gap-2">
+        <div className="space-y-1 w-full max-w-[240px]">
+            {label && <label className="block text-sm font-medium text-gray-700">{label}</label>}
+            <div className="relative" ref={dateRef}>
+                <div
+                    onClick={handleToggleDatePicker}
+                    onFocus={handleFocus}
+                    className={`${inputBaseClass} ${errorClass} flex justify-between items-center bg-white cursor-pointer pl-4 pr-3`}
+                >
+                    <span className={`flex-1 truncate ${value ? 'text-gray-900' : 'text-gray-400'}`}>
+                        {value ? format(new Date(value), 'dd/MM/yyyy') : placeholder}
+                    </span>
+                    {showDatePicker ? (
+                        <AiOutlineCloseCircle
+                            className="text-xl text-red-600 cursor-pointer"
+                            onClick={handleResetDate}
+                        />
+                    ) : (
+                        <FaCalendarAlt className="text-gray-500" />
+                    )}
+                </div>
+
+                {showDatePicker && (
+                    <div
+                        className={`absolute z-50 bg-white transition-all duration-200 ease-in-out ${
+                            showAbove ? 'bottom-full mb-1' : 'top-full mt-1'
+                        }`}
+                    >
                         <DatePicker
-                            selected={newDate}
-                            onChange={(date) => setNewDate(date)}
-                            dateFormat="yyyy-MM-dd"
-                            className="border border-gray-300 rounded-md px-3 py-2"
+                            selected={value ? new Date(value) : null}
+                            onChange={(date) => {
+                                onChange(date);
+                                setShowDatePicker(false);
+                            }}
+                            inline
+                            dateFormat="dd/MM/yyyy"
                         />
-                        <input
-                            type="time"
-                            value={newTime}
-                            onChange={(e) => setNewTime(e.target.value)}
-                            className="border border-gray-300 rounded-md px-3 py-2"
-                        />
-                        <button
-                            type="button"
-                            className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                            onClick={handleAddShowtime}
-                        >
-                            Thêm
-                        </button>
                     </div>
-                    <ul className="mt-2 space-y-1">
-                    {value.map((v, idx) => (
-                        <li
-                            key={idx}
-                            className="flex justify-between items-center border px-3 py-1 rounded-md bg-gray-50"
-                        >
-                            <span>{v}</span>
-                            <button
-                                className="text-red-500 hover:text-red-700"
-                                onClick={() => handleRemove(v)}
-                            >
-                                X
-                            </button>
-                        </li>
-                    ))}
-                    </ul>
-                </>
-            )}
+                )}
+                {hasError && <div className="text-red-500 text-sm mt-1">{error}</div>}
+            </div>
         </div>
     );
 };
 
-export default FlexibleDatePicker;
+export default FlexibleDatePickerAd;

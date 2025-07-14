@@ -1,9 +1,9 @@
-const DetailModal = ({ isOpen, onClose, children }) => {
+const DetailModal = ({maxWidth='max-w-3xl', isOpen, onClose, children }) => {
     if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-3xl h-[90%] max-h-[100%] flex flex-col overflow-hidden">
+            <div className={`bg-white rounded-lg shadow-lg w-[90%] ${maxWidth} h-[90%] max-h-[100%] flex flex-col overflow-hidden`}>
                 {/* Header */}
                 <div className="flex justify-between items-center px-4 py-1 border-b">
                     <h2 className="text-blue-600 text-lg font-semibold">Chi tiết</h2>

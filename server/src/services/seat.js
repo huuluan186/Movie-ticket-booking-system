@@ -1,4 +1,4 @@
-import db from '../models';
+import db from '../models/index.js';
 import { nanoid } from 'nanoid';
 
 export const createSeatsForCinemaService = (cinema_id) => new Promise(async (resolve, reject) => {

@@ -1,10 +1,11 @@
-import db from '../models';
+import db from '../models/index.js';
 import { v4 } from 'uuid';
 
 const statusTranslations = {
-  'Coming Soon': 'Phim sắp chiếu',
-  'Now Showing': 'Phim đang chiếu'
+  'Coming Soon': 'sắp chiếu',
+  'Now Showing': 'đang chiếu'
 };
+
 // Các trường bắt buộc
 const requiredFields = ['title', 'country', 'genre', 'duration', 'release_date', 'status'];
 

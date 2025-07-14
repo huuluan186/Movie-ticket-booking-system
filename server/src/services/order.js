@@ -1,5 +1,5 @@
-import db from '../models';
-import { createOrder, createTickets} from '../utils/checkoutHelpers';
+import db from '../models/index.js';
+import { createOrder, createTickets} from '../utils/checkoutHelpers.js';
 
 // Tạo đơn hàng mới
 export const createOrderService = ({ user_id, showtime_id, seats, total_amount }) => new Promise(async (resolve, reject) =>{

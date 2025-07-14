@@ -1,6 +1,6 @@
 import moment from 'moment-timezone';
 import { Op } from 'sequelize';
-import db from '../models';
+import db from '../models/index.js';
 
 /**
  * Kiểm tra thời gian bắt đầu, thời gian kết thúc và định dạng hợp lệ
@@ -117,7 +117,7 @@ export const getShowtimes = async (whereCondition, db) => {
         {
             model: db.Movie,
             as: 'movie',
-            attributes: ['movie_id', 'title', 'poster'],
+            attributes: ['movie_id', 'title', 'poster','duration','status'],
         },
         {
             model: db.Cinema,
@@ -143,6 +143,8 @@ export const getUniqueMovies = (showtimes) => {
                 movie_id: st.movie.movie_id,
                 title: st.movie.title,
                 poster: st.movie.poster,
+                duration: st.movie.duration,
+                status: st.movie.status
             }
         ])
         ).values(),

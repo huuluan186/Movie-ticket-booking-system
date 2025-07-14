@@ -1,5 +1,4 @@
 import {SelectBox, TitleHeader, ContainerBox, FlexibleInputAd, FormRowAd, Button} from '../../../components';
-import { apiGetUserRoles } from '../../../services/user';
 import { useEffect, useState } from 'react';
 import { useClickMouseOutside } from '../../../hooks';
 import { useRef } from 'react';
@@ -9,7 +8,7 @@ import * as actions from '../../../store/actions';
 import { useDispatch } from 'react-redux';
 import { useNavigate} from 'react-router-dom';
 import {path} from '../../../utils/constant'
-import { apiCreateUserByAdmin } from '../../../services/user';
+import { apiGetUserRoles, apiCreateUserByAdmin } from '../../../services/user';
 
 const AddUser = () => {
     const navigate = useNavigate()

@@ -1,11 +1,11 @@
-import db from '../models';
+import db from '../models/index.js';
 import { Op } from 'sequelize';
 import {nanoid} from 'nanoid'
 import moment from 'moment';
 import { isTimeRangeValid, checkTimeConflict, checkExistence,
     getCinemaIdsByCluster,groupShowtimesByDate,getUniqueMovies,
     getShowtimes
-} from '../utils/showtimeHelpers';
+} from '../utils/showtimeHelpers.js';
 
 
 export const createShowtimesService = ({ showtime_date, showtime_starttime, showtime_endtime, price, movie_id, cinema_id }) => new Promise(async (resolve, reject) => {

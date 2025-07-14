@@ -9,6 +9,8 @@ export const getShowtime = (cluster_id, movie_id) => async (dispatch) => {
             dispatch({
                 type: actionTypes.GET_SHOWTIME,
                 showtimesData: response?.data?.response || {},
+                msg: response?.data?.msg,
+                err: response?.data?.err,
             });
             return response?.data?.response || {};
         } else {
@@ -28,7 +30,8 @@ export const getShowtime = (cluster_id, movie_id) => async (dispatch) => {
         return {};
     }
 };
- export const getShowtimeDetailById = (showtime_id) => async (dispatch) => {
+
+export const getShowtimeDetailById = (showtime_id) => async (dispatch) => {
     try {
         const response = await apiGetShowtimeDetailById(showtime_id);
         if (response?.data.err === 0) {
@@ -54,7 +57,6 @@ export const getShowtime = (cluster_id, movie_id) => async (dispatch) => {
         return {};
     }
 };
-
 
 export const resetShowtimes = () => ({
     type: actionTypes.RESET_SHOWTIMES,

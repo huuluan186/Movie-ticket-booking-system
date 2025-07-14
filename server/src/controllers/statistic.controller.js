@@ -1,4 +1,4 @@
-import * as service from '../services/statistic';
+import * as service from '../services/statistic.js';
 
 export const getRevenueByMovie = async (req, res) => {
     try {
