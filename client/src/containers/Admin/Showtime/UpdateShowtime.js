@@ -61,7 +61,7 @@ const UpdateShowtime = () => {
                 showtime_date: showtimeDetail?.showtime_date || '',
                 showtime_starttime: (showtimeDetail?.showtime_starttime).slice(0, 5),
                 showtime_endtime: (showtimeDetail?.showtime_endtime).slice(0, 5),
-                price: parseFloat(showtimeDetail?.price).toLocaleString()
+                price: parseInt(showtimeDetail.price) ?? ''
             });
             setSelectedMovie({
                 id: showtimeDetail?.movie_id || '',
@@ -243,7 +243,7 @@ const UpdateShowtime = () => {
                         enableTimeSelect={true}
                     />
                 </FormRowAd>
-                <FormRowAd label="Giờ băt đầu chiếu">
+                <FormRowAd label="Giờ bắt đầu chiếu">
                     <FlexibleInputAd 
                         type='time'
                         value={payload.showtime_starttime} 

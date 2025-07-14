@@ -204,10 +204,9 @@ const AddShowtime = () => {
                         error={invalidFields.find(e => e.name === 'showtime_date')?.message}
                         keyPayload="showtime_date"
                         setInvalidFields={setInvalidFields}
-                        enableTimeSelect={true}
                     />
                 </FormRowAd>
-                <FormRowAd label="Giờ băt đầu chiếu">
+                <FormRowAd label="Giờ bắt đầu chiếu">
                     <FlexibleInputAd 
                         type='time'
                         value={payload.showtime_starttime} 
