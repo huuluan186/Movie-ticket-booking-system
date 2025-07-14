@@ -88,7 +88,8 @@ const FlexibleDatePickerAd = ({
                         <DatePicker
                             selected={value ? new Date(value) : null}
                             onChange={(date) => {
-                                onChange(date);
+                                const formatted = format(date, 'yyyy-MM-dd');
+                                onChange(formatted); // luôn trả string yyyy-MM-dd
                                 setShowDatePicker(false);
                             }}
                             inline
