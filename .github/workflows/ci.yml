@@ -38,6 +38,14 @@ jobs:
           SECRET_KEY=test_secret
           REACT_APP_SERVER_URL=http://localhost:5000
           EOF
+      
+      # 🧩 Cài docker-compose (do GitHub runner không có sẵn)
+      - name: 🧩 Install docker-compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
+            -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
 
       # 4) Build toàn bộ image
       - name: 🐳 docker‑compose build
