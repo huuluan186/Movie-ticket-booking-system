@@ -1,25 +1,28 @@
 import avatarImg from "../assets/avatar.jpg";
-import onepieceImg from "../assets/onepiece.jpg";
-import pussInBootsImg from "../assets/pussInBoots.jpg";
-import timxacImg from "../assets/timxac-banner.jpg";
-import banner_cgv from "../assets/banner-cgv.png";
+import banner_sgv_superman from "../assets/banner_sgv_superman.jpg";
+import banner_cj from "../assets/banner_cj.png";
+import banner_tiengon from "../assets/banner_tiengon.jpg";
+import banner_cgv from "../assets/banner_cgv2.jpg"
+import banner_smurfs from "../assets/banner_smurfs.jpg"
 
 const sliders = [
+    {
+        image: banner_smurfs,
+    },
     {
         image: avatarImg,
     },
     {
-        image:timxacImg,
+        image: banner_tiengon,
     },
     {
-        image: onepieceImg,
-
-    },
-    {
-        image:pussInBootsImg,
+        image: banner_sgv_superman,
     },
     {
         image:banner_cgv,
+    },
+    {
+        image:banner_cj,
     },
 ];
 
