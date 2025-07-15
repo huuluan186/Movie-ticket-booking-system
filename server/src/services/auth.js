@@ -2,7 +2,6 @@ import db from '../models/index.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import {v4} from 'uuid'
-import 'dotenv/config';
 
 if (!process.env.SECRET_KEY) {
     console.error('❌ Missing SECRET_KEY in .env');

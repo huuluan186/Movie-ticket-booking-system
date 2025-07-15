@@ -3,9 +3,10 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname  = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+// nạp .env trong thư mục server/
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 export default {
   development: {
@@ -28,7 +29,7 @@ export default {
   production: {
     username: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || null,
-    database: 'database_production',
+    database: process.env.DB_NAME || 'database_production',
     host: process.env.DB_HOST || '127.0.0.1',
     port: process.env.DB_PORT || 3306,
     dialect: process.env.DB_DIALECT || 'mysql'

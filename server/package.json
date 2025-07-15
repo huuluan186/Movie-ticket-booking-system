@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "migrate": "sequelize db:migrate",
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "dev": "nodemon --exec babel-node server.js"
   },
   "keywords": [],

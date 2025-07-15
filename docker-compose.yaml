@@ -12,10 +12,12 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-    command: --default-authentication-plugin=mysql_native_password
+    #command: --default-authentication-plugin=mysql_native_password
 
   server:
-    build: ./server
+    build: 
+      context: ./server
+      target: dev
     container_name: server
     ports:
       - "${PORT}:5000"
@@ -23,6 +25,14 @@ services:
       - .env
     depends_on:
       - db
+    volumes:
+      - ./server:/app             # mount code từ host → container
+      - /app/node_modules         # giữ lại node_modules của container
+    command: >
+      /wait-for.sh db 3306
+      sh -c "npx sequelize-cli db:migrate && npm run dev"
+    environment:
+      - CHOKIDAR_USEPOLLING=true # fix hot reload cho nodemon trong Docker
 
   client:
     build:

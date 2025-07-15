@@ -1,11 +1,17 @@
-require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
+/**
+ * CONFIG DÀNH CHO CONTAINER
+ * - luôn dùng host = 'db'
+ * - đọc biến từ file .env ở gốc dự án (được docker‑compose mount vào)
+ */
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
 
 module.exports = {
     development: {
         username: process.env.DB_USER || 'root',
-        password: process.env.DB_PASSWORD || null,
+        password: process.env.DB_PASSWORD || 'root',
         database: process.env.DB_NAME || 'cinemadb',
-        host: process.env.DB_HOST || '127.0.0.1',
+        host: process.env.DB_HOST || 'db',
         port: process.env.DB_PORT || 3306,
         dialect: process.env.DB_DIALECT || 'mysql',
         logging: false,
@@ -20,10 +26,12 @@ module.exports = {
         logging: false,
     },
     production: {
-        username: 'root',
-        password: null,
-        database: 'prod',
-        host: '127.0.0.1',
-        dialect: 'mysql',
+        username: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || 'root',
+        database: process.env.DB_NAME || 'cinemadb',
+        host: process.env.DB_HOST || 'db',
+        port: process.env.DB_PORT || 3306,
+        dialect: process.env.DB_DIALECT || 'mysql',
+        logging: false,
     },
 };
