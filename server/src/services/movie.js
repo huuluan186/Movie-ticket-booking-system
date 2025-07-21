@@ -10,32 +10,32 @@ const statusTranslations = {
 const requiredFields = ['title', 'country', 'genre', 'duration', 'release_date', 'status'];
 
 export const getMovieStatusesService = () => new Promise(async (resolve, reject) => {
-  try {
-    // Lấy danh sách giá trị ENUM của trường status từ model Movie
-    const statusEnumValues = db.Movie.rawAttributes.status.values;
+    try {
+        // Lấy danh sách giá trị ENUM của trường status từ model Movie
+        const statusEnumValues = db.Movie.rawAttributes.status.values;
 
-    if (!statusEnumValues || statusEnumValues.length === 0) {
-      return resolve({
-        err: 1,
-        msg: 'Trường status không có giá trị ENUM được định nghĩa',
-        response: null
-      });
+        if (!statusEnumValues || statusEnumValues.length === 0) {
+        return resolve({
+            err: 1,
+            msg: 'Trường status không có giá trị ENUM được định nghĩa',
+            response: null
+        });
+        }
+
+        // Map sang tiếng Việt
+        const statuses = statusEnumValues.map(englishValue => ({
+            englishValue,
+            vietnameseValue: statusTranslations[englishValue] || englishValue
+        }));
+
+        resolve({
+            err: statuses ? 0 : 1,
+            msg: statuses ? 'OK' : 'Failed to get statuses of movie',
+            response: statuses
+        });
+    } catch (error) {
+        reject(error);
     }
-
-    // Map sang tiếng Việt
-    const statuses = statusEnumValues.map(englishValue => ({
-      englishValue,
-      vietnameseValue: statusTranslations[englishValue] || englishValue
-    }));
-
-    resolve({
-      err: statuses ? 0 : 1,
-      msg: statuses ? 'OK' : 'Failed to get statuses of movie',
-      response: statuses
-    });
-  } catch (error) {
-    reject(error);
-  }
 });
 
 export const getMoviesService = ({ status, limit, offset }) => new Promise(async (resolve, reject) => {
@@ -47,14 +47,27 @@ export const getMoviesService = ({ status, limit, offset }) => new Promise(async
 
         if (status) {
             query.where.status = status; // lọc theo status nếu có
+            // Sắp xếp tùy theo trạng thái
+            if (status === 'Coming Soon') {
+                query.order = [['release_date', 'ASC']];  // gần nhất trước
+            } else if (status === 'Now Showing') {
+                query.order = [['release_date', 'DESC']]; // mới nhất trước
+            } else {
+                query.order = [['release_date', 'DESC']];
+            }
+        } else {
+            // Không có status → mặc định giảm dần
+            query.order = [['release_date', 'DESC']];
         }
 
+        //phân trang nếu có
         if(limit) {
             const parsedLimit = limit ? +limit : (+process.env.LIMIT || 8);
             const parsedOffset = offset ? offset * parsedLimit : 0;
             query.limit = parsedLimit;
             query.offset = parsedOffset;
         }
+        
         // Nếu không có limit, lấy tất cả, nên dùng findAndCountAll để lấy count + rows
         const response = await db.Movie.findAndCountAll(query);
 
