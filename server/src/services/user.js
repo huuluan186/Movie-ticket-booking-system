@@ -336,7 +336,7 @@ export const deleteUserService = (admin, user_id) =>
 
 const roleTranslations = {
   'admin': 'Quản trị viên',
-  'user': 'Người dùng thường'
+  'user': 'Khách hàng'
 };
 
 export const getUserRolesListService = () => new Promise(async (resolve, reject) => {
