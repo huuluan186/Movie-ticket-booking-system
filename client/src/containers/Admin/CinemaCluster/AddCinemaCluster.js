@@ -54,7 +54,7 @@ const AddCinemaCluster = () => {
     const handleSubmit = async () => {
         setInvalidFields([]);
         const fields = [
-            { name: 'chain_id', label: 'tên chuỗi rạp', type: 'select'},
+            { name: 'chain_id', label: 'chuỗi rạp', type: 'select'},
             { name: 'cluster_name', label: 'tên cụm rạp'}
         ];
         const errors = validateFields(payload, fields);
