@@ -162,8 +162,8 @@ const AddShowtime = () => {
                     <div className='relative' ref={clusterRef}>
                         <SelectBox
                             value={selectedCluster.name}
-                            placeholder="Chọn chuỗi rạp"
-                            items={cinemaClusters.map((item) => ({
+                            placeholder="Chọn cụm rạp"
+                            items={ cinemaClusters.map((item) => ({
                                 label: item.cluster_name,
                                 onClick: () => handleSelect('cluster',item),
                             }))}
@@ -174,6 +174,7 @@ const AddShowtime = () => {
                             error={invalidFields.find(e => e.name === 'cluster_id')?.message}
                             keyPayload="cluster_id"
                             setInvalidFields={setInvalidFields}
+                            disabled={!selectedChain.id}
                         />
                     </div>
                 </FormRowAd>
@@ -189,10 +190,11 @@ const AddShowtime = () => {
                             dropdownKey="cinema"
                             openDropdown={openDropdown}
                             setOpenDropdown={setOpenDropdown}
-                            emptyMessage="Không có chuỗi rạp nào"
+                            emptyMessage="Không có rạp nào"
                             error={invalidFields.find(e => e.name === 'cinema_id')?.message}
                             keyPayload="cinema_id"
                             setInvalidFields={setInvalidFields}
+                            disabled={!selectedCluster.id}
                         />
                     </div>
                 </FormRowAd>
