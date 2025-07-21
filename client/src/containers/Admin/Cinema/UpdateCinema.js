@@ -9,28 +9,30 @@ import { apiUpdateCinema } from '../../../services/cinema';
 import { useRef } from 'react';
 import { useClickMouseOutside } from '../../../hooks';
 
-const UpdateChain = () => {
+const UpdateCinema = () => {
     const { id: cinemaId } = useParams();
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const { cinemaDetail, allCinemaClusters} = useSelector(state => state.cinema);
+    const { cinemaDetail, cinemaChains, cinemaClusters} = useSelector(state => state.cinema);
     const [selectedCluster, setSelectedCluster] = useState({ cluster_id: '', cluster_name: '' });
+    const [selectedChain, setSelectedChain] = useState({ chain_id: '', chain_name: '' });
     const [invalidFields, setInvalidFields] = useState([]);
     const [openDropdown, setOpenDropdown] = useState(null);
     const clusterRef = useRef(null);
-    useClickMouseOutside([clusterRef], () => setOpenDropdown(null));
+    const chainRef =useRef(null);
+    useClickMouseOutside([clusterRef, chainRef], () => setOpenDropdown(null));
 
     const [payload, setPayload] = useState({
         cinema_name: '',
         rowCount: '',
         columnCount: '',
-        chain_id:''
+        cluster_id:''
     });
 
     useEffect(() => {
         if (cinemaId) dispatch(actions.getACinemaById(cinemaId));
-        dispatch(actions.getAllCinemaClusters());
+        dispatch(actions.getAllCinemaChains());
     }, [cinemaId, dispatch]);
 
     useEffect(() => {
@@ -40,6 +42,11 @@ const UpdateChain = () => {
                 rowCount: cinemaDetail?.rowCount || 0,
                 columnCount: cinemaDetail?.columnCount || 0,
                 cluster_id: cinemaDetail?.['cinema_cluster.cluster_id'] || ''
+            });
+
+            setSelectedChain({
+                chain_id: cinemaDetail?.['cinema_cluster.cinema_chain.chain_id'] || '',
+                chain_name: cinemaDetail?.['cinema_cluster.cinema_chain.chain_name'] || ''
             });
 
             setSelectedCluster({
@@ -56,7 +63,14 @@ const UpdateChain = () => {
         }));
     };
 
-     const handleSelectCluster = (cluster) => {
+    const handleSelectChain = (chain) => {
+        setSelectedChain({ chain_id: chain.chain_id, chain_name: chain.chain_name });
+        dispatch(actions.getCinemaClustersByChainId(chain.chain_id));
+        setSelectedCluster({ cluster_id: '', cluster_name: '' }); // Reset cụm rạp khi chọn chuỗi mới
+        setOpenDropdown(null);
+    };
+
+    const handleSelectCluster = (cluster) => {
         setPayload(prev => ({
             ...prev,
             cluster_id: cluster.cluster_id 
@@ -123,12 +137,31 @@ const UpdateChain = () => {
                         setInvalidFields={setInvalidFields}
                     />
                 </FormRowAd>
+                <FormRowAd label="Chuỗi rạp">
+                    <div className='relative' ref={chainRef}>
+                        <SelectBox
+                            value={selectedChain.chain_name}
+                            placeholder="Chọn chuỗi rạp"
+                            items={cinemaChains.map((item) => ({
+                                label: item.chain_name,
+                                onClick: () => handleSelectChain(item),
+                            }))}
+                            dropdownKey="cinemaChain"
+                            openDropdown={openDropdown}
+                            setOpenDropdown={setOpenDropdown}
+                            emptyMessage="Không có chuỗi rạp nào"
+                            error={invalidFields.find(e => e.name === 'chain_id')?.message}
+                            keyPayload="chain_id"
+                            setInvalidFields={setInvalidFields}
+                        />
+                    </div>
+                </FormRowAd>
                 <FormRowAd label="Cụm rạp">
                     <div className='relative' ref={clusterRef}>
                         <SelectBox
                             value={selectedCluster.cluster_name}
                             placeholder="Chọn cụm rạp"
-                            items={allCinemaClusters.map((item) => ({
+                            items={cinemaClusters.map((item) => ({
                                 label: item.cluster_name,
                                 onClick: () => handleSelectCluster(item),
                             }))}
@@ -150,4 +183,4 @@ const UpdateChain = () => {
     );
 };
 
-export default UpdateChain;
+export default UpdateCinema;

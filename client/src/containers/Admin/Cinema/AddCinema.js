@@ -13,24 +13,27 @@ import { apiCreateCinema } from '../../../services/cinema';
 const AddCinema = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const {allCinemaClusters}= useSelector(state=>state.cinema)
+    const { cinemaChains, cinemaClusters}= useSelector(state=>state.cinema)
     const [payload, setPayload] = useState({
         cinema_name: '',
         rowCount: '',
         columnCount: '',
-        chain_id:''
+        cluster_id:'',
+        chain_id: '',
     });
 
     const [selectedCluster, setSelectedCluster] = useState({ cluster_id: '', cluster_name: '' });
+    const [selectedChain, setSelectedChain] = useState({ chain_id: '', chain_name: '' });
     const [invalidFields, setInvalidFields] = useState([]);
     const [openDropdown, setOpenDropdown] = useState(null);
 
     const clusterRef = useRef(null); // Tham chiếu đến phần tử chứa dropdown
+    const chainRef = useRef(null)
     // Sử dụng useClickMouseOutside để đóng dropdown khi click ra ngoài
-    useClickMouseOutside([clusterRef], () =>  setOpenDropdown(null));
+    useClickMouseOutside([clusterRef, chainRef], () =>  setOpenDropdown(null));
 
     useEffect(() => {
-        dispatch(actions.getAllCinemaClusters());
+        dispatch(actions.getAllCinemaChains());
     }, [dispatch]);
 
     const handleChange = (field, value) => {
@@ -39,6 +42,17 @@ const AddCinema = () => {
             [field]: value
         }));
         setInvalidFields(prev => prev.filter(err => err.name !== field));
+    };
+
+    const handleSelectChain = (chain) => {
+        setSelectedChain({ chain_id: chain.chain_id, chain_name: chain.chain_name });
+        setPayload(prev => ({
+            ...prev,
+            chain_id: chain.chain_id,
+        }));
+        dispatch(actions.getCinemaClustersByChainId(chain.chain_id));
+        setSelectedCluster({ cluster_id: '', cluster_name: '' }); // Reset cụm rạp khi chọn chuỗi mới
+        setOpenDropdown(null);
     };
 
     const handleSelectCluster = (cluster) => {
@@ -59,7 +73,8 @@ const AddCinema = () => {
             { name: 'cinema_name', label: 'tên rạp'},
             { name: 'rowCount', label: 'số lượng hàng ghế'},
             { name: 'columnCount', label: 'số lượng cột ghế'},
-            { name: 'cluster_id', label: 'tên cụm rạp',  type: 'select'}
+            { name: 'cluster_id', label: 'cụm rạp',  type: 'select'},
+            { name: 'chain_id', label: 'chuỗi rạp',  type: 'select'}
         ];
         const errors = validateFields(payload, fields);
         if (isNaN(payload.rowCount)) {
@@ -71,7 +86,8 @@ const AddCinema = () => {
         setInvalidFields(errors);
         if (errors.length > 0) return;
 
-        const response = await apiCreateCinema(payload);
+        const { chain_id, ...finalPayload } = payload;
+        const response = await apiCreateCinema(finalPayload);
         if (response?.err === 0) {
             toast.success(response.msg);
             //Fetch lại danh sách sau khi tạo thành công
@@ -116,12 +132,31 @@ const AddCinema = () => {
                         setInvalidFields={setInvalidFields}
                     />
                 </FormRowAd>
+                <FormRowAd label="Chuỗi rạp">
+                    <div className='relative' ref={chainRef}>
+                        <SelectBox
+                            value={selectedChain.chain_name}
+                            placeholder="Chọn chuỗi rạp"
+                            items={cinemaChains.map((item) => ({
+                                label: item.chain_name,
+                                onClick: () => handleSelectChain(item),
+                            }))}
+                            dropdownKey="cinemaChain"
+                            openDropdown={openDropdown}
+                            setOpenDropdown={setOpenDropdown}
+                            emptyMessage="Không có chuỗi rạp nào"
+                            error={invalidFields.find(e => e.name === 'chain_id')?.message}
+                            keyPayload="chain_id"
+                            setInvalidFields={setInvalidFields}
+                        />
+                    </div>
+                </FormRowAd>
                 <FormRowAd label="Cụm rạp">
                     <div className='relative' ref={clusterRef}>
                         <SelectBox
                             value={selectedCluster.cluster_name}
                             placeholder="Chọn cụm rạp"
-                            items={allCinemaClusters.map((item) => ({
+                            items={cinemaClusters.map((item) => ({
                                 label: item.cluster_name,
                                 onClick: () => handleSelectCluster(item),
                             }))}
@@ -132,6 +167,7 @@ const AddCinema = () => {
                             error={invalidFields.find(e => e.name === 'cluster_id')?.message}
                             keyPayload="cluster_id"
                             setInvalidFields={setInvalidFields}
+                            disabled={!selectedChain.chain_id}
                         />
                     </div>
                 </FormRowAd>
