@@ -65,7 +65,7 @@ export const apiChangePassword = (payload) => new Promise(async (resolve,reject)
     try {
         const response = await axiosConfig({
             method:'put',
-            url:'/api/v1/users/',
+            url:'/api/v1/users/me/password',
             data:payload
         })
         console.log("Request Headers:", response.config.headers);
