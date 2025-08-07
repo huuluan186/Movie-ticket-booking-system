@@ -34,3 +34,4 @@ server/src/public
 # ========== IDE & Editor ==========
 .vscode/
 .idea/
+~$*
